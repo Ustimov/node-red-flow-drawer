@@ -1,6 +1,5 @@
 const request = require('request');
-const Canvas = require('canvas')
-    , Image = Canvas.Image;
+const { createCanvas, Image } = require('canvas');
 const jsdom = require('jsdom');
 const { window } = new jsdom.JSDOM(`
 <html>
@@ -141,41 +140,23 @@ window.onload = () => {
         }
         return new Promise((resolve, reject) => {
             href = 'http://127.0.0.1:8080/' + href;
-            request.get(href, function(err, resp, data) {
-                if (err){
-                    console.log('PASS');
-                    throw err;
-                }
-                
-                const canvas = new Canvas(500, 500);//document.createElement('canvas');
-                const img = new Image();
-                img.crossOrigin = 'anonymous';
-                img.onerror = (err) => {
-                  console.log('REJECT1: ' + href);
-                  console.log(err);
-                  //reject(new Error(`Could not load ${href}`))
-                  resolve(true);
-                };
-                img.onload = () => {
-                  canvas.width = img.width;
-                  canvas.height = img.height;
-                  canvas.getContext('2d').drawImage(img, 0, 0);
-                  image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', canvas.toDataURL('image/png'));
-                  resolve(true);
-                };
-                img.src = Buffer.from(data);
 
-                // var img = new Image();
-                // img.src = data;
-                
-                // var canvas = new Canvas(256, 256);
-                // var ctx = canvas.getContext('2d');
-                
-                // ctx.drawImage(img, 0, 0, 256, 256);
-                // canvas.createPNGStream().pipe(fs.createWriteStream('image-url.png'));
-            });
-
-
+            const canvas = createCanvas(500, 500);//document.createElement('canvas');
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onerror = (err) => {
+              console.log('REJECT1: ' + href);
+              console.log(err);
+              reject(new Error(`Could not load ${href}`))
+            };
+            img.onload = () => {
+              canvas.width = img.width;
+              canvas.height = img.height;
+              canvas.getContext('2d').drawImage(img, 0, 0);
+              image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', canvas.toDataURL('image/png'));
+              resolve(true);
+            };
+            img.src = href;
         });
       })
     );
@@ -352,7 +333,7 @@ window.onload = () => {
   
       const convertToPng = ({src, width, height}) => {
         console.log('Convert to PNG START');
-        const canvas = new Canvas(500, 500, 'svg');//document.createElement('canvas');
+        const canvas = createCanvas(500, 500, 'svg');//document.createElement('canvas');
         const context = canvas.getContext('2d');
         const pixelRatio = window.devicePixelRatio || 1;
   

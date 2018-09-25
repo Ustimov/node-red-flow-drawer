@@ -32,8 +32,8 @@ const { window } = new JSDOM(`
     resources: "usable"
 });
 const document = window.document;
-const Canvas = require('canvas')
-    , Image = Canvas.Image;
+const { createCanvas, Image } = require('canvas');
+    // , Image = Canvas.Image;
 window.onload = () => {
     console.log('WINDOW LOAD');
 };
