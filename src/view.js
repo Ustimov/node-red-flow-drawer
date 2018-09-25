@@ -27,9 +27,10 @@ const { window } = new JSDOM(`
         <body>
             <div id="chart"></div>
         </body>
-        <scipt src="http://127.0.0.1:8080/d3.v3.min.js"></src>
+        <script src="http://127.0.0.1:8080/d3.v3.min.js"></script>
     </html>`, {
-    resources: "usable"
+    resources: "usable",
+    runScripts: "dangerously"
 });
 const document = window.document;
 const { createCanvas, Image } = require('canvas');
@@ -1479,6 +1480,9 @@ RED.view = (function() {
         document.body.appendChild(sp);
         var w = sp.offsetWidth;
         var h = sp.offsetHeight;
+        if (w === 0) {
+            w = str.length * 6;
+        }
         document.body.removeChild(sp);
         return [offsetW+w,offsetH+h];
     }
