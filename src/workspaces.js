@@ -27,7 +27,7 @@ RED.workspaces = (function() {
         if (ws) {
             // console.log('ADD');
             workspace_tabs.addTab(ws);
-            workspace_tabs.resize();
+            // workspace_tabs.resize();
         } else {
             var tabId = RED.nodes.id();
             do {
@@ -38,7 +38,7 @@ RED.workspaces = (function() {
             RED.nodes.addWorkspace(ws);
             // console.log('ADD');
             workspace_tabs.addTab(ws);
-            workspace_tabs.activateTab(tabId);
+            // workspace_tabs.activateTab(tabId);
             if (!skipHistoryEntry) {
                 RED.history.push({t:'add',workspaces:[ws],dirty:RED.nodes.dirty()});
                 RED.nodes.dirty(true);
@@ -98,7 +98,7 @@ RED.workspaces = (function() {
                             changes.label = workspace.label;
                             changed = true;
                             workspace.label = label;
-                            workspace_tabs.renameTab(workspace.id,label);
+                            // workspace_tabs.renameTab(workspace.id,label);
                         }
                         var disabled = $("#node-input-disabled").prop("checked");
                         if (workspace.disabled !== disabled) {
@@ -375,23 +375,23 @@ RED.workspaces = (function() {
                     return;
                 }
             }
-            workspace_tabs.activateTab(id);
+            // workspace_tabs.activateTab(id);
             activeWorkspace = id;
         },
         refresh: function() {
             RED.nodes.eachWorkspace(function(ws) {
-                workspace_tabs.renameTab(ws.id,ws.label);
+                // workspace_tabs.renameTab(ws.id,ws.label);
 
             })
             RED.nodes.eachSubflow(function(sf) {
                 if (workspace_tabs.contains(sf.id)) {
-                    workspace_tabs.renameTab(sf.id,sf.name);
+                    // workspace_tabs.renameTab(sf.id,sf.name);
                 }
             });
             // RED.sidebar.config.refresh();
         },
         resize: function() {
-            workspace_tabs.resize();
+            // workspace_tabs.resize();
         },
         tabs: function () { return workspace_tabs.tabs; }
     }
