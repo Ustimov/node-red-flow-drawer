@@ -2661,11 +2661,15 @@ RED.view = (function() {
         
         
         // SvgSaver.saveSvgAsPng(outer[0][0], 'flow.png');
-        SvgSaver.svgAsDataUri(outer[0][0], {}, uri => {
-            //console.log('finish');
-            console.log(`<img src="${uri}"></img>`);
-            // console.log('\n\n\n');
-        });
+        // SvgSaver.svgAsDataUri(outer[0][0], {}, uri => {
+        //     //console.log('finish');
+        //     console.log(`<img src="${uri}"></img>`);
+        //     // console.log('\n\n\n');
+        // });
+
+
+        return SvgSaver.svgAsDataUri(outer[0][0]);
+
 
         // var svgBlob = new Blob(['<?xml version="1.0" standalone="no"?>\r\n', svgHTML], {type:"image/svg+xml;charset=utf-8"});
         // console.log(svgBlob);
@@ -2866,7 +2870,7 @@ RED.view = (function() {
                 updateActiveNodes();
                 updateSelection();
             }
-            redraw();
+            return redraw();
         },
         focus: focusView,
         importNodes: importNodes,
