@@ -2530,7 +2530,7 @@ var newNodesObj = [
 RED.nodes.import(newNodesObj);
 
 setTimeout(() => {
-    console.log('PAUSE');
+    // console.log('PAUSE');
     RED.view.redraw(true);
 }, 5000);
 

@@ -13,9 +13,9 @@ const { window } = new jsdom.JSDOM(`
 resources: "usable"
 });
 const document = window.document;
-window.onload = () => {
-  console.log('WINDOW LOAD 2');
-};
+// window.onload = () => {
+//   console.log('WINDOW LOAD 2');
+// };
 
 (function() {
     const out$ = typeof exports != 'undefined' && exports || typeof define != 'undefined' && {} || this || window;
@@ -131,9 +131,9 @@ window.onload = () => {
     const inlineImages = el => Promise.all(
       Array.from(el.querySelectorAll('image')).map(image => {
         let href = image.getAttributeNS('http://www.w3.org/1999/xlink', 'href') || image.getAttribute('href');
-        if (!image) {
-          console.log('IMAGE1');
-        }
+        // if (!image) {
+        //   console.log('IMAGE1');
+        // }
         if (!href) return Promise.resolve(null);
         if (isExternal(href)) {
           href += (href.indexOf('?') === -1 ? '?' : '&') + 't=' + new Date().valueOf();
@@ -145,7 +145,7 @@ window.onload = () => {
             const img = new Image();
             img.crossOrigin = 'anonymous';
             img.onerror = (err) => {
-              console.log('REJECT1: ' + href);
+              // console.log('REJECT1: ' + href);
               console.log(err);
               reject(new Error(`Could not load ${href}`))
             };
@@ -237,7 +237,7 @@ window.onload = () => {
     };
   
     out$.prepareSvg = (el, options, done) => {
-      console.log('Prepare svg START');
+      // console.log('Prepare svg START');
       requireDomNode(el);
       const {
         left = 0,
@@ -285,9 +285,9 @@ window.onload = () => {
             foreignObject.setAttributeNS(xmlns, 'xmlns', 'http://www.w3.org/1999/xhtml');
         });
   
-        console.log('Prepare svg END');
+        // console.log('Prepare svg END');
         return inlineCss(el, options).then(css => {
-          console.log('Style START');
+          // console.log('Style START');
           const style = document.createElement('style');
           style.setAttribute('type', 'text/css');
           style.innerHTML = `<![CDATA[\n${css}\n]]>`;
@@ -299,13 +299,13 @@ window.onload = () => {
           const outer = document.createElement('div');
           outer.appendChild(clone);
           const src = outer.innerHTML.replace(/NS\d+:href/gi, 'xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href');
-          console.log('Style END');
+          // console.log('Style END');
           if (typeof done === 'function') {
-            console.log('Style DONE');
+            // console.log('Style DONE');
             done(src, width, height);
           }
           else {
-            console.log('Style RETURN');
+            // console.log('Style RETURN');
             return {src, width, height}
           };
         });
@@ -313,17 +313,17 @@ window.onload = () => {
     };
   
     out$.svgAsDataUri = (el, options, done) => {
-      console.log('Svg as data URI START');
+      // console.log('Svg as data URI START');
       requireDomNode(el);
       const result = out$.prepareSvg(el, options)
         .then(({src}) => `data:image/svg+xml;base64,${window.btoa(reEncode(doctype+src))}`);
       if (typeof done === 'function') return result.then(done);
-      console.log('Svg as data URI END');
+      // console.log('Svg as data URI END');
       return result;
     };
   
     out$.svgAsPngUri = (el, options, done) => {
-      console.log('Save as png URI START');
+      // console.log('Save as png URI START');
       requireDomNode(el);
       const {
         encoderType = 'image/png',
@@ -332,7 +332,7 @@ window.onload = () => {
       } = options || {};
   
       const convertToPng = ({src, width, height}) => {
-        console.log('Convert to PNG START');
+        // console.log('Convert to PNG START');
         const canvas = createCanvas(500, 500, 'svg');//document.createElement('canvas');
         const context = canvas.getContext('2d');
         const pixelRatio = window.devicePixelRatio || 1;
@@ -356,18 +356,18 @@ window.onload = () => {
           } else throw e;
         }
         if (typeof done === 'function') done(png);
-        console.log('Convert to PNG END');
+        // console.log('Convert to PNG END');
         return Promise.resolve(png);
       }
   
       if (canvg) {
-        console.log('Save as png URI 2')
+        // console.log('Save as png URI 2')
         return out$.prepareSvg(el, options).then(convertToPng);
       }
       else return out$.svgAsDataUri(el, options).then(uri => {
-        console.log('Save as png URI 3')
+        // console.log('Save as png URI 3')
         return new Promise((resolve, reject) => {
-          console.log('Save as png URI 4');
+          // console.log('Save as png URI 4');
           const image = new Image();
           image.onload = () => 
             resolve(convertToPng({
@@ -376,12 +376,12 @@ window.onload = () => {
               height: image.height
             }));
           image.onerror = () => {
-            console.log('REJECT2');
+            // console.log('REJECT2');
             reject(`There was an error loading the data URI as an image on the following SVG\n${window.atob(uri.slice(26))}Open the following link to see browser's diagnosis\n${uri}`);
           }
           image.src = uri;
           //console.log(uri);
-          console.log('Save as png URI 5')
+          // console.log('Save as png URI 5')
         })
       });
     };

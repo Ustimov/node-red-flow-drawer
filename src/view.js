@@ -35,9 +35,9 @@ const { window } = new JSDOM(`
 const document = window.document;
 const { createCanvas, Image } = require('canvas');
     // , Image = Canvas.Image;
-window.onload = () => {
-    console.log('WINDOW LOAD');
-};
+// window.onload = () => {
+//     console.log('WINDOW LOAD');
+// };
 
 RED.view = (function() {
     var space_width = 5000,
@@ -311,18 +311,18 @@ RED.view = (function() {
     function updateActiveNodes() {
         var activeWorkspace = RED.workspaces.active();
         
-        console.log('Active workspace: ' + activeWorkspace);
+        //console.log('Active workspace: ' + activeWorkspace);
 
         activeNodes = RED.nodes.filterNodes({z:activeWorkspace});
 
-        console.log('Active nodes: ' + activeNodes.length);
+        //console.log('Active nodes: ' + activeNodes.length);
 
         activeLinks = RED.nodes.filterLinks({
             source:{z:activeWorkspace},
             target:{z:activeWorkspace}
         });
 
-        console.log('Active links: ' + activeLinks.length);
+        //console.log('Active links: ' + activeLinks.length);
     }
 
     // console.log(chart.outerHTML);
@@ -2152,7 +2152,7 @@ RED.view = (function() {
                             .attr("fill-opacity","0.05")
                             .attr("height",function(d){return Math.min(50,d.h-4);});
 
-                        console.log(icon_url);
+                        //console.log(icon_url);
 
                         var icon = icon_group.append("image")
                             .attr("xlink:href",icon_url)
@@ -2196,7 +2196,7 @@ RED.view = (function() {
                             //    icon_shade.attr("x",function(d){return d.w-30});
                             //    icon_shade_border.attr("d",function(d){return "M "+(d.w-30)+" 1 l 0 "+(d.h-2);});
                             //}
-                            console.log('ONLOAD');
+                            //console.log('ONLOAD');
                         }
                         img.src = icon_url;
 
@@ -2347,7 +2347,7 @@ RED.view = (function() {
                                         icon.attr("width",Math.min(img.width,30));
                                         icon.attr("height",Math.min(img.height,30));
                                         icon.attr("x",15-Math.min(img.width,30)/2);
-                                        console.log('ONLOAD');
+                                        //console.log('ONLOAD');
                                     }
                                     img.src = new_url;
                                 }
@@ -2657,12 +2657,12 @@ RED.view = (function() {
         // console.log('REDRAW');
 
         var svgHTML = outer[0][0].outerHTML;
-        console.log(svgHTML);
+        //console.log(svgHTML);
         
         
         // SvgSaver.saveSvgAsPng(outer[0][0], 'flow.png');
         SvgSaver.svgAsDataUri(outer[0][0], {}, uri => {
-            console.log('finish');
+            //console.log('finish');
             console.log(`<img src="${uri}"></img>`);
             // console.log('\n\n\n');
         });

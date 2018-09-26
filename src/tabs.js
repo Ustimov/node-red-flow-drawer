@@ -311,7 +311,7 @@ RED.tabs = (function() {
 
         return {
             addTab: function(tab) {
-                console.log('add tab');
+                // console.log('add tab');
                 tabs[tab.id] = tab;
                 // var li = $("<li/>",{class:"red-ui-tab"}).appendTo(ul);
                 // li.attr('id',"red-ui-tab-"+(tab.id.replace(".","-")));

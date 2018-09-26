@@ -22,10 +22,10 @@ RED.workspaces = (function() {
     var workspaceIndex = 0;
 
     function addWorkspace(ws,skipHistoryEntry) {
-        console.log('addWorkspace');
+        // console.log('addWorkspace');
         //console.log(ws);
         if (ws) {
-            console.log('ADD');
+            // console.log('ADD');
             workspace_tabs.addTab(ws);
             workspace_tabs.resize();
         } else {
@@ -36,7 +36,7 @@ RED.workspaces = (function() {
 
             ws = {type:"tab",id:tabId,disabled: false,info:"",label:RED._('workspace.defaultName',{number:workspaceIndex})};
             RED.nodes.addWorkspace(ws);
-            console.log('ADD');
+            // console.log('ADD');
             workspace_tabs.addTab(ws);
             workspace_tabs.activateTab(tabId);
             if (!skipHistoryEntry) {
@@ -48,7 +48,7 @@ RED.workspaces = (function() {
         return ws;
     }
     function deleteWorkspace(ws) {
-        console.log('deleteWorkspace');
+        // console.log('deleteWorkspace');
         if (workspaceTabCount === 1) {
             return;
         }
@@ -63,7 +63,7 @@ RED.workspaces = (function() {
     }
 
     function showRenameWorkspaceDialog(id) {
-        console.log('showRenameWorkspaceDialog');
+        // console.log('showRenameWorkspaceDialog');
         var workspace = RED.nodes.workspace(id);
         RED.view.state(RED.state.EDITING);
         var tabflowEditor;
@@ -223,7 +223,7 @@ RED.workspaces = (function() {
     var workspace_tabs;
     var workspaceTabCount = 0;
     function createWorkspaceTabs() {
-        console.log('createWorkspaceTabs');
+        // console.log('createWorkspaceTabs');
         workspace_tabs = RED.tabs.create({
             id: "workspace-tabs",
             onchange: function(tab) {
@@ -284,13 +284,13 @@ RED.workspaces = (function() {
         workspaceTabCount = 0;
     }
     function showWorkspace() {
-        console.log('showWorkspace');
+        // console.log('showWorkspace');
         $("#workspace .red-ui-tabs").show()
         $("#chart").show()
         $("#workspace-footer").children().show()
     }
     function hideWorkspace() {
-        console.log('hideWorkspace');
+        // console.log('hideWorkspace');
         // $("#workspace .red-ui-tabs").hide()
         // $("#chart").hide()
         // $("#workspace-footer").children().hide()
@@ -319,12 +319,12 @@ RED.workspaces = (function() {
     }
 
     function editWorkspace(id) {
-        console.log('editWorkspace');
+        // console.log('editWorkspace');
         showRenameWorkspaceDialog(id||activeWorkspace);
     }
 
     function removeWorkspace(ws) {
-        console.log('removeWorkspace');
+        // console.log('removeWorkspace');
         if (!ws) {
             deleteWorkspace(RED.nodes.workspace(activeWorkspace));
         } else {
@@ -338,7 +338,7 @@ RED.workspaces = (function() {
     }
 
     function setWorkspaceOrder(order) {
-        console.log('setWorkspaceOrder');
+        // console.log('setWorkspaceOrder');
         RED.nodes.setWorkspaceOrder(order.filter(function(id) {
             return RED.nodes.workspace(id) !== undefined;
         }));
@@ -358,8 +358,8 @@ RED.workspaces = (function() {
             return workspaceTabCount;
         },
         active: function() {
-            console.log('active tabs');
-            console.log(JSON.stringify(workspace_tabs ? workspace_tabs.tabs : ''));
+            // console.log('active tabs');
+            // console.log(JSON.stringify(workspace_tabs ? workspace_tabs.tabs : ''));
             if (activeWorkspace === 0 && workspace_tabs && Object.keys(workspace_tabs.tabs).length > 0) {
                 return workspace_tabs.tabs[Object.keys(workspace_tabs.tabs)[0]].id;
             }
@@ -369,7 +369,7 @@ RED.workspaces = (function() {
             if (!workspace_tabs.contains(id)) {
                 var sf = RED.nodes.subflow(id);
                 if (sf) {
-                    console.log('new workspace');
+                    // console.log('new workspace');
                     addWorkspace({type:"subflow",id:id,icon:"red/images/subflow_tab.png",label:sf.name, closeable: true});
                 } else {
                     return;
