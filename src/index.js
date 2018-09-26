@@ -2529,26 +2529,21 @@ var newNodesObj = [
 
 RED.nodes.import(newNodesObj);
 
-setTimeout(() => {
-  RED.view.redraw(true).then(uri => {
-    console.log(`<img src="${uri}"></img>`);
-  });
-}, 5000);
+setTimeout(function () {
+  const tabs = RED.workspaces.tabs();
+  const keys = Object.keys(tabs);
+  print(keys);
+}, 1000);
 
-
-
-//RED.view.importNodes();
-
-
-// setTimeout(() => console.log('close'), 10000);
-
-// function doStuff() {
-//     // code to run
-//     console.log('boom')
-//   };
-  
-//   function run() {
-//     setInterval(doStuff, 5000);
-//   };
-  
-//   run();
+function print(keys) {
+  const key = keys.pop();
+  if (!key) {
+    return;
+  } else {
+    RED.workspaces.show(key);
+    return RED.view.redraw(true).then(function (uri) {
+      console.log('<img src="' + uri + '"></img>');
+      print(keys);
+    });
+  }
+}

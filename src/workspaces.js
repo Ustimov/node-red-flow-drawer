@@ -360,9 +360,9 @@ RED.workspaces = (function() {
         active: function() {
             // console.log('active tabs');
             // console.log(JSON.stringify(workspace_tabs ? workspace_tabs.tabs : ''));
-            if (activeWorkspace === 0 && workspace_tabs && Object.keys(workspace_tabs.tabs).length > 0) {
-                return workspace_tabs.tabs[Object.keys(workspace_tabs.tabs)[0]].id;
-            }
+            // if (activeWorkspace === 0 && workspace_tabs && Object.keys(workspace_tabs.tabs).length > 0) {
+            //     return workspace_tabs.tabs[Object.keys(workspace_tabs.tabs)[0]].id;
+            // }
             return activeWorkspace
         },
         show: function(id) {
@@ -376,6 +376,7 @@ RED.workspaces = (function() {
                 }
             }
             workspace_tabs.activateTab(id);
+            activeWorkspace = id;
         },
         refresh: function() {
             RED.nodes.eachWorkspace(function(ws) {
@@ -391,6 +392,7 @@ RED.workspaces = (function() {
         },
         resize: function() {
             workspace_tabs.resize();
-        }
+        },
+        tabs: function () { return workspace_tabs.tabs; }
     }
 })();

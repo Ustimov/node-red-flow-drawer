@@ -464,7 +464,7 @@ RED.tabs = (function() {
             previousTab: function() {},
             resize: function() {},
             count: function() {},
-            contains: function() {},
+            contains: function(id) { return !!tabs[id]; },
             renameTab: function() {},
             order: function() {},
             tabs: tabs
