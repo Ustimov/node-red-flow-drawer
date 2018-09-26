@@ -394,91 +394,91 @@ RED.view = (function() {
         selected_link = null;
     }
 
-    var lastSelection = null;
-    function updateSelection() {
-        var selection = {};
+    // var lastSelection = null;
+    // function updateSelection() {
+    //     var selection = {};
 
-        if (moving_set.length > 0) {
-            selection.nodes = moving_set.map(function(n) { return n.n;});
-        }
-        if (selected_link != null) {
-            selection.link = selected_link;
-        }
-        var activeWorkspace = RED.workspaces.active();
-        activeLinks = RED.nodes.filterLinks({
-            source:{z:activeWorkspace},
-            target:{z:activeWorkspace}
-        });
-        var tabOrder = RED.nodes.getWorkspaceOrder();
-        var currentLinks = activeLinks;
-        var addedLinkLinks = {};
-        activeFlowLinks = [];
-        for (var i=0;i<moving_set.length;i++) {
-            if (moving_set[i].n.type === "link out" || moving_set[i].n.type === "link in") {
-                var linkNode = moving_set[i].n;
-                var offFlowLinks = {};
-                linkNode.links.forEach(function(id) {
-                    var target = RED.nodes.node(id);
-                    if (target) {
-                        if (linkNode.type === "link out") {
-                            if (target.z === linkNode.z) {
-                                if (!addedLinkLinks[linkNode.id+":"+target.id]) {
-                                    activeLinks.push({
-                                        source:linkNode,
-                                        sourcePort:0,
-                                        target: target,
-                                        link: true
-                                    });
-                                    addedLinkLinks[linkNode.id+":"+target.id] = true;
-                                }
-                            } else {
-                                offFlowLinks[target.z] = offFlowLinks[target.z]||[];
-                                offFlowLinks[target.z].push(target);
-                            }
-                        } else {
-                            if (target.z === linkNode.z) {
-                                if (!addedLinkLinks[target.id+":"+linkNode.id]) {
-                                    activeLinks.push({
-                                        source:target,
-                                        sourcePort:0,
-                                        target: linkNode,
-                                        link: true
-                                    });
-                                    addedLinkLinks[target.id+":"+linkNode.id] = true;
-                                }
-                            } else {
-                                offFlowLinks[target.z] = offFlowLinks[target.z]||[];
-                                offFlowLinks[target.z].push(target);
-                            }
-                        }
-                    }
-                });
-                var offFlows = Object.keys(offFlowLinks);
-                // offFlows.sort(function(A,B) {
-                //     return tabOrder.indexOf(A) - tabOrder.indexOf(B);
-                // });
-                if (offFlows.length > 0) {
-                    activeFlowLinks.push({
-                        refresh: Math.floor(Math.random()*10000),
-                        node: linkNode,
-                        links: offFlowLinks//offFlows.map(function(i) { return {id:i,links:offFlowLinks[i]};})
-                    });
-                }
-            }
-        }
-        var selectionJSON = activeWorkspace+":"+JSON.stringify(selection,function(key,value) {
-            if (key === 'nodes') {
-                return value.map(function(n) { return n.id })
-            } else if (key === 'link') {
-                return value.source.id+":"+value.sourcePort+":"+value.target.id;
-            }
-            return value;
-        });
-        if (selectionJSON !== lastSelection) {
-            lastSelection = selectionJSON;
-            // RED.events.emit("view:selection-changed",selection);
-        }
-    }
+    //     if (moving_set.length > 0) {
+    //         selection.nodes = moving_set.map(function(n) { return n.n;});
+    //     }
+    //     if (selected_link != null) {
+    //         selection.link = selected_link;
+    //     }
+    //     var activeWorkspace = RED.workspaces.active();
+    //     activeLinks = RED.nodes.filterLinks({
+    //         source:{z:activeWorkspace},
+    //         target:{z:activeWorkspace}
+    //     });
+    //     var tabOrder = RED.nodes.getWorkspaceOrder();
+    //     var currentLinks = activeLinks;
+    //     var addedLinkLinks = {};
+    //     activeFlowLinks = [];
+    //     for (var i=0;i<moving_set.length;i++) {
+    //         if (moving_set[i].n.type === "link out" || moving_set[i].n.type === "link in") {
+    //             var linkNode = moving_set[i].n;
+    //             var offFlowLinks = {};
+    //             linkNode.links.forEach(function(id) {
+    //                 var target = RED.nodes.node(id);
+    //                 if (target) {
+    //                     if (linkNode.type === "link out") {
+    //                         if (target.z === linkNode.z) {
+    //                             if (!addedLinkLinks[linkNode.id+":"+target.id]) {
+    //                                 activeLinks.push({
+    //                                     source:linkNode,
+    //                                     sourcePort:0,
+    //                                     target: target,
+    //                                     link: true
+    //                                 });
+    //                                 addedLinkLinks[linkNode.id+":"+target.id] = true;
+    //                             }
+    //                         } else {
+    //                             offFlowLinks[target.z] = offFlowLinks[target.z]||[];
+    //                             offFlowLinks[target.z].push(target);
+    //                         }
+    //                     } else {
+    //                         if (target.z === linkNode.z) {
+    //                             if (!addedLinkLinks[target.id+":"+linkNode.id]) {
+    //                                 activeLinks.push({
+    //                                     source:target,
+    //                                     sourcePort:0,
+    //                                     target: linkNode,
+    //                                     link: true
+    //                                 });
+    //                                 addedLinkLinks[target.id+":"+linkNode.id] = true;
+    //                             }
+    //                         } else {
+    //                             offFlowLinks[target.z] = offFlowLinks[target.z]||[];
+    //                             offFlowLinks[target.z].push(target);
+    //                         }
+    //                     }
+    //                 }
+    //             });
+    //             var offFlows = Object.keys(offFlowLinks);
+    //             // offFlows.sort(function(A,B) {
+    //             //     return tabOrder.indexOf(A) - tabOrder.indexOf(B);
+    //             // });
+    //             if (offFlows.length > 0) {
+    //                 activeFlowLinks.push({
+    //                     refresh: Math.floor(Math.random()*10000),
+    //                     node: linkNode,
+    //                     links: offFlowLinks//offFlows.map(function(i) { return {id:i,links:offFlowLinks[i]};})
+    //                 });
+    //             }
+    //         }
+    //     }
+    //     var selectionJSON = activeWorkspace+":"+JSON.stringify(selection,function(key,value) {
+    //         if (key === 'nodes') {
+    //             return value.map(function(n) { return n.id })
+    //         } else if (key === 'link') {
+    //             return value.source.id+":"+value.sourcePort+":"+value.target.id;
+    //         }
+    //         return value;
+    //     });
+    //     if (selectionJSON !== lastSelection) {
+    //         lastSelection = selectionJSON;
+    //         // RED.events.emit("view:selection-changed",selection);
+    //     }
+    // }
 
     function endKeyboardMove() {
         endMoveSet = false;
@@ -1011,42 +1011,6 @@ RED.view = (function() {
         return buttonEnabled;
     }
 
-    function nodeButtonClicked(d) {
-        if (!activeSubflow) {
-            if (d._def.button.toggle) {
-                d[d._def.button.toggle] = !d[d._def.button.toggle];
-                d.dirty = true;
-            }
-            if (d._def.button.onclick) {
-                try {
-                    d._def.button.onclick.call(d);
-                } catch(err) {
-                    console.log("Definition error: "+d.type+".onclick",err);
-                }
-            }
-            if (d.dirty) {
-                redraw();
-            }
-        } else {
-            // RED.notify(RED._("notification.warning", {message:RED._("notification.warnings.nodeActionDisabled")}),"warning");
-        }
-        d3.event.preventDefault();
-    }
-
-    function showTouchMenu(obj,pos) {
-        var mdn = mousedown_node;
-        var options = [];
-        options.push({name:"delete",disabled:(moving_set.length===0 && selected_link === null),onselect:function() {deleteSelection();}});
-        options.push({name:"cut",disabled:(moving_set.length===0),onselect:function() {copySelection();deleteSelection();}});
-        options.push({name:"copy",disabled:(moving_set.length===0),onselect:function() {copySelection();}});
-        options.push({name:"paste",disabled:(clipboard.length===0),onselect:function() {importNodes(clipboard,false,true);}});
-        options.push({name:"edit",disabled:(moving_set.length != 1),onselect:function() { }});
-        options.push({name:"select",onselect:function() {selectAll();}});
-        // options.push({name:"undo",disabled:(// RED.history.depth() === 0),onselect:function() {// RED.history.pop();}});
-
-        RED.touch.radialMenu.show(obj,pos,options);
-        resetMouseVars();
-    }
     function redraw() {
         vis.attr("transform","scale("+scaleFactor+")");
         outer.attr("width", space_width*scaleFactor).attr("height", space_height*scaleFactor);
@@ -1585,165 +1549,8 @@ RED.view = (function() {
         if (d3.event) {
             d3.event.preventDefault();
         }
-        
+
         return SvgSaver.svgAsDataUri(outer[0][0]);
-    }
-
-    function focusView() {
-        try {
-            // Workaround for browser unexpectedly scrolling iframe into full
-            // view - record the parent scroll position and restore it after
-            // setting the focus
-            var scrollX = window.parent.window.scrollX;
-            var scrollY = window.parent.window.scrollY;
-            // $("#chart").focus();
-            // window.parent.window.scrollTo(scrollX,scrollY);
-        } catch(err) {
-            // In case we're iframed into a page of a different origin, just focus
-            // the view following the inevitable DOMException
-            $("#chart").focus();
-        }
-    }
-
-    /**
-     * Imports a new collection of nodes from a JSON String.
-     *  - all get new IDs assigned
-     *  - all "selected"
-     *  - attached to mouse for placing - "IMPORT_DRAGGING"
-     */
-    function importNodes(newNodesStr,addNewFlow,touchImport) {
-        try {
-            var activeSubflowChanged;
-            if (activeSubflow) {
-                activeSubflowChanged = activeSubflow.changed;
-            }
-            var result = RED.nodes.import(newNodesStr,true,addNewFlow);
-            if (result) {
-                var new_nodes = result[0];
-                var new_links = result[1];
-                var new_workspaces = result[2];
-                var new_subflows = result[3];
-                var new_default_workspace = result[4];
-                if (addNewFlow && new_default_workspace) {
-                    RED.workspaces.show(new_default_workspace.id);
-                }
-                var new_ms = new_nodes.filter(function(n) { return n.hasOwnProperty("x") && n.hasOwnProperty("y") && n.z == RED.workspaces.active() }).map(function(n) { return {n:n};});
-                var new_node_ids = new_nodes.map(function(n){ return n.id; });
-
-                // TODO: pick a more sensible root node
-                if (new_ms.length > 0) {
-                    var root_node = new_ms[0].n;
-                    var dx = root_node.x;
-                    var dy = root_node.y;
-
-                    if (mouse_position == null) {
-                        mouse_position = [0,0];
-                    }
-
-                    var minX = 0;
-                    var minY = 0;
-                    var i;
-                    var node;
-
-                    for (i=0;i<new_ms.length;i++) {
-                        node = new_ms[i];
-                        node.n.selected = true;
-                        node.n.changed = true;
-                        node.n.moved = true;
-                        node.n.x -= dx - mouse_position[0];
-                        node.n.y -= dy - mouse_position[1];
-                        node.dx = node.n.x - mouse_position[0];
-                        node.dy = node.n.y - mouse_position[1];
-                        minX = Math.min(node.n.x-node_width/2-5,minX);
-                        minY = Math.min(node.n.y-node_height/2-5,minY);
-                    }
-                    for (i=0;i<new_ms.length;i++) {
-                        node = new_ms[i];
-                        node.n.x -= minX;
-                        node.n.y -= minY;
-                        node.dx -= minX;
-                        node.dy -= minY;
-                        if (node.n._def.onadd) {
-                            try {
-                                node.n._def.onadd.call(node.n);
-                            } catch(err) {
-                                console.log("Definition error: "+node.n.type+".onadd:",err);
-                            }
-                        }
-
-                    }
-                    if (!touchImport) {
-                        mouse_mode = RED.state.IMPORT_DRAGGING;
-                        spliceActive = false;
-                        if (new_ms.length === 1) {
-                            node = new_ms[0];
-                            spliceActive = node.n.hasOwnProperty("_def") &&
-                                           node.n._def.inputs > 0 &&
-                                           node.n._def.outputs > 0;
-                        }
-                    }
-                    // // RED.keyboard.add("*","escape",function(){
-                            // RED.keyboard.remove("escape");
-                    //         clearSelection();
-                    //         // RED.history.pop();
-                    //         mouse_mode = 0;
-                    // });
-                    clearSelection();
-                    moving_set = new_ms;
-                }
-
-                var historyEvent = {
-                    t:"add",
-                    nodes:new_node_ids,
-                    links:new_links,
-                    workspaces:new_workspaces,
-                    subflows:new_subflows,
-                    dirty:RED.nodes.dirty()
-                };
-                if (new_ms.length === 0) {
-                    RED.nodes.dirty(true);
-                }
-                if (activeSubflow) {
-                    // var subflowRefresh = RED.subflow.refresh(true);
-                    // if (subflowRefresh) {
-                    //     historyEvent.subflow = {
-                    //         id:activeSubflow.id,
-                    //         changed: activeSubflowChanged,
-                    //         instances: subflowRefresh.instances
-                    //     }
-                    // }
-                }
-                // RED.history.push(historyEvent);
-
-                updateActiveNodes();
-                redraw();
-            }
-        } catch(error) {
-            if (error.code != "NODE_RED") {
-                console.log(error.stack);
-                // RED.notify(RED._("notification.error",{message:error.toString()}),"error");
-            } else {
-                // RED.notify(RED._("notification.error",{message:error.message}),"error");
-            }
-        }
-    }
-
-    function toggleShowGrid(state) {
-        if (state) {
-            grid.style("visibility","visible");
-        } else {
-            grid.style("visibility","hidden");
-        }
-    }
-    function toggleSnapGrid(state) {
-        snapGrid = state;
-        redraw();
-    }
-    function toggleStatus(s) {
-        showStatus = s;
-        RED.nodes.eachNode(function(n) { n.dirty = true;});
-        //TODO: subscribe/unsubscribe here
-        redraw();
     }
 
     return {
@@ -1751,12 +1558,9 @@ RED.view = (function() {
         redraw: function(updateActive) {
             if (updateActive) {
                 updateActiveNodes();
-                updateSelection();
             }
             return redraw();
         },
-        focus: focusView,
-        importNodes: importNodes,
         calculateTextWidth: calculateTextWidth,
         select: function(selection) {
             if (typeof selection !== "undefined") {

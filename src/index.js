@@ -2532,7 +2532,7 @@ RED.nodes.import(newNodesObj);
 setTimeout(function () {
   const tabs = RED.workspaces.tabs();
   const keys = Object.keys(tabs);
-  print(keys);
+  print(keys).catch((err) => console.log(err));
 }, 1000);
 
 function print(keys) {
@@ -2543,7 +2543,10 @@ function print(keys) {
     RED.workspaces.show(key);
     return RED.view.redraw(true).then(function (uri) {
       console.log('<img src="' + uri + '"></img>');
-      print(keys);
+      const promise = print(keys);
+      if (promise) {
+        promise.catch((err) => console.log(err));
+      }
     });
   }
 }
