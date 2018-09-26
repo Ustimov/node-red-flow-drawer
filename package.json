@@ -13,8 +13,7 @@
   "dependencies": {
     "canvas": "^2.0.0-alpha.14",
     "d3": "^3.5.17",
-    "jsdom": "^12.0.0",
-    "when": "^3.7.8"
+    "jsdom": "^12.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
