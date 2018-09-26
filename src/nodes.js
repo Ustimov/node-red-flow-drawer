@@ -265,7 +265,7 @@ RED.nodes = (function() {
             node = configNodes[id];
             delete configNodes[id];
             // RED.events.emit('nodes:remove',node);
-            RED.workspaces.refresh();
+            // RED.workspaces.refresh();
         } else {
             node = getNode(id);
             if (node) {
@@ -295,7 +295,7 @@ RED.nodes = (function() {
                     }
                 }
                 if (updatedConfigNode) {
-                    RED.workspaces.refresh();
+                    // RED.workspaces.refresh();
                 }
                 try {
                     if (node._def.oneditdelete) {
@@ -1219,7 +1219,7 @@ RED.nodes = (function() {
             });
         }
 
-        RED.workspaces.refresh();
+        // RED.workspaces.refresh();
         return [new_nodes,new_links,new_workspaces,new_subflows,missingWorkspace];
     }
 
@@ -1319,7 +1319,7 @@ RED.nodes = (function() {
         RED.nodes.dirty(false);
         RED.view.redraw(true);
         RED.palette.refresh();
-        RED.workspaces.refresh();
+        // RED.workspaces.refresh();
         // RED.sidebar.config.refresh();
         // RED.sidebar.info.refresh();
 

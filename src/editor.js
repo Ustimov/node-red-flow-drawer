@@ -1242,7 +1242,7 @@ RED.editor = (function() {
                 if (editing_node) {
                     // RED.sidebar.info.refresh(editing_node);
                 }
-                RED.workspaces.refresh();
+                // RED.workspaces.refresh();
                 RED.view.redraw(true);
                 editStack.pop();
             },
@@ -1389,7 +1389,7 @@ RED.editor = (function() {
                 });
             },
             close: function() {
-                RED.workspaces.refresh();
+                // RED.workspaces.refresh();
                 editStack.pop();
             },
             show: function() {
@@ -1861,7 +1861,7 @@ RED.editor = (function() {
                     RED.view.state(RED.state.DEFAULT);
                 }
                 // RED.sidebar.info.refresh(editing_node);
-                RED.workspaces.refresh();
+                // RED.workspaces.refresh();
                 subflowEditor.destroy();
                 editStack.pop();
                 editing_node = null;
