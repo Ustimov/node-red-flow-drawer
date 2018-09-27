@@ -19,7 +19,7 @@ import { JSDOM } from 'jsdom';
 const RED = require('./red');
 const jsdom = require('jsdom');
 var d3 = require("d3");
-const SvgSaver = require('./saveSvgAsPng');
+const SvgSaver = require('./../svg/saveSvgAsPng');
 const { window } = new JSDOM(`
     <html>
         <body>
