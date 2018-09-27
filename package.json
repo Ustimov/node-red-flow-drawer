@@ -1,15 +1,18 @@
 {
-  "name": "flow-drawer",
+  "name": "node-red-flow-drawer",
   "version": "0.0.1",
-  "description": "Node-RED flow drawer",
+  "description": "A Node-RED flow drawer",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel src -d lib",
     "start": "node --trace-warnings lib/index.js > index.html"
   },
-  "author": "Artem Ustimov <artem.ustimov@extern.isban.com>",
-  "license": "Apache 2.0",
+  "author": "Artem Ustimov <art@ustimov.org>",
+  "license": "MIT",
+  "bin": {
+    "flow-drawer": "src/cli/index.js"
+  },
   "dependencies": {
     "canvas": "^2.0.0-alpha.14",
     "d3": "^3.5.17",
