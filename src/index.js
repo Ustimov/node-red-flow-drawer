@@ -2533,7 +2533,7 @@ setTimeout(function () {
   const tabs = RED.workspaces.tabs();
   const keys = Object.keys(tabs);
   print(keys).catch((err) => console.log(err));
-}, 1000);
+}, 100); // Timeout for style loading
 
 function print(keys) {
   const key = keys.pop();

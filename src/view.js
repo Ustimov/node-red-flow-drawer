@@ -20,24 +20,17 @@ const RED = require('./red');
 const jsdom = require('jsdom');
 var d3 = require("d3");
 const SvgSaver = require('./saveSvgAsPng');
-//<link rel="stylesheet" href="style.min.css">
 const { window } = new JSDOM(`
     <html>
-        
         <body>
             <div id="chart"></div>
         </body>
-        <script src="http://127.0.0.1:8080/d3.v3.min.js"></script>
     </html>`, {
     resources: "usable",
     runScripts: "dangerously"
 });
 const document = window.document;
-const { createCanvas, Image } = require('canvas');
-    // , Image = Canvas.Image;
-// window.onload = () => {
-//     console.log('WINDOW LOAD');
-// };
+const { Image } = require('canvas');
 
 RED.view = (function() {
     var space_width = 5000,

@@ -2,20 +2,15 @@ const request = require('request');
 const { createCanvas, Image } = require('canvas');
 const jsdom = require('jsdom');
 const { window } = new jsdom.JSDOM(`
-<html>
-<link rel="stylesheet" href="http://127.0.0.1:8080/style.min.css">
-    <body>
-        <div id="body"></div>
-    </body>
-    <script src="http://127.0.0.1:8080/main.min.js"></script>
-    <script src="http://127.0.0.1:8080/red.min.js"></script>
-</html>`, {
-resources: "usable"
+    <html>
+        <link rel="stylesheet" href="file://css/style.min.css">
+        <body>
+            <div id="body"></div>
+        </body>
+    </html>`, {
+  resources: "usable"
 });
 const document = window.document;
-// window.onload = () => {
-//   console.log('WINDOW LOAD 2');
-// };
 
 (function() {
     const out$ = typeof exports != 'undefined' && exports || typeof define != 'undefined' && {} || this || window;
@@ -139,7 +134,7 @@ const document = window.document;
           href += (href.indexOf('?') === -1 ? '?' : '&') + 't=' + new Date().valueOf();
         }
         return new Promise((resolve, reject) => {
-            href = 'http://127.0.0.1:8080/' + href;
+            href = href;
 
             const canvas = createCanvas(500, 500);//document.createElement('canvas');
             const img = new Image();

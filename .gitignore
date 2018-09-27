@@ -28,7 +28,6 @@ build/Release
 node_modules
 
 *.min.*
-log
 .vscode/
 lib/
 icons/
