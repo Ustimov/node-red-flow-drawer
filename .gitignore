@@ -31,4 +31,5 @@ node_modules
 .vscode/
 lib/
 icons/
-index.html
+*.html
+*.json
