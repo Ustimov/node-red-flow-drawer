@@ -1,5 +1,3 @@
-import { JSDOM } from 'jsdom';
-
 /**
  * Copyright JS Foundation and other contributors, http://js.foundation
  *
@@ -16,23 +14,15 @@ import { JSDOM } from 'jsdom';
  * limitations under the License.
  **/
 
-const RED = require('./red');
-const jsdom = require('jsdom');
-var d3 = require("d3");
-const SvgSaver = require('./../svg/saveSvgAsPng');
-const { window } = new JSDOM(`
-    <html>
-        <body>
-            <div id="chart"></div>
-        </body>
-    </html>`, {
-    resources: "usable",
-    runScripts: "dangerously"
-});
-const document = window.document;
-const { Image } = require('canvas');
+import { JSDOM } from 'jsdom';
+import d3 from 'd3';
+import RED from './red';
 
 RED.view = (function() {
+    const { window } = new JSDOM('<div id="chart"></div>');
+    const document = window.document;
+    const Image = window.Image;
+
     var space_width = 5000,
         space_height = 5000,
         lineCurveScale = 0.75,
@@ -779,7 +769,7 @@ RED.view = (function() {
             d3.event.preventDefault();
         }
 
-        return SvgSaver.svgAsDataUri(outer[0][0]);
+        return outer[0][0];
     }
 
     return {
