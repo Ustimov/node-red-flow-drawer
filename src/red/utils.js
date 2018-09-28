@@ -878,7 +878,7 @@ RED.utils = (function() {
             parts.key = m[2];
         } else {
             parts.key = key;
-            if (RED.settings.context) {
+            if (RED.settings && RED.settings.context) {
                 parts.store = RED.settings.context.default;
             }
         }
