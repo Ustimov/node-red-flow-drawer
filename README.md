@@ -6,7 +6,7 @@ A library and CLI for drawning Node-RED flows from JSON.
 
 TODO
 
-* Draw flows from JSON to:
+Draw flows from JSON to:
  - [ ] SVG Data URI
  - [ ] PNG Data URI
  - [ ] SVG file
@@ -15,3 +15,4 @@ TODO
 ### Knows issues:
 * Switch node has empty lable if no name provided
 * It's possible to delete editor, but it adds an addition red triangle icon
+* No input and output nodes in subflows

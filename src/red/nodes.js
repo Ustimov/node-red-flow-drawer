@@ -891,6 +891,7 @@ RED.nodes = (function() {
                     });
                     new_subflows.push(n);
                     addSubflow(n,createNewIds);
+                    RED.workspaces.show(n.id);
                 }
             }
         }

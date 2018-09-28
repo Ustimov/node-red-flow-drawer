@@ -122,6 +122,12 @@ RED.view = (function() {
 
     function updateActiveNodes() {
         var activeWorkspace = RED.workspaces.active();
+        var tabs = RED.workspaces.tabs();
+        if (tabs[activeWorkspace] && tabs[activeWorkspace].type === 'subflow') {
+            activeSubflow = RED.nodes.subflow(tabs[activeWorkspace].id);
+        } else {
+            activeSubflow = 0;
+        }
         activeNodes = RED.nodes.filterNodes({z:activeWorkspace});
         activeLinks = RED.nodes.filterLinks({
             source:{z:activeWorkspace},

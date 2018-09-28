@@ -45,10 +45,16 @@ RED.workspaces = (function() {
         },
         show: function(id) {
             if (!workspace_tabs.contains(id)) {
-                console.error('Workspace not found');
+                var sf = RED.nodes.subflow(id);
+                if (sf) {
+                    addWorkspace({type:"subflow",id:id,icon:"red/images/subflow_tab.png",label:sf.name, closeable: true});
+                } else {
+                    console.error('Subflow not found');
+                    return;
+                }
             }
             activeWorkspace = id;
         },
-        tabs: function () { return workspace_tabs.tabs; }
+        tabs: function () { return workspace_tabs ? workspace_tabs.tabs : {}; }
     }
 })();
