@@ -11,7 +11,7 @@
   "author": "Artem Ustimov <art@ustimov.org>",
   "license": "MIT",
   "bin": {
-    "flow-drawer": "lib/cli/index.js"
+    "flow-drawer": "lib/cli/flow-drawer.js"
   },
   "dependencies": {
     "canvas": "^2.0.0-alpha.14",

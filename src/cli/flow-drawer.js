@@ -13,9 +13,8 @@ program
         inputFileValue = inputFile;
         outputDirValue = outputDir;
     })
-    .option('-t, --type <type>', 'export image type (svg or png)', /^(svg|png)$/i, 'svg')
-    .option('-f, --format <format>', 'export data format (uri or image)', /^(uri|image)$/i, 'uri')
-    .option('--html', 'export preview as html (other options will be ignored)')
+    // .option('-t, --type <type>', 'export image type (svg or png)', /^(svg|png)$/i, 'svg')
+    .option('-f, --format <format>', 'export data format (html, json or images)', /^(html|json|images)$/i, 'html')
     .parse(process.argv);
 
 if ((typeof inputFileValue) === 'undefined') {
@@ -24,7 +23,7 @@ if ((typeof inputFileValue) === 'undefined') {
 }
 
 if (program.format !== 'uri' && (typeof outputDirValue) === 'undefined') {
-    console.log('No outputDir provided. Export files will be saved in the current working dir')
+    // console.log('No outputDir provided. Export files will be saved in the current working dir')
     // TODO: set outputDirValue to cwd
 }
 
@@ -36,24 +35,27 @@ fs.readFile(inputFileValue, (err, data) => {
     // TODO: validate data
     const flow = JSON.parse(data);
     new FlowDrawer()
-        .draw(flow, program.html ? 'svg': program.type, program.html ? 'uri': program.format)
-        .then((result) => outputResult(result))
+        .draw(flow, program.html ? 'svg': program.type)
+        .then((images) => outputResult(images))
         .catch((err) => {
             console.error(err);
             process.exit(1);
         });
 });
 
-function outputResult (result) {
-    if (program.html) {
-        console.log('html');
-        // TODO: save to html
-        return;
-    }
-    if (program.format === 'uri') {
-        console.log(result);
-    } else {
-        console.log('image');
-        // TODO: save to file
+function outputResult (images) {
+    switch (program.format) {
+        case 'html':
+            for (let image of images) {
+                console.log(`<img src="${image}"></img>`)
+            }
+            break;
+        case 'json':
+            console.log(JSON.stringify(images, null, 4));
+            break;
+        case 'images':
+            // TODO
+            console.log('Not implemented');
+            break;
     }
 }

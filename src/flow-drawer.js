@@ -5,7 +5,8 @@ function NodeRedFlowDrawer(options) {
     require('./types');
     const SvgSaver = require('./svg/saveSvgAsPng');
 
-    function draw (flow) {
+    function draw (flow, type) {
+        // TODO: use type
         return new Promise((resolve, reject) => {
             if (flow) {
                 RED.nodes.import(flow);
@@ -13,7 +14,7 @@ function NodeRedFlowDrawer(options) {
                 reject("A flow for drawing isn't provided");  
             }
     
-            let result = '';
+            const images = [];
 
             // Timeout for styles loading
             const workspaceIds = Object.keys(RED.workspaces.tabs());
@@ -27,12 +28,12 @@ function NodeRedFlowDrawer(options) {
                     RED.workspaces.show(id);
                     const el = RED.view.redraw(true);
                     return SvgSaver.svgAsDataUri(el).then(function (uri) {
-                        result += '<img src="' + uri + '"></img>';
+                        images.push(uri);
                         const promise = drawWorkspacesWithIds(ids);
                         if (promise) {
                             promise.catch((err) => { reject(err); });
                         } else {
-                            resolve(result);
+                            resolve(images);
                         }
                     });
                 }
