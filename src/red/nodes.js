@@ -150,33 +150,9 @@ RED.nodes = (function() {
               // console.log('registry: ' + arguments.callee.name);
                 nodeDefinitions[nt] = def;
                 def.type = nt;
-                if (nt.substring(0,8) != "subflow:") {
-                    def.set = nodeSets[typeToId[nt]];
-                    nodeSets[typeToId[nt]].added = true;
-                    nodeSets[typeToId[nt]].enabled = true;
-
-                    var ns;
-                    if (def.set.module === "node-red") {
-                        ns = "node-red";
-                    } else {
-                        ns = def.set.id;
-                    }
-                    def["_"] = function() {
-                        var args = Array.prototype.slice.call(arguments, 0);
-                        var original = args[0];
-                        if (args[0].indexOf(":") === -1) {
-                            args[0] = ns+":"+args[0];
-                        }
-                        var result = RED._.apply(null,args);
-                        if (result === args[0]) {
-                            result = original;
-                        }
-                        return result;
-                    }
-
-                    // TODO: too tightly coupled into palette UI
+                def["_"] = function(arg) {
+                    return arg || "";
                 }
-                // RED.events.emit("registry:node-type-added",nt);
             },
             removeNodeType: function(nt) {
                 if (nt.substring(0,8) != "subflow:") {

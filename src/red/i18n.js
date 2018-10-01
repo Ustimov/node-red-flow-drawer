@@ -19,8 +19,8 @@ const RED = require('./red');
 RED.i18n = (function() {
     return {
         init: function(done) {
-            RED["_"] = function() {
-                return "";
+            RED["_"] = function(arg) {
+                return arg || "";
             }
         }
     }
