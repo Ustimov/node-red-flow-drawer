@@ -7,7 +7,7 @@ A library and CLI for drawning Node-RED flows from JSON. *Work in progress.*
 ### Installation
 
 ```
-npm install -g
+npm install -g node-red-flow-drawer
 ```
 
 ### Usage
@@ -35,9 +35,25 @@ flow-drawer --format=json input.json > output.json
 
 ## JavaScript API
 
-* TODO
+```javascript
+const FlowDrawer = require("node-red-flow-drawer");
+
+const flow = []; // A flow in JSON format
+
+new FlowDrawer()
+  .draw(flow, 'svg')
+  .then((images) => {
+    // Handle array of URI encoded SVGs
+  });
+```
 
 ## Knows issues:
 
-* Some nodes have empty labels in some cases
 * PNG support: https://github.com/Automattic/node-canvas/issues/1211
+* Currently supports only default nodes
+
+## TODO
+
+* Custom node support
+* Improve node width calculation
+* Remove redundant styles

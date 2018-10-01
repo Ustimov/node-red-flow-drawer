@@ -1,0 +1,7 @@
+.vscode
+samples/
+src/
+.babelrc
+.gitignore
+.npmignore
+*.html
