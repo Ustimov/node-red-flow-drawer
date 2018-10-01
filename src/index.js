@@ -6698,4 +6698,8 @@ var newNodesObj = [
 ];
 
 const flowDrawer = new NodeRedFlowDrawer();
-flowDrawer.draw(newNodesObj).then((result) => console.log(result));
+flowDrawer.draw(newNodesObj).then((images) => {
+  for (let image of images) {
+    console.log(`<img src="${image}"></img>`)
+  }
+});
