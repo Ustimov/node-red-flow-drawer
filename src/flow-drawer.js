@@ -4,7 +4,7 @@ import SvgSaver from 'svg-saver-node';
 import fs from 'fs';
 import RED from './red';
 
-function NodeRedFlowDrawer(options) {
+function FlowDrawer(options) {
     const types = fs.readFileSync('lib/red/types.js');
     eval(types.toString('utf-8'));
 
@@ -71,4 +71,4 @@ function NodeRedFlowDrawer(options) {
     };
 }
 
-module.exports = NodeRedFlowDrawer;
+module.exports = FlowDrawer;

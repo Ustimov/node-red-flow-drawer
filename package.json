@@ -2,14 +2,26 @@
   "name": "node-red-flow-drawer",
   "version": "0.0.1",
   "description": "A Node-RED flow drawer",
-  "main": "lib/index.js",
+  "main": "lib/flow-drawer.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel src -d lib",
-    "start": "node --trace-warnings lib/index.js > index.html"
+    "prepublish": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ustimov/node-red-flow-drawer"
+  },
+  "keywords": [
+    "node-red",
+    "flow",
+    "draw"
+  ],
   "author": "Artem Ustimov <art@ustimov.org>",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Ustimov/node-red-flow-drawer/issues"
+  },
+  "homepage": "https://github.com/Ustimov/node-red-flow-drawer",
   "bin": {
     "flow-drawer": "lib/cli/flow-drawer.js"
   },
