@@ -1,10 +1,8 @@
 const RED = require('./red');
 
 require('./bidi');
-require('./editor');
 require('./i18n');
 require('./nodes');
-
 require('./state');
 require('./tabs');
 require('./utils');

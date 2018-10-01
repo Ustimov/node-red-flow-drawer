@@ -1101,7 +1101,7 @@ RED.nodes = (function() {
                         }
                     }
                     addNode(node);
-                    RED.editor.validateNode(node);
+                    //RED.editor.validateNode(node);
                     node_map[n.id] = node;
                     // If an 'unknown' config node, it will not have been caught by the
                     // proper config node handling, so needs adding to new_nodes here
@@ -1169,7 +1169,8 @@ RED.nodes = (function() {
 
             // With all properties now remapped to point at valid nodes,
             // we can validate the node
-            RED.editor.validateNode(n);
+            n.valid = true;
+            //RED.editor.validateNode(n);
         }
         for (i=0;i<new_subflows.length;i++) {
             n = new_subflows[i];

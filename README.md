@@ -41,8 +41,3 @@ flow-drawer --format=json input.json > output.json
 
 * Some nodes have empty labels in some cases
 * PNG support: https://github.com/Automattic/node-canvas/issues/1211
-
-## TODO
-
-* Delete editor stuff
-* Delete i18n stuff
