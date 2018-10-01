@@ -2,15 +2,18 @@ import { createCanvas, Image } from 'canvas';
 import { JSDOM } from 'jsdom';
 import SvgSaver from 'svg-saver-node';
 import fs from 'fs';
+import path from 'path';
 import RED from './red';
 
 function FlowDrawer(options) {
-    const types = fs.readFileSync('lib/red/types.js');
+    const typePath = path.join(__dirname, '/red/types.js');
+    const types = fs.readFileSync(typePath);
     eval(types.toString('utf-8'));
 
+    const stylePath = path.join(__dirname, '/../css/style.min.css');
     const { window } = new JSDOM(`
         <html>
-            <link rel="stylesheet" href="file://css/style.min.css">
+            <link rel="stylesheet" href="file://${stylePath}">
             <body>
                 <div id="body"></div>
             </body>

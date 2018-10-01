@@ -15,6 +15,7 @@
  **/
 
 const RED = require('./red');
+const path = require('path');
 
 RED.utils = (function() {
 
@@ -756,27 +757,27 @@ RED.utils = (function() {
         }
     }
 
-    function getNodeIcon(def,node) {
+    function getNodeIcon(def, node) {
         if (def.category === 'config') {
-            return "icons/node-red/cog.png"
+            return path.join(__dirname, "/../../icons/cog.png");
         } else if (node && node.type === 'tab') {
-            return "icons/node-red/subflow.png"
+            return path.join(__dirname, "/../../icons/subflow.png");
         } else if (node && node.type === 'unknown') {
-            return "icons/node-red/alert.png"
+            return path.join(__dirname, "/../../icons/alert.png");
         } else if (node && node.icon) {
             var iconPath = separateIconPath(node.icon);
             if (isIconExists(iconPath)) {
-                return "icons/" + node.icon;
+                return path.join(__dirname, "/../../icons", node.icon);
             }
         }
 
         var iconPath = getDefaultNodeIcon(def, node);
         if (def.category === 'subflows') {
             if (!isIconExists(iconPath)) {
-                return "icons/node-red/subflow.png";
+                return path.join(__dirname, "/../../icons/subflow.png");
             }
         }
-        return "icons/"+iconPath.module+"/"+iconPath.file;
+        return path.join(__dirname, "/../../icons", iconPath.file); //"icons/"+iconPath.module+"/"+iconPath.file;
     }
 
     function getNodeLabel(node,defaultLabel) {
