@@ -18,7 +18,6 @@ const RED = require('./red');
 
 RED.nodes = (function() {
 
-    var node_defs = {};
     var nodes = [];
     var configNodes = {};
     var links = [];
@@ -26,28 +25,15 @@ RED.nodes = (function() {
     var workspaces = {};
     var workspacesOrder =[];
     var subflows = {};
-    var loadedFlowVersion = null;
 
     var initialLoad;
 
     var dirty = false;
 
-    function setDirty(d) {
-        // console.log('setDirty');
-        dirty = d;
-        // // RED.events.emit("nodes:change",{dirty:dirty});
-    }
-
     var registry = (function() {
-        var moduleList = {};
-        var nodeList = [];
         var nodeSets = {};
-        var typeToId = {};
         var nodeDefinitions = {};
         var iconSets = {};
-
-        // nodeSets = {"node-red/sentiment":{"id":"node-red/sentiment","name":"sentiment","types":["sentiment"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/inject":{"id":"node-red/inject","name":"inject","types":["inject"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/catch":{"id":"node-red/catch","name":"catch","types":["catch"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/status":{"id":"node-red/status","name":"status","types":["status"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/debug":{"id":"node-red/debug","name":"debug","types":["debug"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/link":{"id":"node-red/link","name":"link","types":["link in","link out"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/exec":{"id":"node-red/exec","name":"exec","types":["exec"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/function":{"id":"node-red/function","name":"function","types":["function"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/template":{"id":"node-red/template","name":"template","types":["template"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/delay":{"id":"node-red/delay","name":"delay","types":["delay"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/trigger":{"id":"node-red/trigger","name":"trigger","types":["trigger"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/comment":{"id":"node-red/comment","name":"comment","types":["comment"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/unknown":{"id":"node-red/unknown","name":"unknown","types":["unknown"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/rpi-gpio":{"id":"node-red/rpi-gpio","name":"rpi-gpio","types":["rpi-gpio in","rpi-gpio out","rpi-mouse","rpi-keyboard"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/tls":{"id":"node-red/tls","name":"tls","types":["tls-config"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/mqtt":{"id":"node-red/mqtt","name":"mqtt","types":["mqtt in","mqtt out","mqtt-broker"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/httpin":{"id":"node-red/httpin","name":"httpin","types":["http in","http response"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/httprequest":{"id":"node-red/httprequest","name":"httprequest","types":["http request"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/websocket":{"id":"node-red/websocket","name":"websocket","types":["websocket in","websocket out","websocket-listener","websocket-client"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/watch":{"id":"node-red/watch","name":"watch","types":["watch"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/tcpin":{"id":"node-red/tcpin","name":"tcpin","types":["tcp in","tcp out","tcp request"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/udp":{"id":"node-red/udp","name":"udp","types":["udp in","udp out"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/switch":{"id":"node-red/switch","name":"switch","types":["switch"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/change":{"id":"node-red/change","name":"change","types":["change"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/range":{"id":"node-red/range","name":"range","types":["range"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/split":{"id":"node-red/split","name":"split","types":["split","join"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/sort":{"id":"node-red/sort","name":"sort","types":["sort"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/batch":{"id":"node-red/batch","name":"batch","types":["batch"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/CSV":{"id":"node-red/CSV","name":"CSV","types":["csv"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/HTML":{"id":"node-red/HTML","name":"HTML","types":["html"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/JSON":{"id":"node-red/JSON","name":"JSON","types":["json"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/XML":{"id":"node-red/XML","name":"XML","types":["xml"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/YAML":{"id":"node-red/YAML","name":"YAML","types":["yaml"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red/tail":{"id":"node-red/tail","name":"tail","types":["tail"],"enabled":true,"local":false,"module":"node-red","err":"Not currently supported on Windows.","version":"0.19.4-git","added":false},"node-red/file":{"id":"node-red/file","name":"file","types":["file","file in"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},"node-red-node-rbe/rbe":{"id":"node-red-node-rbe/rbe","name":"rbe","types":["rbe"],"enabled":true,"local":false,"module":"node-red-node-rbe","version":"0.2.3","added":false},"node-red-node-email/email":{"id":"node-red-node-email/email","name":"email","types":["e-mail","e-mail in"],"enabled":true,"local":false,"module":"node-red-node-email","version":"0.1.29","added":false},"node-red-node-feedparser/feedparse":{"id":"node-red-node-feedparser/feedparse","name":"feedparse","types":["feedparse"],"enabled":true,"local":false,"module":"node-red-node-feedparser","version":"0.1.14","added":false},"node-red-node-twitter/twitter":{"id":"node-red-node-twitter/twitter","name":"twitter","types":["twitter-credentials","twitter in","twitter out"],"enabled":true,"local":false,"module":"node-red-node-twitter","version":"1.1.2","added":false}};
-        // nodeList = [{"id":"node-red/sentiment","name":"sentiment","types":["sentiment"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/inject","name":"inject","types":["inject"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/catch","name":"catch","types":["catch"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/status","name":"status","types":["status"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/debug","name":"debug","types":["debug"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/link","name":"link","types":["link in","link out"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/exec","name":"exec","types":["exec"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/function","name":"function","types":["function"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/template","name":"template","types":["template"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/delay","name":"delay","types":["delay"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/trigger","name":"trigger","types":["trigger"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/comment","name":"comment","types":["comment"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/unknown","name":"unknown","types":["unknown"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/rpi-gpio","name":"rpi-gpio","types":["rpi-gpio in","rpi-gpio out","rpi-mouse","rpi-keyboard"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/tls","name":"tls","types":["tls-config"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/mqtt","name":"mqtt","types":["mqtt in","mqtt out","mqtt-broker"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/httpin","name":"httpin","types":["http in","http response"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/httprequest","name":"httprequest","types":["http request"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/websocket","name":"websocket","types":["websocket in","websocket out","websocket-listener","websocket-client"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/watch","name":"watch","types":["watch"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/tcpin","name":"tcpin","types":["tcp in","tcp out","tcp request"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/udp","name":"udp","types":["udp in","udp out"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/switch","name":"switch","types":["switch"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/change","name":"change","types":["change"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/range","name":"range","types":["range"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/split","name":"split","types":["split","join"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/sort","name":"sort","types":["sort"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/batch","name":"batch","types":["batch"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/CSV","name":"CSV","types":["csv"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/HTML","name":"HTML","types":["html"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/JSON","name":"JSON","types":["json"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/XML","name":"XML","types":["xml"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/YAML","name":"YAML","types":["yaml"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red/tail","name":"tail","types":["tail"],"enabled":true,"local":false,"module":"node-red","err":"Not currently supported on Windows.","version":"0.19.4-git","added":false},{"id":"node-red/file","name":"file","types":["file","file in"],"enabled":true,"local":false,"module":"node-red","version":"0.19.4-git","added":false},{"id":"node-red-node-rbe/rbe","name":"rbe","types":["rbe"],"enabled":true,"local":false,"module":"node-red-node-rbe","version":"0.2.3","added":false},{"id":"node-red-node-email/email","name":"email","types":["e-mail","e-mail in"],"enabled":true,"local":false,"module":"node-red-node-email","version":"0.1.29","added":false},{"id":"node-red-node-feedparser/feedparse","name":"feedparse","types":["feedparse"],"enabled":true,"local":false,"module":"node-red-node-feedparser","version":"0.1.14","added":false},{"id":"node-red-node-twitter/twitter","name":"twitter","types":["twitter-credentials","twitter in","twitter out"],"enabled":true,"local":false,"module":"node-red-node-twitter","version":"1.1.2","added":false}];
 
         nodeDefinitions['tab'] = {
             defaults: {
@@ -57,121 +43,21 @@ RED.nodes = (function() {
             }
         };
 
-
         var exports = {
-            setModulePendingUpdated: function(module,version) {
-                moduleList[module].pending_version = version;
-                // RED.events.emit("registry:module-updated",{module:module,version:version});
-            },
-            getModule: function(module) {
-                return moduleList[module];
-            },
-            getNodeSetForType: function(nodeType) {
-                return exports.getNodeSet(typeToId[nodeType]);
-            },
-            getModuleList: function() {
-                // console.log('registry: ' + arguments.callee.name);
-                return moduleList;
-            },
-            getNodeList: function() {
-                // console.log('registry: ' + arguments.callee.name);
-                return nodeList;
-            },
-            getNodeTypes: function() {
-                // console.log('registry: ' + arguments.callee.name);
-                return Object.keys(nodeDefinitions);
-            },
-            setNodeList: function(list) {
-                // console.log('registry: ' + arguments.callee.name);
-                nodeList = [];
-                for(var i=0;i<list.length;i++) {
-                    var ns = list[i];
-                    exports.addNodeSet(ns);
-                }
-            },
-            addNodeSet: function(ns) {
-                // console.log('registry: ' + arguments.callee.name);
-                ns.added = false;
-                nodeSets[ns.id] = ns;
-                for (var j=0;j<ns.types.length;j++) {
-                    typeToId[ns.types[j]] = ns.id;
-                }
-                nodeList.push(ns);
-
-                moduleList[ns.module] = moduleList[ns.module] || {
-                    name:ns.module,
-                    version:ns.version,
-                    local:ns.local,
-                    sets:{}
-                };
-                if (ns.pending_version) {
-                    moduleList[ns.module].pending_version = ns.pending_version;
-                }
-                moduleList[ns.module].sets[ns.name] = ns;
-                // RED.events.emit("registry:node-set-added",ns);
-            },
-            removeNodeSet: function(id) {
-                // console.log('registry: ' + arguments.callee.name);
-                var ns = nodeSets[id];
-                for (var j=0;j<ns.types.length;j++) {
-                    delete typeToId[ns.types[j]];
-                }
-                delete nodeSets[id];
-                for (var i=0;i<nodeList.length;i++) {
-                    if (nodeList[i].id === id) {
-                        nodeList.splice(i,1);
-                        break;
-                    }
-                }
-                delete moduleList[ns.module].sets[ns.name];
-                if (Object.keys(moduleList[ns.module].sets).length === 0) {
-                    delete moduleList[ns.module];
-                }
-                // RED.events.emit("registry:node-set-removed",ns);
-                return ns;
-            },
             getNodeSet: function(id) {
-                // console.log('registry: ' + arguments.callee.name);
                 return nodeSets[id];
             },
-            enableNodeSet: function(id) {
-              // console.log('registry: ' + arguments.callee.name);
-                var ns = nodeSets[id];
-                ns.enabled = true;
-                // RED.events.emit("registry:node-set-enabled",ns);
-            },
-            disableNodeSet: function(id) {
-              // console.log('registry: ' + arguments.callee.name);
-                var ns = nodeSets[id];
-                ns.enabled = false;
-                // RED.events.emit("registry:node-set-disabled",ns);
-            },
             registerNodeType: function(nt,def) {
-              // console.log('registry: ' + arguments.callee.name);
                 nodeDefinitions[nt] = def;
                 def.type = nt;
                 def["_"] = function(arg) {
                     return arg || "";
                 }
             },
-            removeNodeType: function(nt) {
-                if (nt.substring(0,8) != "subflow:") {
-                    // NON-NLS - internal debug message
-                    throw new Error("this api is subflow only. called with:",nt);
-                }
-                delete nodeDefinitions[nt];
-                // RED.events.emit("registry:node-type-removed",nt);
-            },
             getNodeType: function(nt) {
-              // console.log('registry: ' + arguments.callee.name);
                 return nodeDefinitions[nt];
             },
-            setIconSets: function(sets) {
-              // console.log('registry: ' + arguments.callee.name);
-                iconSets = sets;
-            },
             getIconSets: function() {
-              // console.log('registry: ' + arguments.callee.name);
                 return iconSets;
             }
         };
@@ -179,12 +65,10 @@ RED.nodes = (function() {
     })();
 
     function getID() {
-        // console.log('getID');
         return (1+Math.random()*4294967295).toString(16);
     }
 
     function addNode(n) {
-        // console.log('addNode');
         if (n.type.indexOf("subflow") !== 0) {
             n["_"] = n._def._;
         } else {
@@ -201,7 +85,7 @@ RED.nodes = (function() {
                 }
             }
             n.dirty = true;
-            updateConfigNodeUsers(n);
+            // updateConfigNodeUsers(n);
             if (n._def.category == "subflows" && typeof n.i === "undefined") {
                 var nextId = 0;
                 RED.nodes.eachNode(function(node) {
@@ -211,15 +95,13 @@ RED.nodes = (function() {
             }
             nodes.push(n);
         }
-        // RED.events.emit('nodes:add',n);
     }
+
     function addLink(l) {
-        // console.log('addLink');
         links.push(l);
     }
 
     function getNode(id) {
-        // console.log('getNode');
         if (id in configNodes) {
             return configNodes[id];
         } else {
@@ -232,115 +114,13 @@ RED.nodes = (function() {
         return null;
     }
 
-    function removeNode(id) {
-        // console.log('removeNode');
-        var removedLinks = [];
-        var removedNodes = [];
-        var node;
-        if (id in configNodes) {
-            node = configNodes[id];
-            delete configNodes[id];
-            // RED.events.emit('nodes:remove',node);
-            // RED.workspaces.refresh();
-        } else {
-            node = getNode(id);
-            if (node) {
-                nodes.splice(nodes.indexOf(node),1);
-                removedLinks = links.filter(function(l) { return (l.source === node) || (l.target === node); });
-                removedLinks.forEach(function(l) {links.splice(links.indexOf(l), 1); });
-                var updatedConfigNode = false;
-                for (var d in node._def.defaults) {
-                    if (node._def.defaults.hasOwnProperty(d)) {
-                        var property = node._def.defaults[d];
-                        if (property.type) {
-                            var type = registry.getNodeType(property.type);
-                            if (type && type.category == "config") {
-                                var configNode = configNodes[node[d]];
-                                if (configNode) {
-                                    updatedConfigNode = true;
-                                    if (configNode._def.exclusive) {
-                                        removeNode(node[d]);
-                                        removedNodes.push(configNode);
-                                    } else {
-                                        var users = configNode.users;
-                                        users.splice(users.indexOf(node),1);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if (updatedConfigNode) {
-                    // RED.workspaces.refresh();
-                }
-                try {
-                    if (node._def.oneditdelete) {
-                        node._def.oneditdelete.call(node);
-                    }
-                } catch(err) {
-                    console.log("oneditdelete",node.id,node.type,err.toString());
-                }
-                // RED.events.emit('nodes:remove',node);
-            }
-        }
-        if (node && node._def.onremove) {
-            // Deprecated: never documented but used by some early nodes
-            console.log("Deprecated API warning: node type ",node.type," has an onremove function - should be oneditremove - please report");
-            node._def.onremove.call(n);
-        }
-        return {links:removedLinks,nodes:removedNodes};
-    }
-
-    function removeLink(l) {
-        // console.log('removeLink');
-        var index = links.indexOf(l);
-        if (index != -1) {
-            links.splice(index,1);
-        }
-    }
-
     function addWorkspace(ws) {
-        // console.log('addWorkspace (Nodes)');
         workspaces[ws.id] = ws;
         ws._def = RED.nodes.getType('tab');
         workspacesOrder.push(ws.id);
     }
-    function getWorkspace(id) {
-        // console.log('getWorkspace');
-        return workspaces[id];
-    }
-    function removeWorkspace(id) {
-        // console.log('removeWorkspace');
-        delete workspaces[id];
-        workspacesOrder.splice(workspacesOrder.indexOf(id),1);
-
-        var removedNodes = [];
-        var removedLinks = [];
-        var n;
-        var node;
-        for (n=0;n<nodes.length;n++) {
-            node = nodes[n];
-            if (node.z == id) {
-                removedNodes.push(node);
-            }
-        }
-        for(n in configNodes) {
-            if (configNodes.hasOwnProperty(n)) {
-                node = configNodes[n];
-                if (node.z == id) {
-                    removedNodes.push(node);
-                }
-            }
-        }
-        for (n=0;n<removedNodes.length;n++) {
-            var result = removeNode(removedNodes[n].id);
-            removedLinks = removedLinks.concat(result.links);
-        }
-        return {nodes:removedNodes,links:removedLinks};
-    }
 
     function addSubflow(sf, createNewIds) {
-        // console.log('addSubflow');
         if (createNewIds) {
             var subflowNames = Object.keys(subflows).map(function(sfid) {
                 return subflows[sfid].name;
@@ -377,19 +157,12 @@ RED.nodes = (function() {
         });
         sf._def = RED.nodes.getType("subflow:"+sf.id);
     }
+
     function getSubflow(id) {
-        //console.log('getSubflow');
-        //console.log(subflows);
         return subflows[id];
-    }
-    function removeSubflow(sf) {
-        // console.log('removeSubflow');
-        delete subflows[sf.id];
-        registry.removeNodeType("subflow:"+sf.id);
     }
 
     function subflowContains(sfid,nodeid) {
-        // console.log('subflowContains');
         for (var i=0;i<nodes.length;i++) {
             var node = nodes[i];
             if (node.z === sfid) {
@@ -408,255 +181,8 @@ RED.nodes = (function() {
         }
         return false;
     }
-
-    function getAllFlowNodes(node) {
-        // console.log('getAllFlowNodes');
-        var visited = {};
-        visited[node.id] = true;
-        var nns = [node];
-        var stack = [node];
-        while(stack.length !== 0) {
-            var n = stack.shift();
-            var childLinks = links.filter(function(d) { return (d.source === n) || (d.target === n);});
-            for (var i=0;i<childLinks.length;i++) {
-                var child = (childLinks[i].source === n)?childLinks[i].target:childLinks[i].source;
-                var id = child.id;
-                if (!id) {
-                    id = child.direction+":"+child.i;
-                }
-                if (!visited[id]) {
-                    visited[id] = true;
-                    nns.push(child);
-                    stack.push(child);
-                }
-            }
-        }
-        return nns;
-    }
-
-    function convertWorkspace(n) {
-        // console.log('convertWorkspace');
-        var node = {};
-        node.id = n.id;
-        node.type = n.type;
-        for (var d in n._def.defaults) {
-            if (n._def.defaults.hasOwnProperty(d)) {
-                node[d] = n[d];
-            }
-        }
-        return node;
-    }
-    /**
-     * Converts a node to an exportable JSON Object
-     **/
-    function convertNode(n, exportCreds) {
-        // console.log('convertNode');
-        if (n.type === 'tab') {
-            return convertWorkspace(n);
-        }
-        exportCreds = exportCreds || false;
-        var node = {};
-        node.id = n.id;
-        node.type = n.type;
-        node.z = n.z;
-
-        if (node.type == "unknown") {
-            for (var p in n._orig) {
-                if (n._orig.hasOwnProperty(p)) {
-                    node[p] = n._orig[p];
-                }
-            }
-        } else {
-            for (var d in n._def.defaults) {
-                if (n._def.defaults.hasOwnProperty(d)) {
-                    node[d] = n[d];
-                }
-            }
-            if(exportCreds && n.credentials) {
-                var credentialSet = {};
-                node.credentials = {};
-                for (var cred in n._def.credentials) {
-                    if (n._def.credentials.hasOwnProperty(cred)) {
-                        if (n._def.credentials[cred].type == 'password') {
-                            if (!n.credentials._ ||
-                                n.credentials["has_"+cred] != n.credentials._["has_"+cred] ||
-                                (n.credentials["has_"+cred] && n.credentials[cred])) {
-                                credentialSet[cred] = n.credentials[cred];
-                            }
-                        } else if (n.credentials[cred] != null && (!n.credentials._ || n.credentials[cred] != n.credentials._[cred])) {
-                            credentialSet[cred] = n.credentials[cred];
-                        }
-                    }
-                }
-                if (Object.keys(credentialSet).length > 0) {
-                    node.credentials = credentialSet;
-                }
-            }
-        }
-        if (n._def.category != "config") {
-            node.x = n.x;
-            node.y = n.y;
-            node.wires = [];
-            for(var i=0;i<n.outputs;i++) {
-                node.wires.push([]);
-            }
-            var wires = links.filter(function(d){return d.source === n;});
-            for (var j=0;j<wires.length;j++) {
-                var w = wires[j];
-                if (w.target.type != "subflow") {
-                    if (w.sourcePort < node.wires.length) {
-                        node.wires[w.sourcePort].push(w.target.id);
-                    }
-                }
-            }
-
-            if (n.inputs > 0 && n.inputLabels && !/^\s*$/.test(n.inputLabels.join("")))  {
-                node.inputLabels = n.inputLabels.slice();
-            }
-            if (n.outputs > 0 && n.outputLabels && !/^\s*$/.test(n.outputLabels.join(""))) {
-                node.outputLabels = n.outputLabels.slice();
-            }
-            if ((!n._def.defaults || !n._def.defaults.hasOwnProperty("icon")) && n.icon) {
-                var defIcon = RED.utils.getDefaultNodeIcon(n._def, n);
-                if (n.icon !== defIcon.module+"/"+defIcon.file) {
-                    node.icon = n.icon;
-                }
-            }
-        }
-        return node;
-    }
-
-    function convertSubflow(n) {
-        // console.log('convertSubflow');
-        var node = {};
-        node.id = n.id;
-        node.type = n.type;
-        node.name = n.name;
-        node.info = n.info;
-        node.category = n.category;
-        node.in = [];
-        node.out = [];
-
-        n.in.forEach(function(p) {
-            var nIn = {x:p.x,y:p.y,wires:[]};
-            var wires = links.filter(function(d) { return d.source === p });
-            for (var i=0;i<wires.length;i++) {
-                var w = wires[i];
-                if (w.target.type != "subflow") {
-                    nIn.wires.push({id:w.target.id})
-                }
-            }
-            node.in.push(nIn);
-        });
-        n.out.forEach(function(p,c) {
-            var nOut = {x:p.x,y:p.y,wires:[]};
-            var wires = links.filter(function(d) { return d.target === p });
-            for (var i=0;i<wires.length;i++) {
-                if (wires[i].source.type != "subflow") {
-                    nOut.wires.push({id:wires[i].source.id,port:wires[i].sourcePort})
-                } else {
-                    nOut.wires.push({id:n.id,port:0})
-                }
-            }
-            node.out.push(nOut);
-        });
-
-        if (node.in.length > 0 && n.inputLabels && !/^\s*$/.test(n.inputLabels.join("")))  {
-            node.inputLabels = n.inputLabels.slice();
-        }
-        if (node.out.length > 0 && n.outputLabels && !/^\s*$/.test(n.outputLabels.join(""))) {
-            node.outputLabels = n.outputLabels.slice();
-        }
-        if (n.icon) {
-            if (n.icon !== "node-red/subflow.png") {
-                node.icon = n.icon;
-            }
-        }
-
-        return node;
-    }
-    /**
-     * Converts the current node selection to an exportable JSON Object
-     **/
-    function createExportableNodeSet(set, exportedSubflows, exportedConfigNodes) {
-        // console.log('createExportableNodeSet');
-        var nns = [];
-        exportedConfigNodes = exportedConfigNodes || {};
-        exportedSubflows = exportedSubflows || {};
-        for (var n=0;n<set.length;n++) {
-            var node = set[n];
-            if (node.type.substring(0,8) == "subflow:") {
-                var subflowId = node.type.substring(8);
-                if (!exportedSubflows[subflowId]) {
-                    exportedSubflows[subflowId] = true;
-                    var subflow = getSubflow(subflowId);
-                    var subflowSet = [subflow];
-                    RED.nodes.eachNode(function(n) {
-                        if (n.z == subflowId) {
-                            subflowSet.push(n);
-                        }
-                    });
-                    var exportableSubflow = createExportableNodeSet(subflowSet, exportedSubflows, exportedConfigNodes);
-                    nns = exportableSubflow.concat(nns);
-                }
-            }
-            if (node.type != "subflow") {
-                var convertedNode = RED.nodes.convertNode(node);
-                for (var d in node._def.defaults) {
-                    if (node._def.defaults[d].type && node[d] in configNodes) {
-                        var confNode = configNodes[node[d]];
-                        var exportable = registry.getNodeType(node._def.defaults[d].type).exportable;
-                        if ((exportable == null || exportable)) {
-                            if (!(node[d] in exportedConfigNodes)) {
-                                exportedConfigNodes[node[d]] = true;
-                                set.push(confNode);
-                            }
-                        } else {
-                            convertedNode[d] = "";
-                        }
-                    }
-                }
-                nns.push(convertedNode);
-            } else {
-                var convertedSubflow = convertSubflow(node);
-                nns.push(convertedSubflow);
-            }
-        }
-        return nns;
-    }
-
-    //TODO: rename this (createCompleteNodeSet)
-    function createCompleteNodeSet(exportCredentials) {
-        // console.log('createCompleteNodeSet');
-        if (exportCredentials === undefined) {
-            exportCredentials = true;
-        }
-        var nns = [];
-        var i;
-        for (i=0;i<workspacesOrder.length;i++) {
-            if (workspaces[workspacesOrder[i]].type == "tab") {
-                nns.push(convertWorkspace(workspaces[workspacesOrder[i]]));
-            }
-        }
-        for (i in subflows) {
-            if (subflows.hasOwnProperty(i)) {
-                nns.push(convertSubflow(subflows[i]));
-            }
-        }
-        for (i in configNodes) {
-            if (configNodes.hasOwnProperty(i)) {
-                nns.push(convertNode(configNodes[i], exportCredentials));
-            }
-        }
-        for (i=0;i<nodes.length;i++) {
-            var node = nodes[i];
-            nns.push(convertNode(node, exportCredentials));
-        }
-        return nns;
-    }
-
+    
     function checkForMatchingSubflow(subflow,subflowNodes) {
-        // console.log('checkForMatchingSubflow');
         var i;
         var match = null;
         try {
@@ -695,6 +221,7 @@ RED.nodes = (function() {
         }
         return match;
     }
+
     function compareNodes(nodeA,nodeB,idMustMatch) {
         if (idMustMatch && nodeA.id != nodeB.id) {
             return false;
@@ -1170,7 +697,6 @@ RED.nodes = (function() {
             // With all properties now remapped to point at valid nodes,
             // we can validate the node
             n.valid = true;
-            //RED.editor.validateNode(n);
         }
         for (i=0;i<new_subflows.length;i++) {
             n = new_subflows[i];
@@ -1197,13 +723,10 @@ RED.nodes = (function() {
             });
         }
 
-        // RED.workspaces.refresh();
         return [new_nodes,new_links,new_workspaces,new_subflows,missingWorkspace];
     }
 
-    // TODO: supports filter.z|type
     function filterNodes(filter) {
-        // console.log('filterNodes');
         var result = [];
 
         for (var n=0;n<nodes.length;n++) {
@@ -1218,8 +741,8 @@ RED.nodes = (function() {
         }
         return result;
     }
+
     function filterLinks(filter) {
-        // console.log('filterLinks');
         var result = [];
 
         for (var n=0;n<links.length;n++) {
@@ -1248,148 +771,16 @@ RED.nodes = (function() {
         return result;
     }
 
-    // Update any config nodes referenced by the provided node to ensure their 'users' list is correct
-    function updateConfigNodeUsers(n) {
-        // console.log('flowVersion');
-        for (var d in n._def.defaults) {
-            if (n._def.defaults.hasOwnProperty(d)) {
-                var property = n._def.defaults[d];
-                if (property.type) {
-                    var type = registry.getNodeType(property.type);
-                    if (type && type.category == "config") {
-                        var configNode = configNodes[n[d]];
-                        if (configNode) {
-                            if (configNode.users.indexOf(n) === -1) {
-                                configNode.users.push(n);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    function flowVersion(version) {
-        // console.log('flowVersion');
-        if (version !== undefined) {
-            loadedFlowVersion = version;
-        } else {
-            return loadedFlowVersion;
-        }
-    }
-
-    function clear() {
-        // console.log('clear');
-        nodes = [];
-        links = [];
-        configNodes = {};
-        workspacesOrder = [];
-        var subflowIds = Object.keys(subflows);
-        subflowIds.forEach(function(id) {
-            // RED.subflow.removeSubflow(id)
-        });
-        var workspaceIds = Object.keys(workspaces);
-        workspaceIds.forEach(function(id) {
-            RED.workspaces.remove(workspaces[id]);
-        });
-        defaultWorkspace = null;
-        initialLoad = null;
-        RED.nodes.dirty(false);
-        RED.view.redraw(true);
-        RED.palette.refresh();
-        // RED.workspaces.refresh();
-        // RED.sidebar.config.refresh();
-        // RED.sidebar.info.refresh();
-
-        // var node_defs = {};
-        // var nodes = [];
-        // var configNodes = {};
-        // var links = [];
-        // var defaultWorkspace;
-        // var workspaces = {};
-        // var workspacesOrder =[];
-        // var subflows = {};
-        // var loadedFlowVersion = null;
-    }
-
     return {
-        init: function() {
-            // // RED.events.on("registry:node-type-added",function(type) {
-            //     var def = registry.getNodeType(type);
-            //     var replaced = false;
-            //     var replaceNodes = [];
-            //     RED.nodes.eachNode(function(n) {
-            //         if (n.type === "unknown" && n.name === type) {
-            //             replaceNodes.push(n);
-            //         }
-            //     });
-            //     RED.nodes.eachConfig(function(n) {
-            //         if (n.type === "unknown" && n.name === type) {
-            //             replaceNodes.push(n);
-            //         }
-            //     });
-
-            //     if (replaceNodes.length > 0) {
-            //         var reimportList = [];
-            //         replaceNodes.forEach(function(n) {
-            //             if (configNodes.hasOwnProperty(n.id)) {
-            //                 delete configNodes[n.id];
-            //             } else {
-            //                 nodes.splice(nodes.indexOf(n),1);
-            //             }
-            //             reimportList.push(convertNode(n));
-            //         });
-            //         RED.view.redraw(true);
-            //         var result = importNodes(reimportList,false);
-            //         var newNodeMap = {};
-            //         result[0].forEach(function(n) {
-            //             newNodeMap[n.id] = n;
-            //         });
-            //         RED.nodes.eachLink(function(l) {
-            //             if (newNodeMap.hasOwnProperty(l.source.id)) {
-            //                 l.source = newNodeMap[l.source.id];
-            //             }
-            //             if (newNodeMap.hasOwnProperty(l.target.id)) {
-            //                 l.target = newNodeMap[l.target.id];
-            //             }
-            //         });
-            //         RED.view.redraw(true);
-            //     }
-            // });
-        },
-        registry:registry,
-        setNodeList: registry.setNodeList,
-
-        getNodeSet: registry.getNodeSet,
-        addNodeSet: registry.addNodeSet,
-        removeNodeSet: registry.removeNodeSet,
-        enableNodeSet: registry.enableNodeSet,
-        disableNodeSet: registry.disableNodeSet,
-
-        setIconSets: registry.setIconSets,
         getIconSets: registry.getIconSets,
-
         registerType: registry.registerNodeType,
         getType: registry.getNodeType,
-        convertNode: convertNode,
-
         add: addNode,
-        remove: removeNode,
-        clear: clear,
-
-        addLink: addLink,
-        removeLink: removeLink,
-
-        addWorkspace: addWorkspace,
-        removeWorkspace: removeWorkspace,
-        getWorkspaceOrder: function() { return workspacesOrder },
-        setWorkspaceOrder: function(order) { workspacesOrder = order; },
-        workspace: getWorkspace,
-
-        addSubflow: addSubflow,
-        removeSubflow: removeSubflow,
         subflow: getSubflow,
-        subflowContains: subflowContains,
+        node: getNode,
+        filterNodes: filterNodes,
+        filterLinks: filterLinks,
+        import: importNodes,
 
         eachNode: function(cb) {
             for (var n=0;n<nodes.length;n++) {
@@ -1418,35 +809,6 @@ RED.nodes = (function() {
         eachWorkspace: function(cb) {
             for (var i=0;i<workspacesOrder.length;i++) {
                 cb(workspaces[workspacesOrder[i]]);
-            }
-        },
-
-        node: getNode,
-
-        version: flowVersion,
-        originalFlow: function(flow) {
-            if (flow === undefined) {
-                return initialLoad;
-            } else {
-                initialLoad = flow;
-            }
-        },
-
-        filterNodes: filterNodes,
-        filterLinks: filterLinks,
-
-        import: importNodes,
-
-        getAllFlowNodes: getAllFlowNodes,
-        createExportableNodeSet: createExportableNodeSet,
-        createCompleteNodeSet: createCompleteNodeSet,
-        updateConfigNodeUsers: updateConfigNodeUsers,
-        id: getID,
-        dirty: function(d) {
-            if (d == null) {
-                return dirty;
-            } else {
-                setDirty(d);
             }
         }
     };

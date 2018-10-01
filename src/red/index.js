@@ -12,7 +12,6 @@ require('./workspaces');
 RED.i18n.init();
 RED.view.init();
 RED.workspaces.init();
-RED.nodes.init();
 RED.view.init();
 
 module.exports = RED;
