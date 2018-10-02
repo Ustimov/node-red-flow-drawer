@@ -14,9 +14,9 @@
  * limitations under the License.
  **/
 
-const RED = require('./red');
+module.exports = (function() {
 
-RED.workspaces = (function() {
+    let RED;
 
     var activeWorkspace = 0;
     var workspaceIndex = 0;
@@ -38,7 +38,10 @@ RED.workspaces = (function() {
     }
 
     return {
-        init: createWorkspaceTabs,
+        init: function (red) {
+            RED = red;
+            createWorkspaceTabs();
+        },
         add: addWorkspace,
         active: function() {
             return activeWorkspace

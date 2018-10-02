@@ -3,7 +3,9 @@ import { JSDOM } from 'jsdom';
 import SvgSaver from 'svg-saver-node';
 import fs from 'fs';
 import path from 'path';
-import RED from './red';
+import _RED from './red';
+
+const RED = _RED();
 
 function applyTypes(path) {
     const types = fs.readFileSync(path);
@@ -11,11 +13,8 @@ function applyTypes(path) {
 }
 
 function FlowDrawer(options) {
-    const typePath = path.join(__dirname, '/red/types.js');
-    applyTypes(typePath);
-
     if (options.types) {
-        applyTypes(options.types);
+        applyTypes.call({RED}, options.types);
     }
 
     const stylePath = path.join(__dirname, '/../css/style.min.css');

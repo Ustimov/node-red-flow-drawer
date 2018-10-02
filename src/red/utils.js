@@ -14,10 +14,11 @@
  * limitations under the License.
  **/
 
-const RED = require('./red');
-const path = require('path');
+module.exports = (function() {
 
-RED.utils = (function() {
+    const path = require('path');
+
+    let RED;
 
     function formatString(str) {
         return str.replace(/\r?\n/g,"&crarr;").replace(/\t/g,"&rarr;");
@@ -887,6 +888,9 @@ RED.utils = (function() {
     }
 
     return {
+        init: function (red) {
+            RED = red;
+        },
         createObjectElement: buildMessageElement,
         getMessageProperty: getMessageProperty,
         normalisePropertyExpression: normalisePropertyExpression,

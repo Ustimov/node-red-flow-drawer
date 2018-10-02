@@ -14,9 +14,7 @@
  * limitations under the License.
  **/
 
-const RED = require('./red');
-
-RED.state = {
+module.exports = {
     DEFAULT: 0,
     MOVING: 1,
     JOINING: 2,

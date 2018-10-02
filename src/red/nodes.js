@@ -14,9 +14,9 @@
  * limitations under the License.
  **/
 
-const RED = require('./red');
+module.exports = (function() {
 
-RED.nodes = (function() {
+    let RED;
 
     var nodes = [];
     var configNodes = {};
@@ -781,7 +781,10 @@ RED.nodes = (function() {
         filterNodes: filterNodes,
         filterLinks: filterLinks,
         import: importNodes,
-
+        
+        init: function (red) {
+            RED = red;
+        },
         eachNode: function(cb) {
             for (var n=0;n<nodes.length;n++) {
                 cb(nodes[n]);

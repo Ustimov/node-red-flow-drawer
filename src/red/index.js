@@ -1,17 +1,23 @@
-const RED = require('./red');
+module.exports = function _RED () {
 
-require('./bidi');
-require('./i18n');
-require('./nodes');
-require('./state');
-require('./tabs');
-require('./utils');
-require('./view');
-require('./workspaces');
+    var red = {
+        i18n: require('./i18n'),
+        nodes: require('./nodes'),
+        state: require('./state'),
+        tabs: require('./tabs'),
+        types: require('./types'),
+        text: require('./text'),
+        utils: require('./utils'),
+        view: require('./view'),
+        workspaces: require('./workspaces')
+    };
 
-RED.i18n.init();
-RED.view.init();
-RED.workspaces.init();
-RED.view.init();
-
-module.exports = RED;
+    red.i18n.init(red);
+    red.nodes.init(red);
+    red.types.init(red);
+    red.utils.init(red);
+    red.view.init(red);
+    red.workspaces.init(red);
+    
+    return red;
+}

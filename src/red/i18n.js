@@ -14,11 +14,9 @@
  * limitations under the License.
  **/
 
-const RED = require('./red');
-
-RED.i18n = (function() {
+module.exports = (function() {
     return {
-        init: function(done) {
+        init: function(RED) {
             RED["_"] = function(arg) {
                 return arg || "";
             }

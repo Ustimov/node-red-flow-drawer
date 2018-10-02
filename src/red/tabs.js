@@ -14,9 +14,7 @@
  * limitations under the License.
  **/
 
-const RED = require('./red');
-
-RED.tabs = (function() {
+module.exports = (function() {
     function createTabs(options) {
         var tabs = {};
         return {

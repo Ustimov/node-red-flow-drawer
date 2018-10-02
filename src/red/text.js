@@ -14,10 +14,7 @@
  * limitations under the License.
  **/
 
-const RED = require('./red');
-
-RED.text = {};
-RED.text.bidi = (function() {
+module.exports = (function() {
     var textDir = "";
     var LRE = "\u202A",
         RLE = "\u202B",
@@ -125,9 +122,11 @@ RED.text.bidi = (function() {
     }
 
     return {
-        setTextDirection: setTextDirection,
-        enforceTextDirectionWithUCC: enforceTextDirectionWithUCC,
-        resolveBaseTextDir: resolveBaseTextDir,
-        prepareInput: prepareInput
+        bidi: {
+            setTextDirection: setTextDirection,
+            enforceTextDirectionWithUCC: enforceTextDirectionWithUCC,
+            resolveBaseTextDir: resolveBaseTextDir,
+            prepareInput: prepareInput
+        }
     }
 })();
