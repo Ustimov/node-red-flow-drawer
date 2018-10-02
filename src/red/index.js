@@ -1,5 +1,8 @@
 module.exports = function _RED () {
 
+    //console.log('_NEW RED');
+    var _view = require('./view')
+
     var red = {
         i18n: require('./i18n'),
         nodes: require('./nodes'),
@@ -8,7 +11,6 @@ module.exports = function _RED () {
         types: require('./types'),
         text: require('./text'),
         utils: require('./utils'),
-        view: require('./view'),
         workspaces: require('./workspaces')
     };
 
@@ -16,8 +18,9 @@ module.exports = function _RED () {
     red.nodes.init(red);
     red.types.init(red);
     red.utils.init(red);
-    red.view.init(red);
+    //red.view.init(red);
+    red.view = _view(red);
     red.workspaces.init(red);
-    
+
     return red;
 }

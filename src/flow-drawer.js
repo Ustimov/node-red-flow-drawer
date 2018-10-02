@@ -5,15 +5,16 @@ import fs from 'fs';
 import path from 'path';
 import _RED from './red';
 
-const RED = _RED();
-
 function applyTypes(path) {
     const types = fs.readFileSync(path);
     eval(types.toString('utf-8'));
 }
 
 function FlowDrawer(options) {
-    if (options.types) {
+
+    const RED = _RED();
+
+    if (options && options.types) {
         applyTypes.call({RED}, options.types);
     }
 

@@ -14,7 +14,10 @@
  * limitations under the License.
  **/
 
-module.exports = (function() {
+module.exports = function (RED) {
+
+    //console.log('NEW VIEW');
+
     const jsdom = require('jsdom');
     const { JSDOM } = jsdom;
     const d3 = require('d3');
@@ -24,7 +27,7 @@ module.exports = (function() {
     const document = window.document;
     const Image = window.Image;
 
-    let RED;
+    // let RED;
 
     var space_width = 5000,
         space_height = 5000,
@@ -776,10 +779,10 @@ module.exports = (function() {
     }
 
     return {
-        init: function (red) {
-            RED = red;
-            updateActiveNodes()
-        },
+        // init: function (red) {
+        //     RED = red;
+        //     updateActiveNodes()
+        // },
         redraw: function(updateActive) {
             if (updateActive) {
                 updateActiveNodes();
@@ -788,4 +791,4 @@ module.exports = (function() {
         },
         calculateTextWidth: calculateTextWidth,
     };
-})();
+};
