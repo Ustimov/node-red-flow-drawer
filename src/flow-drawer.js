@@ -5,10 +5,18 @@ import fs from 'fs';
 import path from 'path';
 import RED from './red';
 
+function applyTypes(path) {
+    const types = fs.readFileSync(path);
+    eval(types.toString('utf-8'));
+}
+
 function FlowDrawer(options) {
     const typePath = path.join(__dirname, '/red/types.js');
-    const types = fs.readFileSync(typePath);
-    eval(types.toString('utf-8'));
+    applyTypes(typePath);
+
+    if (options.types) {
+        applyTypes(options.types);
+    }
 
     const stylePath = path.join(__dirname, '/../css/style.min.css');
     const { window } = new JSDOM(`

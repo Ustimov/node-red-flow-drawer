@@ -15,6 +15,7 @@ program
     })
     // .option('-t, --type <type>', 'export image type (svg or png)', /^(svg|png)$/i, 'svg')
     .option('-f, --format <format>', 'export data format (html, json or images)', /^(html|json|images)$/i, 'html')
+    .option('-n, --nodes <file>', 'path to file with custom node descriptions')
     .parse(process.argv);
 
 if ((typeof inputFileValue) === 'undefined') {
@@ -34,7 +35,11 @@ fs.readFile(inputFileValue, (err, data) => {
     }
     // TODO: validate data
     const flow = JSON.parse(data);
-    new FlowDrawer()
+    const options = {};
+    if (program.nodes) {
+        options.types = program.nodes;
+    }
+    new FlowDrawer(options)
         .draw(flow, program.html ? 'svg': program.type)
         .then((images) => outputResult(images))
         .catch((err) => {

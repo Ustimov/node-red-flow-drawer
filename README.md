@@ -21,6 +21,7 @@ Options:
 
   -v, --version          output the version number
   -f, --format <format>  export data format (html, json or images) (default: html)
+  -n, --nodes <file>     path to file with custom node descriptions
   -h, --help             output usage information
 
 flow-drawer --format=json input.json > output.json
@@ -50,10 +51,13 @@ new FlowDrawer()
 ## Knows issues:
 
 * PNG support: https://github.com/Automattic/node-canvas/issues/1211
-* Currently supports only default nodes
 
 ## TODO
 
-* Custom node support
-* Improve node width calculation
+* Improve node's width calculation
 * Remove redundant styles
+* Use Node-RED fonts
+* Solid frame around flow's nodes
+* Proper handling of unnamed nodes
+* Local state inside a FlowDrawer instance
+ 
