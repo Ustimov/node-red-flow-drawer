@@ -1,9 +1,9 @@
-import { createCanvas, Image } from 'canvas';
-import { JSDOM } from 'jsdom';
-import SvgSaver from 'svg-saver-node';
-import fs from 'fs';
-import path from 'path';
-import _RED from './red';
+const { createCanvas, Image } = require('canvas');
+const { JSDOM } = require('jsdom');
+const SvgSaver = require('svg-saver-node');
+const fs = require('fs');
+const path = require('path');
+const _RED = require('./red');
 
 function applyTypes(path) {
     const types = fs.readFileSync(path);
