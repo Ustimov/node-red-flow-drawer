@@ -36,13 +36,26 @@ flow-drawer --format=json input.json > output.json
 
 ## JavaScript API
 
+### Installation
+
+```
+npm install node-red-flow-drawer --save
+```
+
+### Usage
+
 ```javascript
 const FlowDrawer = require("node-red-flow-drawer");
 
-const flow = []; // A flow in JSON format
+const flows = []; // Flows in JSON format
 
-new FlowDrawer()
-  .draw(flow, 'svg')
+// In case you use custom nodes
+const options = {
+  nodes: "path to a file with custom node definitions"
+};
+
+new FlowDrawer(flows, options)
+  .draw('svg')
   .then((images) => {
     // Handle array of URI encoded SVGs
   });
@@ -59,5 +72,7 @@ new FlowDrawer()
 * Use Node-RED fonts
 * Solid frame around flow's nodes
 * Proper handling of unnamed nodes
-* Local state inside a FlowDrawer instance
  
+ ## License
+
+ [MIT](/LICENSE)

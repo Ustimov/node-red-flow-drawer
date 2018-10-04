@@ -37,10 +37,10 @@ fs.readFile(inputFileValue, (err, data) => {
     const flow = JSON.parse(data);
     const options = {};
     if (program.nodes) {
-        options.types = program.nodes;
+        options.nodes = program.nodes;
     }
-    new FlowDrawer(options)
-        .draw(flow, program.html ? 'svg': program.type)
+    new FlowDrawer(flow, options)
+        .draw(program.html ? 'svg': program.type)
         .then((images) => outputResult(images))
         .catch((err) => {
             console.error(err);

@@ -33,9 +33,9 @@ module.exports = (function () {
             defaults: {
                 name: {value:""},
                 topic: {value:""},
-                // payload: {value:"", validate: RED.validators.typedInput("payloadType")},
+                payload: {value:""},
                 payloadType: {value:"date"},
-                // repeat: {value:"", validate:function(v) { return ((v === "") || (RED.validators.number(v) && (v >= 0) && (v <= 2147483))) }},
+                repeat: {value:""},
                 crontab: {value:""},
                 once: {value:false},
                 onceDelay: {value:0.1}

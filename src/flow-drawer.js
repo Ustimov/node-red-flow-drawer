@@ -10,12 +10,16 @@ function applyTypes(path) {
     eval(types.toString('utf-8'));
 }
 
-function FlowDrawer(options) {
+function FlowDrawer(flow, options) {
+
+    if (!flow) {
+        throw new Error('Invalid flow');    
+    }
 
     const RED = _RED();
 
-    if (options && options.types) {
-        applyTypes.call({RED}, options.types);
+    if (options && options.nodes) {
+        applyTypes.call({RED}, options.nodes);
     }
 
     const stylePath = path.join(__dirname, '/../css/style.min.css');
@@ -41,14 +45,10 @@ function FlowDrawer(options) {
 
     const svgSaver = new SvgSaver(window);
 
-    function draw (flow, type) {
+    function draw (type) {
         // TODO: use type
         return new Promise((resolve, reject) => {
-            if (flow) {
-                RED.nodes.import(flow);
-            } else {
-                reject("A flow for drawing isn't provided");  
-            }
+            RED.nodes.import(flow);
     
             const images = [];
 
