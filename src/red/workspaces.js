@@ -14,12 +14,12 @@
  * limitations under the License.
  **/
 
-module.exports = (function() {
-
-    let RED;
+module.exports = function(RED) {
 
     var activeWorkspace = 0;
     var workspaceIndex = 0;
+    var workspace_tabs = RED.tabs.create();
+    var workspaceTabCount =  0;
 
     function addWorkspace(ws,skipHistoryEntry) {
         if (ws) {
@@ -30,18 +30,7 @@ module.exports = (function() {
         return ws;
     }
 
-    var workspace_tabs;
-    var workspaceTabCount;
-    function createWorkspaceTabs() {
-        workspace_tabs = RED.tabs.create();
-        workspaceTabCount = 0;
-    }
-
     return {
-        init: function (red) {
-            RED = red;
-            createWorkspaceTabs();
-        },
         add: addWorkspace,
         active: function() {
             return activeWorkspace
@@ -60,4 +49,4 @@ module.exports = (function() {
         },
         tabs: function () { return workspace_tabs ? workspace_tabs.tabs : {}; }
     }
-})();
+};

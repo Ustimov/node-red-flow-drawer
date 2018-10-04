@@ -16,6 +16,7 @@
 
 module.exports = (function() {
     function createTabs(options) {
+
         var tabs = {};
         return {
             addTab: function(tab) {

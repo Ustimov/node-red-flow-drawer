@@ -14,9 +14,7 @@
  * limitations under the License.
  **/
 
-module.exports = (function() {
-
-    let RED;
+module.exports = function(RED) {
 
     var nodes = [];
     var configNodes = {};
@@ -781,10 +779,7 @@ module.exports = (function() {
         filterNodes: filterNodes,
         filterLinks: filterLinks,
         import: importNodes,
-        
-        init: function (red) {
-            RED = red;
-        },
+
         eachNode: function(cb) {
             for (var n=0;n<nodes.length;n++) {
                 cb(nodes[n]);
@@ -815,4 +810,4 @@ module.exports = (function() {
             }
         }
     };
-})();
+};
