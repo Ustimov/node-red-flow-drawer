@@ -15,16 +15,34 @@ npm install -g node-red-flow-drawer
 ```
 flow-drawer -h
 
-Usage: flow-drawer [options] <inputFile> [outputDir]
+Usage: flow-drawer [options] <inputFileOrDir> [outputDir]
 
 Options:
 
   -v, --version          output the version number
-  -f, --format <format>  export data format (html, json or images) (default: html)
-  -n, --nodes <file>     path to file with custom node descriptions
+  -f, --format <format>  export data format (html, json or img) (default: html)
+  -n, --nodes <file>     path to a file with custom node descriptions
+  -s, --stdout           print results to the stdout (will be ignored for batch processing)
   -h, --help             output usage information
+```
 
-flow-drawer --format=json input.json > output.json
+### Custom node descriptions
+
+This file should contain `RED.nodes.registerType` calls for your custom nodes and the line `const RED = this.RED;` at the top of the file. For instance:
+
+```javascript
+const RED = this.RED;
+
+RED.nodes.registerType('Cache in',{
+    category: 'input',
+    defaults: {
+      name: { name: '' },
+    },
+    color: 'Turquoise',
+    inputs: 1,
+    outputs: 1,
+    icon: "db.png",
+});
 ```
 
 ### TODO
@@ -72,7 +90,9 @@ new FlowDrawer(flows, options)
 * Use Node-RED fonts
 * Solid frame around flow's nodes
 * Proper handling of unnamed nodes
+* Tests
  
  ## License
 
  [MIT](/LICENSE)
+ 
