@@ -44,14 +44,14 @@ if (program.nodes) {
 
 const stat = fs.lstatSync(inputFileOrDirValue);
 
-if (stat.isFile() && !program.stdout) {
-    if (typeof outputDirValue === 'undefined') {
+if (typeof outputDirValue === 'undefined') {
+    if (!program.stdout) {
         console.error('[flow-drawer] No outputDir provided. Exported files will be saved in the current working directory');
-        outputDirValue = '';
-    } else if (!fs.existsSync(outputDirValue)) {
-        console.error('[flow-drawer] Output directory not found');
-        process.exit(1);
     }
+    outputDirValue = '';
+} else if (!fs.existsSync(outputDirValue)) {
+    console.error('[flow-drawer] Output directory not found');
+    process.exit(1);
 }
 
 if (stat.isFile()) {
