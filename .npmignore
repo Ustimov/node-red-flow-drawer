@@ -2,4 +2,4 @@
 .gitignore
 .npmignore
 test/
-
+docs/

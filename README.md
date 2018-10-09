@@ -4,6 +4,25 @@
 
 A library and CLI for drawning Node-RED flows from JSON files. *Work in progress.*
 
+## Table of contents
+
+* [JavaScript API](#javascript-api)
+        * [Installation](#installation)
+        * [Troubleshooting](#troubleshooting)
+        * [Usage](#usage)
+        * [Options](#options)
+        * [Custom node descriptions](#custom-node-descriptions)
+* [CLI](#cli)
+        * [Installation](#installation-1)
+        * [Troubleshooting](#troubleshooting-1)
+        * [Usage](#usage-1)
+        * [Batch processing](#batch-processing)
+        * [Export data formats](#export-data-formats)
+        * [Custom node descriptions](#custom-node-descriptions-1)
+* [Related issues](#related-issues)
+* [TODO](#todo)
+* [License](#license)
+
 ## JavaScript API
 
 ### Installation
@@ -69,21 +88,17 @@ It's related to internal CSS styles, doesn't influence on the end result and wil
 
 ![Output](/docs/img/output.png)
 
-#### Options
+### Options
 
 * **nodes** - path to a file with custom node descriptions
 
-#### Custom node descriptions
+### Custom node descriptions
 
 Custom node descriptions is a file that contains a part of the Node-RED node [HTML file](https://nodered.org/docs/creating-nodes/node-html), namely the part with **RED.nodes.registerType** calls.
 
 Look at the example for [node-red-contrib-cache](https://github.com/CANDY-LINE/node-red-contrib-cache):
 
 *Note the first line of the file. It's required to get access to current context.*
-
-### Custom node descriptions
-
-This file should contain `RED.nodes.registerType` calls for your custom nodes and the line `const RED = this.RED;` at the top of the file. For instance:
 
 ```javascript
 const RED = this.RED;
@@ -171,7 +186,7 @@ npm install -g node-red-flow-drawer
 
 ### Troubleshooting
 
-See notes for JavaScript API.
+See notes for [JavaScript API](#troubleshooting).
 
 ### Usage
 
@@ -192,9 +207,7 @@ Options:
 ### Batch processing
 
 There are two options for input data:
-
 * file
-
 * directory
 
 In the second case CLI searches for all files with **.json** extension in the directory tree starting from the input folder, tryes to draw flows from that files and saves drawnings to the **current working directory** or the **outputDir** (if provided).
@@ -202,11 +215,8 @@ In the second case CLI searches for all files with **.json** extension in the di
 ### Export data formats
 
 CLI supports three types of export data formats:
-
 * **html** - flows save to a single HTML file (useful for previewing)
-
 * **json** - flows save to a single JSON file (JSON array inside)
-
 * **img** - each flow saves to a separate SVG file
 
 Ouputs save to the **outputDir** (if provided) or the **current working directory** and name after the input file.
@@ -215,7 +225,7 @@ You can use **--stdout** option (only for **html** and **json**) to print result
 
 ### Custom node descriptions
 
-See JavaScript API section for details.
+See [JavaScript API](#custom-node-descriptions) section for details.
 
 ## Related issues:
 
