@@ -1,5 +1,43 @@
 [
     {
+       "id":"e1df90c2.2d30f",
+       "type":"subflow",
+       "name":"Subflow 1",
+       "info":"",
+       "in":[
+          {
+             "x":180,
+             "y":140,
+             "wires":[
+                {
+                   "id":"e4d5312f.a250d"
+                }
+             ]
+          }
+       ],
+       "out":[
+ 
+       ]
+    },
+    {
+       "id":"e4d5312f.a250d",
+       "type":"udp out",
+       "z":"e1df90c2.2d30f",
+       "name":"",
+       "addr":"",
+       "iface":"",
+       "port":"",
+       "ipv":"udp4",
+       "outport":"",
+       "base64":false,
+       "multicast":"false",
+       "x":340,
+       "y":140,
+       "wires":[
+ 
+       ]
+    },
+    {
        "id":"c9691fd0.be5ad",
        "type":"tab",
        "label":"Flow 2",
@@ -22,26 +60,20 @@
        "y":120,
        "wires":[
           [
-             "bf3fa2e7.5aae6"
+             "b33984be.0d6698"
           ]
        ]
     },
     {
-       "id":"bf3fa2e7.5aae6",
-       "type":"udp out",
+       "id":"b33984be.0d6698",
+       "type":"subflow:e1df90c2.2d30f",
        "z":"c9691fd0.be5ad",
        "name":"",
-       "addr":"",
-       "iface":"",
-       "port":"",
-       "ipv":"udp4",
-       "outport":"",
-       "base64":false,
-       "multicast":"false",
-       "x":500,
+       "x":460,
        "y":120,
        "wires":[
  
        ]
     }
  ]
+ 
