@@ -200,7 +200,7 @@ Options:
   -v, --version          output the version number
   -f, --format <format>  export data format (html, json or img) (default: html)
   -n, --nodes <file>     path to a file with custom node descriptions
-  -s, --stdout           print results to the stdout (will be ignored for batch processing)
+  -s, --stdout           print results to the stdout (only for file input)
   -h, --help             output usage information
 ```
 
@@ -210,7 +210,7 @@ There are two options for input data:
 * file
 * directory
 
-In the second case CLI searches for all files with **.json** extension in the directory tree starting from the input folder, tryes to draw flows from that files and saves drawnings to the **current working directory** or the **outputDir** (if provided).
+In the second case CLI searches for all files with **.json** extension in the directory tree starting from the input folder, tries to draw flows from that files and saves drawnings to the **current working directory** or the **outputDir** (if provided).
 
 ### Export data formats
 

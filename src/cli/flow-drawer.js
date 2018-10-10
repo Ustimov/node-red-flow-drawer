@@ -17,7 +17,7 @@ program
     //.option('-t, --type <type>', 'export image type (svg or png)', /^(svg|png)$/i, 'svg')
     .option('-f, --format <format>', 'export data format (html, json or img)', /^(html|json|img)$/i, 'html')
     .option('-n, --nodes <file>', 'path to a file with custom node descriptions')
-    .option('-s, --stdout', "print results to the stdout (will be ignored for batch processing)")
+    .option('-s, --stdout', "print results to the stdout (only for file input)")
     .parse(process.argv);
 
 program.type = 'svg';
@@ -43,6 +43,11 @@ if (program.nodes) {
 }
 
 const stat = fs.lstatSync(inputFileOrDirValue);
+
+if (stat.isDirectory() && program.stdout) {
+    console.error("[flow-drawer] Option --stdout isn't supported for directory input");
+    process.exit(1);
+}
 
 if (typeof outputDirValue === 'undefined') {
     if (!program.stdout) {
