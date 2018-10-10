@@ -1,0 +1,56 @@
+[
+    {
+       "id":"721dcbeb.0cabb4",
+       "type":"tab",
+       "label":"Flow 1",
+       "disabled":false,
+       "info":""
+    },
+    {
+       "id":"67b4cf94.066eb",
+       "type":"http in",
+       "z":"721dcbeb.0cabb4",
+       "name":"",
+       "url":"",
+       "method":"get",
+       "upload":false,
+       "x":190,
+       "y":100,
+       "wires":[
+          [
+             "17b403c0.c49a6c"
+          ]
+       ]
+    },
+    {
+       "id":"17b403c0.c49a6c",
+       "type":"function",
+       "z":"721dcbeb.0cabb4",
+       "name":"",
+       "func":"\nreturn msg;",
+       "outputs":1,
+       "noerr":0,
+       "x":390,
+       "y":200,
+       "wires":[
+          [
+             "82501873.251718"
+          ]
+       ]
+    },
+    {
+       "id":"82501873.251718",
+       "type":"http response",
+       "z":"721dcbeb.0cabb4",
+       "name":"",
+       "statusCode":"",
+       "headers":{
+ 
+       },
+       "x":570,
+       "y":100,
+       "wires":[
+ 
+       ]
+    }
+ ]

@@ -1,0 +1,47 @@
+[
+    {
+       "id":"c9691fd0.be5ad",
+       "type":"tab",
+       "label":"Flow 2",
+       "disabled":false,
+       "info":""
+    },
+    {
+       "id":"6b103898.760d78",
+       "type":"inject",
+       "z":"c9691fd0.be5ad",
+       "name":"",
+       "topic":"",
+       "payload":"",
+       "payloadType":"date",
+       "repeat":"",
+       "crontab":"",
+       "once":false,
+       "onceDelay":0.1,
+       "x":200,
+       "y":120,
+       "wires":[
+          [
+             "bf3fa2e7.5aae6"
+          ]
+       ]
+    },
+    {
+       "id":"bf3fa2e7.5aae6",
+       "type":"udp out",
+       "z":"c9691fd0.be5ad",
+       "name":"",
+       "addr":"",
+       "iface":"",
+       "port":"",
+       "ipv":"udp4",
+       "outport":"",
+       "base64":false,
+       "multicast":"false",
+       "x":500,
+       "y":120,
+       "wires":[
+ 
+       ]
+    }
+ ]
