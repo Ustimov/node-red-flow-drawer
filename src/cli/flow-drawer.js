@@ -62,22 +62,28 @@ if (typeof outputDirValue === 'undefined') {
 if (stat.isFile()) {
     processFile(inputFileOrDirValue);
 } else if (stat.isDirectory()) {
-    walk(inputFileOrDirValue, async (err, results) => {
+    walk(inputFileOrDirValue, (err, results) => {
         if (err) {
             console.error(err);
             process.exit(1);
         } else {
-            for (let result of results) {
-                if (path.extname(result) === '.json') {
-                    // Sequential processing to reduce memory consumption
-                    await processFile(result);
-                }
-            }
+            draw(results);
         }
     });
 } else {
     console.error('[flow-drawer] Input is neither a file nor a directory');
     process.exit(1);
+}
+
+function draw (files) {
+    let file = files.pop();
+    if (path.extname(file) === '.json') {
+        processFile(file).then(() => {
+            if (files.length > 0) {
+                draw(files);
+            }
+        });
+    }
 }
 
 function processFile (inputPath) {
