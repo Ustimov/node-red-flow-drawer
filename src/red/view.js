@@ -204,19 +204,17 @@ module.exports = function (RED) {
     }
 
     function calculateTextDimensions(str,className,offsetW,offsetH) {
-        // TODO: simplify
-        var sp = document.createElement("span");
-        sp.className = className;
-        sp.style.position = "absolute";
-        sp.style.top = "-1000px";
-        sp.textContent = (str||"");
-        document.body.appendChild(sp);
-        var w = sp.offsetWidth;
-        var h = sp.offsetHeight;
+        var w = 0;
+        var h = 0;
         if (w === 0) {
-            w = str.length * 6;
+            for (let ch of str) {
+                if (ch === ch.toLowerCase()) {
+                    w += 6;
+                } else {
+                    w += 8;
+                }
+            }
         }
-        document.body.removeChild(sp);
         return [offsetW+w,offsetH+h];
     }
 
