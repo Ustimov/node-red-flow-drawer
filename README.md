@@ -236,11 +236,9 @@ See [JavaScript API](#custom-node-descriptions) section for details.
 * Improve node's width calculation
 * Remove redundant styles
 * Check why output has other fonts
-* Make frame around flow's nodes solid
 * Handle unnamed nodes
 * Handle access to RED context from custom node descriptions
 * PNG support
-* Tests
  
  ## License
 

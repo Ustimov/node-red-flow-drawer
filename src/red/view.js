@@ -118,7 +118,7 @@ module.exports = function (RED) {
         if (tabs[activeWorkspace] && tabs[activeWorkspace].type === 'subflow') {
             activeSubflow = RED.nodes.subflow(tabs[activeWorkspace].id);
         } else {
-            activeSubflow = 0;
+            activeSubflow = null;
         }
         activeNodes = RED.nodes.filterNodes({z:activeWorkspace});
         activeLinks = RED.nodes.filterLinks({
