@@ -59,6 +59,19 @@ describe('CLI', function () {
       });
     });
   });
+  describe('--nodes', function (err, stdout, stderr) {
+    describe("file with custom nodes doesn't exist", function () {
+      it('should return an error message', function (done) {
+        this.timeout(5000);
+        exec(`${CLI} ${INPUT_FILE} --nodes=does-not-exist`, function (err, stdout, stderr) {
+          assert.isNotNull(err);
+          assert.isEmpty(stdout);
+          assert.equal(stderr.trim(), '[flow-drawer] File with custom node definitions not found');
+          done();
+        });
+      });
+    });
+  });
   describe('--stdout and directory as input', function () {
     it('should return an error message', function (done) {
       this.timeout(5000);
@@ -252,6 +265,101 @@ describe('CLI', function () {
             fs.unlinkSync(`${OUTPUT_DIR}/flow2.html`);
             fs.rmdirSync(OUTPUT_DIR);
             done();
+          });
+        });
+      });
+    });
+
+    // IMG
+    describe('--format=img', function () {
+      describe('file input', function () {
+        describe('--stdout', function () {
+          it('should return an error message', function (done) {
+            this.timeout(5000);
+            exec(`${CLI} ${INPUT_FILE} --format=img --stdout`, function (err, stdout, stderr) {
+              assert.isNotNull(err);
+              assert.isEmpty(stdout);
+              assert.equal(stderr.trim(), "[flow-drawer] Option --stdout isn't supported for img export format");
+              done();
+            });
+          });
+        });
+        describe('CWD', function () {
+          it('should save to CWD three SVG images', function (done) {
+            this.timeout(60000);
+            exec(`${CLI} ${INPUT_FILE} --format=img`, function (err, stdout, stderr) {
+              assert.isNull(err);
+              assert.isEmpty(stdout);
+              // TODO: fix css errors
+              // assert.isEmpty(stderr);
+              assert.isTrue(fs.existsSync('input-0.svg'));
+              assert.isTrue(fs.existsSync('input-1.svg'));
+              assert.isTrue(fs.existsSync('input-2.svg'));
+              fs.unlinkSync('input-0.svg');
+              fs.unlinkSync('input-1.svg');
+              fs.unlinkSync('input-2.svg');
+              done();
+            });
+          });
+        });
+        describe('outputDir', function () {
+          it('should save to outputDir three SVG images', function (done) {
+            this.timeout(60000);
+            fs.mkdirSync(OUTPUT_DIR);
+            exec(`${CLI} ${INPUT_FILE} ${OUTPUT_DIR} --format=img`, function (err, stdout, stderr) {
+              assert.isNull(err);
+              assert.isEmpty(stdout);
+              // TODO: fix css errors
+              // assert.isEmpty(stderr);
+              assert.isTrue(fs.existsSync(`${OUTPUT_DIR}/input-0.svg`));
+              assert.isTrue(fs.existsSync(`${OUTPUT_DIR}/input-1.svg`));
+              assert.isTrue(fs.existsSync(`${OUTPUT_DIR}/input-2.svg`));
+              fs.unlinkSync(`${OUTPUT_DIR}/input-0.svg`);
+              fs.unlinkSync(`${OUTPUT_DIR}/input-1.svg`);
+              fs.unlinkSync(`${OUTPUT_DIR}/input-2.svg`);
+              fs.rmdirSync(OUTPUT_DIR);
+              done();
+            });
+          });
+        });
+      });
+      describe('directory input', function () {
+        describe('CWD', function () {
+          it('should be three SVG images in CWD', function (done) {
+            this.timeout(60000);
+            exec(`${CLI} ${INPUT_DIR} --format=img`, function (err, stdout, stderr) {
+              assert.isNull(err);
+              assert.isEmpty(stdout);
+              // TODO: fix css errors
+              // assert.isEmpty(stderr);
+              assert.isTrue(fs.existsSync('flow1-0.svg'));
+              assert.isTrue(fs.existsSync('flow2-0.svg'));
+              assert.isTrue(fs.existsSync('flow2-1.svg'));
+              fs.unlinkSync('flow1-0.svg');
+              fs.unlinkSync('flow2-0.svg');
+              fs.unlinkSync('flow2-1.svg');
+              done();
+            });
+          });
+        });
+        describe("outputDir", function () {
+          it('should be three SVG images in outputDir', function (done) {
+            this.timeout(60000);
+            fs.mkdirSync(OUTPUT_DIR);
+            exec(`${CLI} ${INPUT_DIR} ${OUTPUT_DIR} --format=img`, function (err, stdout, stderr) {
+              assert.isNull(err);
+              assert.isEmpty(stdout);
+              // TODO: fix css errors
+              // assert.isEmpty(stderr);
+              assert.isTrue(fs.existsSync(`${OUTPUT_DIR}/flow1-0.svg`));
+              assert.isTrue(fs.existsSync(`${OUTPUT_DIR}/flow2-0.svg`));
+              assert.isTrue(fs.existsSync(`${OUTPUT_DIR}/flow2-1.svg`));
+              fs.unlinkSync(`${OUTPUT_DIR}/flow1-0.svg`);
+              fs.unlinkSync(`${OUTPUT_DIR}/flow2-0.svg`);
+              fs.unlinkSync(`${OUTPUT_DIR}/flow2-1.svg`);
+              fs.rmdirSync(OUTPUT_DIR);
+              done();
+            });
           });
         });
       });
