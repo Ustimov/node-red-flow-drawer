@@ -17,7 +17,7 @@ program
     //.option('-t, --type <type>', 'export image type (svg or png)', /^(svg|png)$/i, 'svg')
     .option('-f, --format <format>', 'export data format (html, json or img)', /^(html|json|img)$/i, 'html')
     .option('-n, --nodes <file>', 'path to a file with custom node descriptions')
-    .option('-s, --stdout', "print results to the stdout (only for file input)")
+    .option('-s, --stdout', "print results to the stdout (only for file input and html/json output)")
     .parse(process.argv);
 
 program.type = 'svg';
@@ -40,6 +40,11 @@ if (program.nodes) {
     } else {
         options.nodes = program.nodes;
     }
+}
+
+if (program.format === 'img' && program.stdout) {
+    console.error("[flow-drawer] Option --stdout isn't supported for img export format");
+    process.exit(1);
 }
 
 const stat = fs.lstatSync(inputFileOrDirValue);

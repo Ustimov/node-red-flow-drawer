@@ -200,7 +200,7 @@ Options:
   -v, --version          output the version number
   -f, --format <format>  export data format (html, json or img) (default: html)
   -n, --nodes <file>     path to a file with custom node descriptions
-  -s, --stdout           print results to the stdout (only for file input)
+  -s, --stdout           print results to the stdout (only for file input and html/json output)
   -h, --help             output usage information
 ```
 
