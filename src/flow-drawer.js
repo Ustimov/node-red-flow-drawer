@@ -36,7 +36,7 @@ function FlowDrawer(flow, options) {
     var oldCreateElement = window.document.createElement;
     window.document.createElement = function (el) {
         if (el === 'canvas') {
-            return createCanvas(500, 500);
+            return createCanvas(500, 500, 'svg');
         } else {
             return oldCreateElement.bind(window.document)(el);
         }
@@ -46,7 +46,9 @@ function FlowDrawer(flow, options) {
     const svgSaver = new SvgSaver(window);
 
     function draw (type) {
-        // TODO: use type
+        if (type !== 'svg' && type !== 'png') {
+            throw new Error(`Not supported type: ${type}`);
+        }
         return new Promise((resolve, reject) => {
             RED.nodes.import(flow);
     
@@ -63,7 +65,7 @@ function FlowDrawer(flow, options) {
                 } else {
                     RED.workspaces.show(id);
                     const el = RED.view.redraw(true);
-                    return svgSaver.svgAsDataUri(el).then(function (uri) {
+                    const callback = function (uri) {
                         images.push(uri);
                         const promise = drawWorkspacesWithIds(ids);
                         if (promise) {
@@ -71,7 +73,12 @@ function FlowDrawer(flow, options) {
                         } else {
                             resolve(images);
                         }
-                    });
+                    };
+                    if (type === 'svg') {
+                        return svgSaver.svgAsDataUri(el).then(callback);
+                    } else {
+                        return svgSaver.svgAsPngUri(el).then(callback);
+                    }
                 }
             }
         })

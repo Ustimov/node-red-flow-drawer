@@ -20,7 +20,7 @@ program
     .option('-s, --stdout', "print results to the stdout (only for file input and html/json output)")
     .parse(process.argv);
 
-program.type = 'svg';
+program.type = 'png';
 
 if (typeof inputFileOrDirValue === 'undefined') {
     console.error('[flow-drawer] You need to specify an input file or a directory');
