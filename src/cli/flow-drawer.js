@@ -81,13 +81,16 @@ if (stat.isFile()) {
 }
 
 function draw (files) {
+    if (files.length === 0) {
+        return;
+    }
     let file = files.pop();
     if (path.extname(file) === '.json') {
         processFile(file).then(() => {
-            if (files.length > 0) {
-                draw(files);
-            }
+            draw(files);
         });
+    } else {
+        draw(files);
     }
 }
 
