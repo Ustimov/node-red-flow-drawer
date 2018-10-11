@@ -1,6 +1,6 @@
 {
   "name": "node-red-flow-drawer",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A Node-RED flow drawer",
   "main": "src/flow-drawer.js",
   "scripts": {

@@ -8,7 +8,7 @@ let inputFileOrDirValue;
 let outputDirValue;
 
 program
-    .version('0.0.3', '-v, --version')
+    .version('0.0.4', '-v, --version')
     .arguments('<inputFileOrDir> [outputDir]')
     .action((inputFileOrDir, outputDir) => {
         inputFileOrDirValue = inputFileOrDir;
