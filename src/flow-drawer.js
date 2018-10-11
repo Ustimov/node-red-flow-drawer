@@ -36,7 +36,7 @@ function FlowDrawer(flow, options) {
     var oldCreateElement = window.document.createElement;
     window.document.createElement = function (el) {
         if (el === 'canvas') {
-            return createCanvas(500, 500);
+            return createCanvas(500, 500, 'svg');
         } else {
             return oldCreateElement.bind(window.document)(el);
         }

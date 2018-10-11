@@ -10,3 +10,4 @@ addons:
       - libgif-dev
       - build-essential
       - g++
+      - librsvg2-bin
