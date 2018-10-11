@@ -1,6 +1,6 @@
 const chai = require('chai');
 const assert = chai.assert;
-const { performance } = require('perf_hooks');
+const now = require("performance-now")
 const mute = require('mute');
 const FlowDrawer = require('./../src/flow-drawer');
 
@@ -16,9 +16,9 @@ describe('FlowDrawer', function () {
                 unmute();
                 assert.isArray(images);
                 assert.lengthOf(images, 1);
-                const t0 = performance.now();
+                const t0 = now();
                 flowDrawer.draw('svg').then((i) => {
-                    const t1 = performance.now();
+                    const t1 = now();
                     assert.equal(i, images);
                     assert.isBelow(t1 - t0, 1);
                     done();
