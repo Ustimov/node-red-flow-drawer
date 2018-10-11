@@ -241,7 +241,6 @@ See [JavaScript API](#custom-node-descriptions) section for details.
 * Handle access to RED context from custom node descriptions
 * PNG support
  
- ## License
+## License
 
- [MIT](/LICENSE)
- 
+[MIT](/LICENSE)
