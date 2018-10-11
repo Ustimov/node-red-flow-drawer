@@ -233,8 +233,6 @@ See [JavaScript API](#custom-node-descriptions) section for details.
 
 ## TODO
 
-* Prettify / lint / minify
-* Cache drawnings
 * Remove redundant styles
 * Check why output has other fonts
 * Handle unnamed nodes

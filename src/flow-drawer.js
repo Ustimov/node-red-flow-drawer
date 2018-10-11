@@ -44,9 +44,14 @@ function FlowDrawer(flow, options) {
     window.Image = Image;
 
     const svgSaver = new SvgSaver(window);
+    let cache = null;
 
-    function draw (type) {
-        // TODO: use type
+    function draw (type) { // TODO: use type
+        if (cache !== null) {
+            return new Promise((resolve, reject) => {
+                resolve(cache);
+            });
+        }
         return new Promise((resolve, reject) => {
             RED.nodes.import(flow);
     
@@ -74,7 +79,7 @@ function FlowDrawer(flow, options) {
                     });
                 }
             }
-        })
+        }).then((results) => cache = results);
     }
 
     return {
