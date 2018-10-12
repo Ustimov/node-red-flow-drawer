@@ -41,7 +41,7 @@ The library depends on [node canvas v2](https://github.com/Automattic/node-canva
 
 ```javascript
 // index.js
-const fs = require('fs');
+const fs = require("fs");
 const FlowDrawer = require("node-red-flow-drawer");
  
  
@@ -65,24 +65,6 @@ new FlowDrawer(flows, options)
 ```
 node index.js
 ```
-
-During running may appear next messages:
-
-```
-Invalid CSS selector "input::-webkit-input-placeholder,div[contenteditable="true"]::-webkit-input-placeholder,textarea::-webkit-input-placeholder" SyntaxError: unknown pseudo-class selector '::-webkit-input-placeholder'
-    at emit (C:\Users\XI333901\Documents\Projects\flow-drawer-test\node_modules\nwsapi\src\nwsapi.js:559:17)
-    at compileSelector (C:\Users\XI333901\Documents\Projects\flow-drawer-test\node_modules\nwsapi\src\nwsapi.js:1272:17)
-    at compile (C:\Users\XI333901\Documents\Projects\flow-drawer-test\node_modules\nwsapi\src\nwsapi.js:753:23)
-    at collect (C:\Users\XI333901\Documents\Projects\flow-drawer-test\node_modules\nwsapi\src\nwsapi.js:1516:18)
-    at _querySelectorAll (C:\Users\XI333901\Documents\Projects\flow-drawer-test\node_modules\nwsapi\src\nwsapi.js:1456:18)
-    at Object._querySelector [as first] (C:\Users\XI333901\Documents\Projects\flow-drawer-test\node_modules\nwsapi\src\nwsapi.js:1387:14)
-    at SVGSVGElementImpl.querySelector (C:\Users\XI333901\Documents\Projects\flow-drawer-test\node_modules\jsdom\lib\jsdom\living\nodes\ParentNode-impl.js:63:44)
-    at SVGSVGElement.querySelector (C:\Users\XI333901\Documents\Projects\flow-drawer-test\node_modules\jsdom\lib\jsdom\living\generated\Element.js:703:47)
-    at query (C:\Users\XI333901\Documents\Projects\flow-drawer-test\node_modules\svg-saver-node\lib\svg-saver-node.js:102:17)
-    at C:\Users\XI333901\Documents\Projects\flow-drawer-test\node_modules\svg-saver-node\lib\svg-saver-node.js:220:15
-```
-
-It's related to internal CSS styles, doesn't influence on the end result and will be removed in next releases.
 
 #### Output
 
@@ -233,7 +215,6 @@ See [JavaScript API](#custom-node-descriptions) section for details.
 
 ## TODO
 
-* Remove redundant styles
 * Check why output has other fonts
 * Handle unnamed nodes
 * Handle access to RED context from custom node descriptions
