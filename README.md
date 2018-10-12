@@ -78,9 +78,8 @@ node index.js
 
 Custom node descriptions is a file that contains a part of the Node-RED node [HTML file](https://nodered.org/docs/creating-nodes/node-html), namely the part with **RED.nodes.registerType** calls.
 
-Look at the example for [node-red-contrib-cache](https://github.com/CANDY-LINE/node-red-contrib-cache):
 <details>
-<summary>example</summary>
+<summary>Example for <a href="https://github.com/CANDY-LINE/node-red-contrib-cache">node-red-contrib-cache</a>.</summary>
 
 *Note the first line of the file. It's required to get access to current context.*
 
@@ -155,8 +154,8 @@ RED.nodes.registerType('Cache',{
   },
 });
 ```
-
 </details>
+<br>
 
 You can register in one file as much nodes as you want.
 
