@@ -12,10 +12,14 @@ function applyTypes(path) {
 }
 
 function FlowDrawer(flow, options) {
-
     if (!flow) {
         throw new Error('Invalid flow');    
     }
+    
+    const defaults = {
+        delay: 100
+    };
+    options = Object.assign(defaults, options);
 
     const RED = _RED();
 
@@ -60,7 +64,7 @@ function FlowDrawer(flow, options) {
 
             // Timeout for styles loading
             const workspaceIds = Object.keys(RED.workspaces.tabs());
-            setTimeout(() => drawWorkspacesWithIds(workspaceIds).catch((err) => console.log(err)), 100); 
+            setTimeout(() => drawWorkspacesWithIds(workspaceIds).catch((err) => console.log(err)), options.delay); 
             
             function drawWorkspacesWithIds (ids) {
                 const id = ids.pop();

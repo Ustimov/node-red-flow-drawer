@@ -47,9 +47,11 @@ const FlowDrawer = require("node-red-flow-drawer");
  
 const flows = [{"id":"bfc121b1.6847","type":"tab","label":"Flow 2","disabled":false,"info":""},{"id":"c1f897dd.90a048","type":"http in","z":"bfc121b1.6847","name":"","url":"/in","method":"get","upload":false,"swaggerDoc":"","x":200,"y":540,"wires":[["9b1c0d8f.216f2"]]},{"id":"9b1c0d8f.216f2","type":"http response","z":"bfc121b1.6847","name":"","statusCode":"200","headers":{},"x":500,"y":540,"wires":[]}];
  
-const options = {};
-// options.nodes = "path/to/a/custom/node/file";
- 
+const options = {
+  // nodes: "path/to/a/custom/node/file",
+  // delay: 100
+};
+
 new FlowDrawer(flows, options)
     .draw("svg")
     .then((images) => {
@@ -73,6 +75,7 @@ node index.js
 ### Options
 
 * **nodes** - path to a file with custom node descriptions
+* **delay** - delay for loading CSS styles in ms (default: 100). Increase this value if you face problems with look and feel of the result image. Also you may try to decrease the value if your system enough performant.
 
 ### Custom node descriptions
 
