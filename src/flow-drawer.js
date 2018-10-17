@@ -17,13 +17,13 @@ function FlowDrawer(flow, options) {
     }
     
     const defaults = {
-        delay: 100
+        // empty
     };
     options = Object.assign(defaults, options);
 
     const RED = _RED();
 
-    if (options && options.nodes) {
+    if (options.nodes) {
         applyTypes.call({RED}, options.nodes);
     }
 
@@ -36,6 +36,12 @@ function FlowDrawer(flow, options) {
             </body>
         </html>`, {
         resources: "usable"
+    });
+
+    const onLoadPromise = new Promise((resolve, reject) => {
+        window.onload = () => {
+            resolve();
+        };
     });
 
     var oldCreateElement = window.document.createElement;
@@ -62,9 +68,10 @@ function FlowDrawer(flow, options) {
     
             const images = [];
 
-            // Timeout for styles loading
             const workspaceIds = Object.keys(RED.workspaces.tabs());
-            setTimeout(() => drawWorkspacesWithIds(workspaceIds).catch((err) => console.log(err)), options.delay); 
+
+            // Wait for resourse loading
+            onLoadPromise.then(() => drawWorkspacesWithIds(workspaceIds).catch((err) => console.log(err)))
             
             function drawWorkspacesWithIds (ids) {
                 const id = ids.pop();

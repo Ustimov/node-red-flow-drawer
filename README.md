@@ -49,7 +49,6 @@ const flows = [{"id":"bfc121b1.6847","type":"tab","label":"Flow 2","disabled":fa
  
 const options = {
   // nodes: "path/to/a/custom/node/file",
-  // delay: 100
 };
 
 new FlowDrawer(flows, options)
@@ -75,7 +74,6 @@ node index.js
 ### Options
 
 * **nodes** - path to a file with custom node descriptions
-* **delay** - delay for loading CSS styles in ms (default: 100). Increase this value if you face problems with look and feel of the result image. Also you may try to decrease the value if your system enough performant.
 
 ### Custom node descriptions
 
