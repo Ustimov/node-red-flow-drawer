@@ -15,10 +15,26 @@
  **/
 
 module.exports = (function() {
+
+    const fs = require("fs");
+    const path = require("path");
+
+    const localePath = path.join(__dirname, '../../locales/messages.json');
+    const data = fs.readFileSync(localePath);
+    const locale = JSON.parse(data);
+
     return {
         init: function(RED) {
             RED["_"] = function(arg) {
-                return arg || "";
+                if (arg) {
+                    const parts = arg.split(".");
+                    let root = locale;
+                    for (let part of parts) {
+                        root = root[part];
+                    }
+                    return root;
+                }
+                return "";
             }
         }
     }

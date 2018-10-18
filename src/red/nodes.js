@@ -48,9 +48,7 @@ module.exports = function(RED) {
             registerNodeType: function(nt,def) {
                 nodeDefinitions[nt] = def;
                 def.type = nt;
-                def["_"] = function(arg) {
-                    return arg || "";
-                }
+                def["_"] = RED._;
             },
             getNodeType: function(nt) {
                 return nodeDefinitions[nt];
