@@ -42,7 +42,12 @@ module.exports = (function() {
     return {
         init: function(RED) {
             RED["_"] = function(str, args) {
-                let locale = localeForString(str);
+                let locale = str;
+                try {
+                    locale = localeForString(str)
+                } catch (err) {
+                    console.error(err);
+                }
                 if (args) {
                     for (let arg in args) {
                         locale = locale.replace(`__${arg}__`, args[arg]);
