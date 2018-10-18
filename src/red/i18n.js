@@ -23,18 +23,28 @@ module.exports = (function() {
     const data = fs.readFileSync(localePath);
     const locale = JSON.parse(data);
 
+    function localeForString(str) {
+        if (str) {
+            const parts = str.split(".");
+            let root = locale;
+            for (let part of parts) {
+                root = root[part];
+            }
+            return root;
+        }
+        return "";
+    }
+
     return {
         init: function(RED) {
-            RED["_"] = function(arg) {
-                if (arg) {
-                    const parts = arg.split(".");
-                    let root = locale;
-                    for (let part of parts) {
-                        root = root[part];
+            RED["_"] = function(str, args) {
+                let locale = localeForString(str);
+                if (args) {
+                    for (let arg in args) {
+                        locale = locale.replace(`__${arg}__`, args[arg]);
                     }
-                    return root;
                 }
-                return "";
+                return locale;
             }
         }
     }
