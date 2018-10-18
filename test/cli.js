@@ -183,7 +183,7 @@ describe('CLI', function () {
                     exec(`${CLI} ${INPUT_DIR} ${OUTPUT_DIR} --format=json`, function (err, stdout, stderr) {
                         assert.isNull(err);
                         assert.isEmpty(stdout);
-                        assert.isEmpty(stderr);
+                        assert.isEmpty(stderr.trim());
                         const flow1 = JSON.parse(fs.readFileSync(`${OUTPUT_DIR}/flow1.json`));
                         assert.isArray(flow1);
                         assert.lengthOf(flow1, 1);
@@ -286,7 +286,7 @@ describe('CLI', function () {
                     exec(`${CLI} ${INPUT_DIR} ${OUTPUT_DIR} --format=html`, function (err, stdout, stderr) {
                         assert.isNull(err);
                         assert.isEmpty(stdout);
-                        assert.isEmpty(stderr);
+                        assert.isEmpty(stderr.trim());
                         assertImageTagCountInFile(`${OUTPUT_DIR}/flow1.html`, 1);
                         assertImageTagCountInFile(`${OUTPUT_DIR}/flow2.html`, 2);
                         done();
@@ -387,7 +387,7 @@ describe('CLI', function () {
                         exec(`${CLI} ${INPUT_DIR} ${OUTPUT_DIR} --format=img`, function (err, stdout, stderr) {
                             assert.isNull(err);
                             assert.isEmpty(stdout);
-                            assert.isEmpty(stderr);
+                            assert.isEmpty(stderr.trim());
                             assert.isTrue(fs.existsSync(`${OUTPUT_DIR}/flow1-0.svg`));
                             assert.isTrue(fs.existsSync(`${OUTPUT_DIR}/flow2-0.svg`));
                             assert.isTrue(fs.existsSync(`${OUTPUT_DIR}/flow2-1.svg`));

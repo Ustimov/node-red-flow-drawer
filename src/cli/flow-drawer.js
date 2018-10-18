@@ -2,6 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const program = require('commander');
+const ProgressBar = require('progress');
 const FlowDrawer = require('./../flow-drawer');
 
 let inputFileOrDirValue;
@@ -64,6 +65,8 @@ if (typeof outputDirValue === 'undefined') {
     process.exit(1);
 }
 
+let progressBar;
+
 if (stat.isFile()) {
     processFile(inputFileOrDirValue);
 } else if (stat.isDirectory()) {
@@ -72,6 +75,10 @@ if (stat.isFile()) {
             console.error(err);
             process.exit(1);
         } else {
+            progressBar = new ProgressBar('[flow-drawer] Processing [:bar] :percent :elapseds', {
+                width: 20,
+                total: results.length + 1
+            });
             draw(results);
         }
     });
@@ -81,6 +88,7 @@ if (stat.isFile()) {
 }
 
 function draw (files) {
+    progressBar.tick();
     if (files.length === 0) {
         return;
     }
