@@ -160,8 +160,6 @@ RED.nodes.registerType('Cache',{
 
 You can register in one file as much nodes as you want.
 
-*Some node definitions may access context objects such as **RED.validators**. This can cause fail during usage of the library. If you faced such issue, it's recommended to replace this parts of the code.*
-
 ## CLI
 
 ### Installation
