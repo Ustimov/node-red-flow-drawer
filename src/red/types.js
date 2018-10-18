@@ -3,6 +3,7 @@ module.exports = (function () {
     let RED;
 
     function register() {
+        /* sentiment */
         RED.nodes.registerType('sentiment',{
             category: 'analysis-function',
             color:"#E6E0F8",
@@ -26,16 +27,18 @@ module.exports = (function () {
                 $("#node-input-property").typedInput({default:'msg',types:['msg']});
             }
         });
+        /* /sentiment */
 
+        /* inject */
         RED.nodes.registerType('inject',{
             category: 'input',
             color:"#a6bbcf",
             defaults: {
                 name: {value:""},
                 topic: {value:""},
-                payload: {value:""},
+                payload: {value:"", validate: RED.validators.typedInput("payloadType")},
                 payloadType: {value:"date"},
-                repeat: {value:""},
+                repeat: {value:"", validate:function(v) { return ((v === "") || (RED.validators.number(v) && (v >= 0) && (v <= 2147483))) }},
                 crontab: {value:""},
                 once: {value:false},
                 onceDelay: {value:0.1}
@@ -106,13 +109,13 @@ module.exports = (function () {
                     this.payloadType = "str";
                 }
                 $("#node-input-payloadType").val(this.payloadType);
-
+    
                 $("#node-input-payload").typedInput({
                     default: 'str',
                     typeField: $("#node-input-payloadType"),
                     types:['flow','global','str','num','bool','json','bin','date','env']
                 });
-
+    
                 $("#inject-time-type-select").change(function() {
                     $("#node-input-crontab").val('');
                     var id = $("#inject-time-type-select").val();
@@ -126,11 +129,11 @@ module.exports = (function () {
                         $("#node-input-once").prop('checked', false);
                     }
                 });
-
+    
                 $("#node-input-once").change(function() {
                     $("#node-input-onceDelay").attr('disabled', !$("#node-input-once").prop('checked'));
                 })
-
+    
                 $(".inject-time-times").each(function() {
                     for (var i=0; i<24; i++) {
                         var l = (i<10?"0":"")+i+":00";
@@ -153,12 +156,12 @@ module.exports = (function () {
                         }
                     }
                 });
-
+    
                 $(".inject-time-count").spinner({
                     //max:60,
                     min:1
                 });
-
+    
                 var repeattype = "none";
                 if (this.repeat != "" && this.repeat != 0) {
                     repeattype = "interval";
@@ -224,7 +227,7 @@ module.exports = (function () {
                             // 23,0 or 17-23,0-10 or 23,0-2 or 17-23,0
                             var startparts = timeparts[0].split("-");
                             start = startparts[0];
-
+    
                             var endparts = timeparts[1].split("-");
                             if (endparts.length == 1) {
                                 end = Number(endparts[0])+1;
@@ -234,21 +237,21 @@ module.exports = (function () {
                         }
                         $("#inject-time-interval-time-end").val(end);
                         $("#inject-time-interval-time-start").val(start);
-
+    
                     }
                 } else {
                     $("#inject-time-type-select").val("none");
                 }
-
+    
                 $(".inject-time-row").hide();
                 $("#inject-time-type-select").val(repeattype);
                 $("#inject-time-row-"+repeattype).show();
-
+    
                 $("#node-input-payload").typedInput('type',this.payloadType);
-
+    
                 $("#inject-time-type-select").change();
                 $("#inject-time-interval-time-start").change();
-
+    
             },
             oneditsave: function() {
                 var repeat = "";
@@ -337,7 +340,7 @@ module.exports = (function () {
                         else { crontab = ""; }
                     }
                 }
-
+    
                 $("#node-input-repeat").val(repeat);
                 $("#node-input-crontab").val(crontab);
             },
@@ -360,7 +363,7 @@ module.exports = (function () {
                         label = label.substring(0,50)+"...";
                     }
                     label = label.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-
+    
                     if (this.payloadType === "date") { label = this._("inject.timestamp"); }
                     if (this.payloadType === "none") { label = this._("inject.blank"); }
                     var node = this;
@@ -385,7 +388,9 @@ module.exports = (function () {
                 }
             }
         });
+        /* /inject */
 
+        /* catch */
         RED.nodes.registerType('catch',{
             category: 'input',
             color:"#e49191",
@@ -415,22 +420,22 @@ module.exports = (function () {
                     height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
                     $("#node-input-catch-target-container-div").css("height",height+"px");
                 };
-
+    
                 function createNodeList() {
                     var scope = node.scope || [];
                     nodeList.empty();
-
+    
                     var candidateNodes = RED.nodes.filterNodes({z:node.z});
                     var allChecked = true;
-
+    
                     candidateNodes.forEach(function(n) {
                         if (n.id === node.id) {
                             return;
                         }
                         var isChecked = scope.indexOf(n.id) !== -1;
-
+    
                         allChecked = allChecked && isChecked;
-
+    
                         var container = $('<li/>',{class:"node-input-target-node"});
                         var row = $('<label/>',{for:"node-input-target-node-"+n.id}).appendTo(container);
                         $('<input>',{type:"checkbox",class:"node-input-target-node-checkbox",id:"node-input-target-node-"+n.id})
@@ -468,25 +473,25 @@ module.exports = (function () {
                         if (sublabel) {
                             $('<span>',{class:"node-input-target-node-sublabel"}).text(sublabel).appendTo(row);
                         }
-
+    
                         container.appendTo(nodeList);
                     });
-
+    
                     $(".node-input-target-node-checkbox").change(function() {
                         if (!this.checked) {
                             $("#node-input-target-node-checkbox-all").prop('checked',false);
                         }
                     });
-
+    
                     $("#node-input-target-node-checkbox-all").prop('checked',allChecked);
-
+    
                     sortNodeList('label');
                 }
-
+    
                 function sortNodeList(sortOn) {
                     var currentSort = nodeList.data('currentSort');
                     var currentSortOrder = nodeList.data('currentSortOrder');
-
+    
                     if (!currentSort) {
                         currentSort = sortOn;
                         currentSortOrder = 'a';
@@ -500,11 +505,11 @@ module.exports = (function () {
                     }
                     nodeList.data('currentSort',currentSort);
                     nodeList.data('currentSortOrder',currentSortOrder);
-
+    
                     $("#node-input-catch-target-container-div .fa").hide();
                     $(".node-input-catch-sort-"+currentSort+"-"+currentSortOrder).show();
-
-
+    
+    
                     var items = nodeList.find("li").get();
                     items.sort(function(a,b) {
                         var labelA = $(a).find(".node-input-target-node-"+currentSort).text().toLowerCase();
@@ -521,7 +526,7 @@ module.exports = (function () {
                     e.preventDefault();
                     sortNodeList('label');
                 });
-
+    
                 $("#node-input-target-sort-type").click(function(e) {
                     e.preventDefault();
                     sortNodeList('sublabel');
@@ -529,9 +534,9 @@ module.exports = (function () {
                 $("#node-input-target-node-checkbox-all").change(function() {
                     $(".node-input-target-node-checkbox").prop('checked',this.checked);
                 });
-
-
-
+    
+    
+    
                 $("#node-input-scope-select").change(function(e) {
                     var scope = $(this).val();
                     if (scope === "target") {
@@ -567,7 +572,9 @@ module.exports = (function () {
                 this.resize();
             }
         });
-
+        /* /catch */
+        
+        /* status */
         RED.nodes.registerType('status',{
             category: 'input',
             color:"#c0edc0",
@@ -597,22 +604,22 @@ module.exports = (function () {
                     height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
                     $("#node-input-status-target-container-div").css("height",height+"px");
                 };
-
+    
                 function createNodeList() {
                     var scope = node.scope || [];
                     nodeList.empty();
-
+    
                     var candidateNodes = RED.nodes.filterNodes({z:node.z});
                     var allChecked = true;
-
+    
                     candidateNodes.forEach(function(n) {
                         if (n.id === node.id) {
                             return;
                         }
                         var isChecked = scope.indexOf(n.id) !== -1;
-
+    
                         allChecked = allChecked && isChecked;
-
+    
                         var container = $('<li/>',{class:"node-input-target-node"});
                         var row = $('<label/>',{for:"node-input-target-node-"+n.id}).appendTo(container);
                         $('<input>',{type:"checkbox",class:"node-input-target-node-checkbox",id:"node-input-target-node-"+n.id})
@@ -650,25 +657,25 @@ module.exports = (function () {
                         if (sublabel) {
                             $('<span>',{class:"node-input-target-node-sublabel"}).text(sublabel).appendTo(row);
                         }
-
+    
                         container.appendTo(nodeList);
                     });
-
+    
                     $(".node-input-target-node-checkbox").change(function() {
                         if (!this.checked) {
                             $("#node-input-target-node-checkbox-all").prop('checked',false);
                         }
                     });
-
+    
                     $("#node-input-target-node-checkbox-all").prop('checked',allChecked);
-
+    
                     sortNodeList('label');
                 }
-
+    
                 function sortNodeList(sortOn) {
                     var currentSort = nodeList.data('currentSort');
                     var currentSortOrder = nodeList.data('currentSortOrder');
-
+    
                     if (!currentSort) {
                         currentSort = sortOn;
                         currentSortOrder = 'a';
@@ -682,11 +689,11 @@ module.exports = (function () {
                     }
                     nodeList.data('currentSort',currentSort);
                     nodeList.data('currentSortOrder',currentSortOrder);
-
+    
                     $("#node-input-status-target-container-div .fa").hide();
                     $(".node-input-status-sort-"+currentSort+"-"+currentSortOrder).show();
-
-
+    
+    
                     var items = nodeList.find("li").get();
                     items.sort(function(a,b) {
                         var labelA = $(a).find(".node-input-target-node-"+currentSort).text().toLowerCase();
@@ -703,7 +710,7 @@ module.exports = (function () {
                     e.preventDefault();
                     sortNodeList('label');
                 });
-
+    
                 $("#node-input-target-sort-type").click(function(e) {
                     e.preventDefault();
                     sortNodeList('sublabel');
@@ -711,7 +718,7 @@ module.exports = (function () {
                 $("#node-input-target-node-checkbox-all").change(function() {
                     $(".node-input-target-node-checkbox").prop('checked',this.checked);
                 });
-
+    
                 $("#node-input-scope-select").change(function(e) {
                     var scope = $(this).val();
                     if (scope === "target") {
@@ -747,7 +754,10 @@ module.exports = (function () {
                 this.resize();
             }
         });
+        /* /status */
 
+        /* debug */
+        var subWindow = null;
         RED.nodes.registerType('debug',{
             category: 'output',
             defaults: {
@@ -796,7 +806,7 @@ module.exports = (function () {
                             node.changed = true;
                             node.dirty = true;
                             RED.nodes.dirty(true);
-                            // RED.history.push(historyEvent);
+                            RED.history.push(historyEvent);
                             RED.view.redraw();
                             if (xhr.status == 200) {
                                 RED.notify(node._("debug.notification.activated",{label:label}),"success");
@@ -852,17 +862,17 @@ module.exports = (function () {
 
                 var uiComponents = RED.debug.init(options);
 
-                // RED.sidebar.addTab({
-                //     id: "debug",
-                //     label: this._("debug.sidebar.label"),
-                //     name: this._("debug.sidebar.name"),
-                //     content: uiComponents.content,
-                //     toolbar: uiComponents.footer,
-                //     enableOnEdit: true,
-                //     pinned: true,
-                //     iconClass: "fa fa-bug"
-                // });
-                // RED.actions.add("core:show-debug-tab",function() { // RED.sidebar.show('debug'); });
+                RED.sidebar.addTab({
+                    id: "debug",
+                    label: this._("debug.sidebar.label"),
+                    name: this._("debug.sidebar.name"),
+                    content: uiComponents.content,
+                    toolbar: uiComponents.footer,
+                    enableOnEdit: true,
+                    pinned: true,
+                    iconClass: "fa fa-bug"
+                });
+                RED.actions.add("core:show-debug-tab",function() { RED.sidebar.show('debug'); });
 
                 var that = this;
                 RED._debug = function(msg) {
@@ -946,10 +956,10 @@ module.exports = (function () {
             },
             onpaletteremove: function() {
                 RED.comms.unsubscribe("debug",this.handleDebugMessage);
-                // RED.sidebar.removeTab("debug");
+                RED.sidebar.removeTab("debug");
                 RED.events.off("workspace:change", this.refreshMessageList);
                 window.removeEventListener("message",this.handleWindowMessage);
-                // RED.actions.remove("core:show-debug");
+                RED.actions.remove("core:show-debug");
 
                 delete RED._debug;
             },
@@ -999,7 +1009,197 @@ module.exports = (function () {
                 }
             }
         });
+        /* /debug */
 
+        /* link */
+        function sortNodeList(nodeList,sortOn,sortOnSecond) {
+            var currentSort = nodeList.data('currentSort');
+            var currentSortOrder = nodeList.data('currentSortOrder');
+    
+            if (!currentSort) {
+                currentSort = sortOn;
+                currentSortOrder = 'a';
+            } else {
+                if (currentSort === sortOn) {
+                    currentSortOrder = (currentSortOrder === 'a'?'d':'a');
+                } else {
+                    currentSortOrder = 'a';
+                }
+                currentSort = sortOn;
+            }
+            nodeList.data('currentSort',currentSort);
+            nodeList.data('currentSortOrder',currentSortOrder);
+    
+            $("#node-input-link-container-div .fa").hide();
+            $(".node-input-link-sort-"+currentSort+"-"+currentSortOrder).show();
+    
+    
+            var items = nodeList.find("li").get();
+            items.sort(function(a,b) {
+                var labelA = $(a).find(".node-input-link-node-"+currentSort).text().toLowerCase();
+                var labelB = $(b).find(".node-input-link-node-"+currentSort).text().toLowerCase();
+                if (labelA < labelB) { return currentSortOrder==='a'?-1:1; }
+                if (labelA > labelB) { return currentSortOrder==='a'?1:-1; }
+    
+                if (sortOnSecond) {
+                    labelA = $(a).find(".node-input-link-node-"+sortOnSecond).text().toLowerCase();
+                    labelB = $(b).find(".node-input-link-node-"+sortOnSecond).text().toLowerCase();
+                    if (labelA < labelB) { return currentSortOrder==='a'?-1:1; }
+                    if (labelA > labelB) { return currentSortOrder==='a'?1:-1; }
+                }
+                return 0;
+            });
+            $.each(items, function(i, li) {
+                nodeList.append(li);
+            });
+        }
+        function onEditPrepare(node,targetType) {
+            if (!node.links) {
+                node.links = [];
+            }
+            node.oldLinks = [];
+    
+            $('<div id="node-input-link-container-div" style="min-height: 100px;position: relative;   box-sizing: border-box; border-radius: 2px; height: 180px;  border: 1px solid #ccc;overflow:hidden; ">'+
+                '    <div style="box-sizing: border-box; line-height: 20px; font-size: 0.8em; border-bottom: 1px solid #ddd; height: 20px;">'+
+                '        <div style="display: inline-block;margin-left: 5px;"><a id="node-input-link-sort-label" href="#" data-i18n="[title]node-red:link.label.sortByLabel"><span data-i18n="node-red:link.label.node">name</span> <i class="node-input-link-sort-label-a fa fa-caret-down"></i><i class="node-input-link-sort-label-d fa fa-caret-up"></i></a></div>'+
+                '        <div style="position: absolute; right: 10px; width: 50px; display: inline-block; text-align: right;"><a id="node-input-link-sort-type" href="#" data-i18n="[title]node-red:link.label.sortByFlow"><i class="node-input-link-sort-sublabel-a fa fa-caret-down"></i><i class="node-input-link-sort-sublabel-d fa fa-caret-up"></i> <span data-i18n="node-red:link.label.type">flow</span></a></div>'+
+                '    </div>'+
+                '    <div style="background: #fbfbfb; box-sizing: border-box; position:absolute; top:20px;bottom:0;left:0px;right:0px; overflow-y: scroll; overflow-x: hidden;">'+
+                '        <ul id="node-input-link-container" style=" list-style-type:none; margin: 0;"></ul>'+
+                '    </div>'+
+                '</div>').appendTo('.node-input-link-row');
+    
+            var nodeList = $("#node-input-link-container");
+            var candidateNodes = RED.nodes.filterNodes({type:targetType});
+            var inSubflow = !!RED.nodes.subflow(node.z);
+            candidateNodes.forEach(function(n) {
+                if (inSubflow) {
+                    if (n.z !== node.z) {
+                        return;
+                    }
+                } else {
+                    if (!!RED.nodes.subflow(n.z)) {
+                        return;
+                    }
+                }
+                var isChecked = false;
+    
+                isChecked = (node.links.indexOf(n.id) !== -1) || (n.links||[]).indexOf(node.id) !== -1;
+    
+                if (isChecked) {
+                    node.oldLinks.push(n.id);
+                }
+    
+                var container = $('<li/>',{class:"node-input-link-node"});
+                var row = $('<label/>',{for:"node-input-link-node-"+n.id}).appendTo(container);
+                $('<input>',{type:"checkbox",class:"node-input-link-node-checkbox",id:"node-input-link-node-"+n.id})
+                    .data('node-id',n.id)
+                    .prop('checked', isChecked)
+                    .appendTo(row);
+                container.on('mouseover',function(e) {
+                    n.highlighted = true;
+                    n.dirty = true;
+                    RED.view.redraw();
+                });
+                container.on('mouseout',function(e) {
+                    n.highlighted = false;
+                    n.dirty = true;
+                    RED.view.redraw();
+                });
+                var labelSpan = $('<span>');
+                var label = n.name||n.id;
+                var sublabel;
+                var tab = RED.nodes.workspace(n.z);
+                if (tab) {
+                    sublabel = tab.label||tab.id;
+                } else {
+                    tab = RED.nodes.subflow(n.z);
+                    sublabel = "subflow : "+tab.name;
+                }
+                $('<span>',{class:"node-input-link-node-label",style:"white-space:nowrap"}).text(label).appendTo(row);
+                if (sublabel) {
+                    $('<span>',{class:"node-input-link-node-sublabel"}).text(sublabel).appendTo(row);
+                }
+                container.appendTo(nodeList);
+            });
+    
+            sortNodeList(nodeList,'sublabel','label');
+    
+            $("#node-input-link-sort-label").click(function(e) {
+                e.preventDefault();
+                sortNodeList(nodeList,'label');
+            });
+    
+            $("#node-input-link-sort-type").click(function(e) {
+                e.preventDefault();
+                sortNodeList(nodeList,'sublabel');
+            });
+        }
+    
+        function resizeNodeList() {
+            var rows = $("#dialog-form>div:not(.node-input-link-row)");
+            var height = $("#dialog-form").height();
+            for (var i=0;i<rows.size();i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            var editorRow = $("#dialog-form>div.node-input-link-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+            $("#node-input-link-container-div").css("height",height+"px");
+        }
+    
+        function onEditSave(node) {
+            node.links = [];
+            $(".node-input-link-node-checkbox").each(function(n) {
+                if ($(this).prop("checked")) {
+                    node.links.push($(this).data('node-id'));
+                }
+            });
+            node.oldLinks.sort();
+            node.links.sort();
+            var nodeMap = {};
+            var length = Math.max(node.oldLinks.length,node.links.length);
+            for (var i=0;i<length;i++) {
+                if (i<node.oldLinks.length) {
+                    nodeMap[node.oldLinks[i]] = nodeMap[node.oldLinks[i]]||{};
+                    nodeMap[node.oldLinks[i]].old = true;
+                }
+                if (i<node.links.length) {
+                    nodeMap[node.links[i]] = nodeMap[node.links[i]]||{};
+                    nodeMap[node.links[i]].new = true;
+                }
+            }
+            var n;
+            for (var id in nodeMap) {
+                if (nodeMap.hasOwnProperty(id)) {
+                    n = RED.nodes.node(id);
+                    if (n) {
+                        if (nodeMap[id].old && !nodeMap[id].new) {
+                            // Removed id
+                            i = n.links.indexOf(node.id);
+                            if (i > -1) {
+                                n.links.splice(i,1);
+                            }
+                        } else if (!nodeMap[id].old && nodeMap[id].new) {
+                            // Added id
+                            i = n.links.indexOf(id);
+                            if (i === -1) {
+                                n.links.push(node.id);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    
+        function onAdd() {
+            for (var i=0;i<this.links.length;i++) {
+                var n = RED.nodes.node(this.links[i]);
+                if (n && n.links.indexOf(this.id) === -1) {
+                    n.links.push(this.id);
+                }
+            }
+        }
+    
         RED.nodes.registerType('link in',{
             category: 'input',
             color:"#ddd",//"#87D8CF",
@@ -1025,10 +1225,10 @@ module.exports = (function () {
             oneditsave: function() {
                 onEditSave(this);
             },
-            // onadd: onAdd,
-            // oneditresize: resizeNodeList
+            onadd: onAdd,
+            oneditresize: resizeNodeList
         });
-
+    
         RED.nodes.registerType('link out',{
             category: 'output',
             color:"#ddd",//"#87D8CF",
@@ -1055,10 +1255,12 @@ module.exports = (function () {
             oneditsave: function() {
                 onEditSave(this);
             },
-            // onadd: onAdd,
-            // oneditresize: resizeNodeList
+            onadd: onAdd,
+            oneditresize: resizeNodeList
         });
+        /* /link */
 
+        /* exec */
         RED.nodes.registerType('exec',{
             category: 'advanced-function',
             color:"darksalmon",
@@ -1088,7 +1290,9 @@ module.exports = (function () {
                 }
             }
         });
+        /* /exec */
 
+        /* function */
         RED.nodes.registerType('function',{
             color:"#fdd0a2",
             category: 'function',
@@ -1118,7 +1322,7 @@ module.exports = (function () {
                         if (value !== this.value) { $(this).spinner("value", value); }
                     }
                 });
-
+    
                 this.editor = RED.editor.createEditor({
                     id: 'node-input-func-editor',
                     mode: 'ace/mode/javascript',
@@ -1138,16 +1342,16 @@ module.exports = (function () {
                         clearInterval: true
                     }
                 });
-
-                // RED.library.create({
-                //     url:"functions", // where to get the data from
-                //     type:"function", // the type of object the library is for
-                //     editor:this.editor, // the field name the main text body goes to
-                //     mode:"ace/mode/javascript",
-                //     fields:['name','outputs']
-                // });
+    
+                RED.library.create({
+                    url:"functions", // where to get the data from
+                    type:"function", // the type of object the library is for
+                    editor:this.editor, // the field name the main text body goes to
+                    mode:"ace/mode/javascript",
+                    fields:['name','outputs']
+                });
                 this.editor.focus();
-
+    
                 $("#node-function-expand-js").click(function(e) {
                     e.preventDefault();
                     var value = that.editor.getValue();
@@ -1196,13 +1400,15 @@ module.exports = (function () {
                 this.editor.resize();
             }
         });
+        /* /function */
 
+        /* template */
         RED.nodes.registerType('template',{
             color:"rgb(243, 181, 103)",
             category: 'function',
             defaults: {
                 name: {value:""},
-                // field: {value:"payload", validate:RED.validators.typedInput("fieldType")},
+                field: {value:"payload", validate:RED.validators.typedInput("fieldType")},
                 fieldType: {value:"msg"},
                 format: {value:"handlebars"},
                 syntax: {value:"mustache"},
@@ -1236,20 +1442,20 @@ module.exports = (function () {
                     types: ['msg','flow','global'],
                     typeField: $("#node-input-fieldType")
                 });
-
+    
                 this.editor = RED.editor.createEditor({
                     id: 'node-input-template-editor',
                     mode: 'ace/mode/html',
                     value: $("#node-input-template").val()
                 });
-                // RED.library.create({
-                //     url:"functions", // where to get the data from
-                //     type:"function", // the type of object the library is for
-                //     editor:that.editor, // the field name the main text body goes to
-                //     fields:['name','outputs']
-                // });
+                RED.library.create({
+                    url:"functions", // where to get the data from
+                    type:"function", // the type of object the library is for
+                    editor:that.editor, // the field name the main text body goes to
+                    fields:['name','outputs']
+                });
                 this.editor.focus();
-
+    
                 $("#node-input-format").change(function() {
                     var mod = "ace/mode/"+$("#node-input-format").val();
                     that.editor.getSession().setMode({
@@ -1279,20 +1485,22 @@ module.exports = (function () {
                 this.editor.resize();
             }
         });
+        /* /template */
 
+        /* delay */
         RED.nodes.registerType('delay',{
             category: 'function',
             color:"#E6E0F8",
             defaults: {
                 name: {value:""},
                 pauseType: {value:"delay", required:true},
-                // timeout: {value:"5", required:true, validate:function(v) { return RED.validators.number(v) && (v >= 0); }},
+                timeout: {value:"5", required:true, validate:function(v) { return RED.validators.number(v) && (v >= 0); }},
                 timeoutUnits: {value:"seconds"},
-                // rate: {value:"1", required:true, validate:function(v) { return RED.validators.number(v) && (v >= 0); }},
-                // nbRateUnits: {value:"1", required:false, validate:RED.validators.regex(/\d+|/)},
+                rate: {value:"1", required:true, validate:function(v) { return RED.validators.number(v) && (v >= 0); }},
+                nbRateUnits: {value:"1", required:false, validate:RED.validators.regex(/\d+|/)},
                 rateUnits: {value: "second"},
-                // randomFirst: {value:"1", required:true, validate:function(v) { return RED.validators.number(v) && (v >= 0); }},
-                // randomLast: {value:"5", required:true, validate:function(v) { return RED.validators.number(v) && (v >= 0); }},
+                randomFirst: {value:"1", required:true, validate:function(v) { return RED.validators.number(v) && (v >= 0); }},
+                randomLast: {value:"5", required:true, validate:function(v) { return RED.validators.number(v) && (v >= 0); }},
                 randomUnits: {value: "seconds"},
                 drop: {value:false}
             },
@@ -1341,14 +1549,14 @@ module.exports = (function () {
                 $( "#node-input-timeout" ).spinner({min:1});
                 $( "#node-input-rate" ).spinner({min:1});
                 $( "#node-input-nbRateUnits" ).spinner({min:1});
-
+    
                 $( "#node-input-randomFirst" ).spinner({min:0});
                 $( "#node-input-randomLast" ).spinner({min:1});
-
+    
                 $('.ui-spinner-button').click(function() {
                     $(this).siblings('input').change();
                 });
-
+    
                 $( "#node-input-nbRateUnits" ).on('change keyup', function() {
                     var $this = $(this);
                     var val = parseInt($this.val());
@@ -1367,7 +1575,7 @@ module.exports = (function () {
                         $option.html(node._(key));
                     });
                 });
-
+    
                 if (this.pauseType == "delay") {
                     $("#node-input-delay-action").val('delay');
                     $("#node-input-delay-type").val('delay');
@@ -1389,19 +1597,19 @@ module.exports = (function () {
                     $("#node-input-rate-type").val('topic');
                     $("#node-input-rate-topic-type").val('timed');
                 }
-
+    
                 if (!this.timeoutUnits) {
                     $("#node-input-timeoutUnits option").filter(function() {
                         return $(this).val() == 'seconds';
                     }).attr('selected', true);
                 }
-
+    
                 if (!this.randomUnits) {
                     $("#node-input-randomUnits option").filter(function() {
                         return $(this).val() == 'seconds';
                     }).attr('selected', true);
                 }
-
+    
                 $("#node-input-delay-action").on("change",function() {
                     if (this.value === "delay") {
                         $("#delay-details").show();
@@ -1411,7 +1619,7 @@ module.exports = (function () {
                         $("#rate-details").show();
                     }
                 }).change();
-
+    
                 $("#node-input-delay-type").on("change", function() {
                     if (this.value === "delay") {
                         $("#delay-details-for").show();
@@ -1424,7 +1632,7 @@ module.exports = (function () {
                         $("#random-details").show();
                     }
                 }).change();
-
+    
                 $("#node-input-rate-type").on("change", function() {
                     if (this.value === "all") {
                         $("#node-input-drop").attr('disabled',false).next().css("opacity",1)
@@ -1449,16 +1657,18 @@ module.exports = (function () {
                 }
             }
         });
+        /* /delay */
 
+        /* trigger */
         RED.nodes.registerType('trigger',{
             category: 'function',
             color:"#E6E0F8",
             defaults: {
-                // op1: {value:"1", validate: RED.validators.typedInput("op1type")},
-                // op2: {value:"0", validate: RED.validators.typedInput("op2type")},
+                op1: {value:"1", validate: RED.validators.typedInput("op1type")},
+                op2: {value:"0", validate: RED.validators.typedInput("op2type")},
                 op1type: {value:"val"},
                 op2type: {value:"val"},
-                // duration: {value:"250",required:true,validate:RED.validators.number()},
+                duration: {value:"250",required:true,validate:RED.validators.number()},
                 extend: {value:"false"},
                 units: {value:"ms"},
                 reset: {value:""},
@@ -1496,19 +1706,19 @@ module.exports = (function () {
                         $(".node-type-duration").show();
                     }
                 });
-
+    
                 if (this.op1type === 'val') {
                     $("#node-input-op1type").val('str');
                 }
                 if (this.op2type === 'val') {
                     $("#node-input-op2type").val('str');
                 }
-
+    
                 var optionNothing = {value:"nul",label:this._("trigger.output.nothing"),hasValue:false};
                 var optionPayload = {value:"pay",label:this._("trigger.output.existing"),hasValue:false};
                 var optionOriginalPayload = {value:"pay",label:this._("trigger.output.original"),hasValue:false};
                 var optionLatestPayload = {value:"payl",label:this._("trigger.output.latest"),hasValue:false};
-
+    
                 $("#node-input-op1").typedInput({
                     default: 'str',
                     typeField: $("#node-input-op1type"),
@@ -1526,11 +1736,11 @@ module.exports = (function () {
                         optionNothing
                     ]
                 });
-
+    
                 if (this.bytopic === undefined) {
                     $("#node-input-bytopic").val("all");
                 }
-
+    
                 if (this.duration == "0") {
                     $("#node-then-type").val("block");
                 }
@@ -1541,13 +1751,13 @@ module.exports = (function () {
                     $("#node-then-type").val("wait");
                 }
                 $("#node-then-type").change();
-
+    
                 if (this.extend === "true" || this.extend === true) {
                     $("#node-input-extend").prop("checked",true);
                 } else {
                     $("#node-input-extend").prop("checked",false);
                 }
-
+    
             },
             oneditsave: function() {
                 if ($("#node-then-type").val() == "block") {
@@ -1556,11 +1766,13 @@ module.exports = (function () {
                 if ($("#node-then-type").val() == "loop") {
                     $("#node-input-duration").val($("#node-input-duration").val() * -1);
                 }
-
-
+    
+    
             }
         });
+        /* /trigger */
 
+        /* comment */
         RED.nodes.registerType('comment',{
             category: 'function',
             color:"#ffffff",
@@ -1610,7 +1822,9 @@ module.exports = (function () {
                 this.editor.resize();
             }
         });
+        /* /comment */
 
+        /* unknown */
         RED.nodes.registerType('unknown',{
             category: 'unknown',
             color:"#fff0f0",
@@ -1627,13 +1841,21 @@ module.exports = (function () {
                 return "node_label_unknown";
             }
         });
+        /* /unknown */
 
+        /* rpi-gpio in */
+        var bcm2pin = {
+            "2":"3", "3":"5", "4":"7", "14":"8", "15":"10", "17":"11", "18":"12", "27":"13", "22":"15",
+            "23":"16", "24":"18", "10":"19", "9":"21", "25":"22", "11":"23", "8":"24", "7":"26",
+            "5":"29", "6":"31", "12":"32", "13":"33", "19":"35", "16":"36", "26":"37", "20":"38", "21":"40"
+        };
+        var pinsInUse = {};
         RED.nodes.registerType('rpi-gpio in',{
             category: 'Raspberry Pi',
             color:"#c6dbef",
             defaults: {
                 name: { value:"" },
-                // pin: { value:"tri",required:true,validate:RED.validators.number() },
+                pin: { value:"tri",required:true,validate:RED.validators.number() },
                 intype: { value:"tri" },
                 debounce: { value:"25" },
                 read: { value:false }
@@ -1663,7 +1885,7 @@ module.exports = (function () {
                 var pinname = this._("rpi-gpio.pinname");
                 var alreadyuse = this._("rpi-gpio.alreadyuse");
                 var alreadyset = this._("rpi-gpio.alreadyset");
-
+    
                 $.getJSON('rpi-pins/'+this.id,function(data) {
                     pinsInUse = data || {};
                     $('#pin-tip').html(pintip + Object.keys(data));
@@ -1692,13 +1914,21 @@ module.exports = (function () {
                 });
             }
         });
+        /* /rpi-gpio in */
 
+        /* rpi-gpio out */
+        var bcm2pin = {
+            "2":"3", "3":"5", "4":"7", "14":"8", "15":"10", "17":"11", "18":"12", "27":"13", "22":"15",
+            "23":"16", "24":"18", "10":"19", "9":"21", "25":"22", "11":"23", "8":"24", "7":"26",
+            "5":"29", "6":"31", "12":"32", "13":"33", "19":"35", "16":"36", "26":"37", "20":"38", "21":"40"
+        };
+        var pinsInUse = {};
         RED.nodes.registerType('rpi-gpio out',{
             category: 'Raspberry Pi',
             color:"#c6dbef",
             defaults: {
                 name: { value:"" },
-                // pin: { value:"",required:true,validate:RED.validators.number() },
+                pin: { value:"",required:true,validate:RED.validators.number() },
                 set: { value:"" },
                 level: { value:"0" },
                 freq: {value:""},
@@ -1734,12 +1964,12 @@ module.exports = (function () {
                 var alreadyuse = this._("rpi-gpio.alreadyuse");
                 var alreadyset = this._("rpi-gpio.alreadyset");
                 if (!$("#node-input-out").val()) { $("#node-input-out").val("out"); }
-
+    
                 $.getJSON('rpi-pins/'+this.id,function(data) {
                     pinsInUse = data || {};
                     $('#pin-tip').html(pintip + Object.keys(data));
                 });
-
+    
                 $("#node-input-pin").change(function() {
                     if ($("#node-input-pin").val()) {
                         $("#pinform input[value="+$("#node-input-pin").val()+"]").prop('checked', true);
@@ -1752,14 +1982,14 @@ module.exports = (function () {
                         pinnow = pinnew;
                     }
                 });
-
+    
                 $("#node-input-out").change(function() {
                     var newtype = $("#node-input-out").val();
                     if ((pinsInUse.hasOwnProperty(pinnow)) && (pinsInUse[pinnow] !== newtype)) {
                         RED.notify(pinname+" "+pinnow+" "+alreadyset+" "+pinsInUse[pinnow],"error");
                     }
                 });
-
+    
                 var hidestate = function () {
                     if ($("#node-input-out").val() === "pwm") {
                         $('#node-set-tick').hide();
@@ -1778,7 +2008,7 @@ module.exports = (function () {
                 };
                 $("#node-input-out").change(function () { hidestate(); });
                 hidestate();
-
+    
                 var setstate = function () {
                     if ($('#node-input-set').is(":checked")) {
                         $("#node-set-state").show();
@@ -1788,14 +2018,16 @@ module.exports = (function () {
                 };
                 $("#node-input-set").change(function () { setstate(); });
                 setstate();
-
+    
                 $('#pinform input').on('change', function() {
                     this.pin = $("#pinform input[type='radio']:checked").val();
                     $("#node-input-pin").val(this.pin);
                 });
             }
         });
+        /* /rpi-gpio out */
 
+        /* rpi-mouse */
         RED.nodes.registerType('rpi-mouse',{
             category: 'Raspberry Pi',
             color:"#c6dbef",
@@ -1817,7 +2049,9 @@ module.exports = (function () {
                 return this.name?"node_label_italic":"";
             }
         });
+        /* /rpi-mouse */
 
+        /* rpi-keyboard */
         RED.nodes.registerType('rpi-keyboard',{
             category: 'Raspberry Pi',
             color:"#c6dbef",
@@ -1834,25 +2068,27 @@ module.exports = (function () {
                 return this.name?"node_label_italic":"";
             }
         });
+        /* /rpi-keyboard */
 
+        /* tls-config */
         RED.nodes.registerType('tls-config',{
             category: 'config',
             defaults: {
                 name: {value:""},
-                // cert: {value:"", validate: function(v) {
-                //     var currentKey = $("#node-config-input-key").val();
-                //     if (currentKey === undefined) {
-                //         currentKey = this.key;
-                //     }
-                //     return currentKey === '' || v != '';
-                // }},
-                // key: {value:"", validate: function(v) {
-                //     var currentCert = $("#node-config-input-cert").val();
-                //     if (currentCert === undefined) {
-                //         currentCert = this.cert;
-                //     }
-                //     return currentCert === '' || v != '';
-                // }},
+                cert: {value:"", validate: function(v) {
+                    var currentKey = $("#node-config-input-key").val();
+                    if (currentKey === undefined) {
+                        currentKey = this.key;
+                    }
+                    return currentKey === '' || v != '';
+                }},
+                key: {value:"", validate: function(v) {
+                    var currentCert = $("#node-config-input-cert").val();
+                    if (currentCert === undefined) {
+                        currentCert = this.cert;
+                    }
+                    return currentCert === '' || v != '';
+                }},
                 ca: {value:""},
                 certname: {value:""},
                 keyname: {value:""},
@@ -1885,7 +2121,7 @@ module.exports = (function () {
                 $("#node-config-input-uselocalfiles").on("click",function() {
                     updateFileUpload();
                 });
-
+    
                 function saveFile(property, file) {
                     var dataInputId = "#node-config-input-"+property+"data";
                     var filenameInputId = "#node-config-input-"+property+"name";
@@ -1907,7 +2143,7 @@ module.exports = (function () {
                 $("#node-config-input-cafile" ).change(function() {
                     saveFile("ca", this.files[0]);
                 });
-
+    
                 function clearNameData(prop) {
                     $("#tls-config-"+prop+"name").text("");
                     $("#node-config-input-"+prop+"data").val("");
@@ -1922,7 +2158,7 @@ module.exports = (function () {
                 $("#tls-config-button-ca-clear").click(function() {
                     clearNameData("ca");
                 });
-
+    
                 if (RED.settings.tlsConfigDisableLocalFiles) {
                     $("#node-config-row-uselocalfiles").hide();
                 } else {
@@ -1949,12 +2185,14 @@ module.exports = (function () {
                 }
             }
         });
+        /* /tls-config */
 
+        /* mqtt in */
         RED.nodes.registerType('mqtt in',{
             category: 'input',
             defaults: {
                 name: {value:""},
-                // topic: {value:"",required:true,validate: RED.validators.regex(/^(#$|(\+|[^+#]*)(\/(\+|[^+#]*))*(\/(\+|#|[^+#]*))?$)/)},
+                topic: {value:"",required:true,validate: RED.validators.regex(/^(#$|(\+|[^+#]*)(\/(\+|[^+#]*))*(\/(\+|#|[^+#]*))?$)/)},
                 qos: {value: "2"},
                 broker: {type:"mqtt-broker", required:true}
             },
@@ -1974,7 +2212,9 @@ module.exports = (function () {
                 }
             }
         });
+        /* /mqtt in */
 
+        /* mqtt out */
         RED.nodes.registerType('mqtt out',{
             category: 'output',
             defaults: {
@@ -1996,13 +2236,15 @@ module.exports = (function () {
                 return this.name?"node_label_italic":"";
             }
         });
+        /* /mqtt out */
 
+        /* mqtt-broker */
         RED.nodes.registerType('mqtt-broker',{
             category: 'config',
             defaults: {
                 name: {value:""},
                 broker: {value:"",required:true},
-                // port: {value:1883,required:false,validate:RED.validators.number(true)},
+                port: {value:1883,required:false,validate:RED.validators.number(true)},
                 tls: {type:"tls-config",required: false},
                 clientid: {value:"", validate: function(v) {
                     if ($("#node-config-input-clientid").length) {
@@ -2015,7 +2257,7 @@ module.exports = (function () {
                 usetls: {value: false},
                 verifyservercert: { value: false},
                 compatmode: { value: true},
-                // keepalive: {value:60,validate:RED.validators.number()},
+                keepalive: {value:60,validate:RED.validators.number()},
                 cleansession: {value: true},
                 birthTopic: {value:""},
                 birthQos: {value:"0"},
@@ -2064,18 +2306,18 @@ module.exports = (function () {
                     id: "mqtt-broker-tab-security",
                     label: this._("mqtt.tabs-label.security")
                 });
-
+    
                 tabs.addTab({
                     id: "mqtt-broker-tab-messages",
                     label: this._("mqtt.tabs-label.messages")
                 });
-
+    
                 function setUpSection(sectionId, isExpanded) {
                     var birthMessageSection = $(sectionId);
                     var paletteHeader = birthMessageSection.find('.palette-header');
                     var twistie = paletteHeader.find('i');
                     var sectionContent = birthMessageSection.find('.section-content');
-
+    
                     function toggleSection(expanded) {
                         twistie.toggleClass('expanded', expanded);
                         sectionContent.toggle(expanded);
@@ -2087,7 +2329,7 @@ module.exports = (function () {
                     });
                     toggleSection(isExpanded);
                 }
-
+    
                 // show first section if none are set so the user gets the idea
                 var showBirthSection = this.birthTopic !== ""
                     || this.willTopic === ""
@@ -2096,7 +2338,7 @@ module.exports = (function () {
                 setUpSection('#mqtt-broker-section-birth', showBirthSection);
                 setUpSection('#mqtt-broker-section-close', this.closeTopic !== "");
                 setUpSection('#mqtt-broker-section-will', this.willTopic !== "");
-
+    
                 setTimeout(function() { tabs.resize(); },0);
                 if (typeof this.cleansession === 'undefined') {
                     this.cleansession = true;
@@ -2126,7 +2368,7 @@ module.exports = (function () {
                     this.willQos = "0";
                     $("#node-config-input-willQos").val("0");
                 }
-
+    
                 function updateTLSOptions() {
                     if ($("#node-config-input-usetls").is(':checked')) {
                         $("#node-config-row-tls").show();
@@ -2151,7 +2393,7 @@ module.exports = (function () {
                 $("#node-config-input-cleansession").on("click",function() {
                     updateClientId();
                 });
-
+    
                 function updatePortEntry(){
                     var disabled = $("#node-config-input-port").prop("disabled");
                     if ($("#node-config-input-broker").val().indexOf("://") === -1){
@@ -2172,7 +2414,7 @@ module.exports = (function () {
                     updatePortEntry();
                 });
                 setTimeout(updatePortEntry,50);
-
+    
             },
             oneditsave: function() {
                 if (!$("#node-config-input-usetls").is(':checked')) {
@@ -2180,7 +2422,9 @@ module.exports = (function () {
                 }
             }
         });
+        /* /mqtt-broker */
 
+        /* http */
         RED.nodes.registerType('http in',{
             category: 'input',
             color:"rgb(231, 231, 174)",
@@ -2198,7 +2442,7 @@ module.exports = (function () {
                 if (this.name) {
                     return this.name;
                 } else if (this.url) {
-                    var root = '/';//RED.settings.httpNodeRoot;
+                    var root = RED.settings.httpNodeRoot;
                     if (root.slice(-1) != "/") {
                         root = root+"/";
                     }
@@ -2216,7 +2460,7 @@ module.exports = (function () {
                 return this.name?"node_label_italic":"";
             },
             oneditprepare: function() {
-                var root = '/';//RED.settings.httpNodeRoot;
+                var root = RED.settings.httpNodeRoot;
                 if (root.slice(-1) == "/") {
                     root = root.slice(0,-1);
                 }
@@ -2236,18 +2480,33 @@ module.exports = (function () {
                         $(".form-row-http-in-upload").hide();
                     }
                 }).change();
-
-
+    
+    
             }
-
+    
         });
-
+        var headerTypes = [
+            {value:"content-type",label:"Content-Type",hasValue: false},
+            {value:"location",label:"Location",hasValue: false},
+            {value:"other",label:RED._("node-red:httpin.label.other"),icon:"red/images/typedInput/az.png"}
+           ]
+        var contentTypes = [
+            {value:"application/json",label:"application/json",hasValue: false},
+            {value:"application/xml",label:"application/xml",hasValue: false},
+            {value:"text/css",label:"text/css",hasValue: false},
+            {value:"text/html",label:"text/html",hasValue: false},
+            {value:"text/plain",label:"text/plain",hasValue: false},
+            {value:"image/gif",label:"image/gif",hasValue: false},
+            {value:"image/png",label:"image/png",hasValue: false},
+            {value:"other",label:RED._("node-red:httpin.label.other"),icon:"red/images/typedInput/az.png"}
+        ];
+    
         RED.nodes.registerType('http response',{
             category: 'output',
             color:"rgb(231, 231, 174)",
             defaults: {
                 name: {value:""},
-                // statusCode: {value:"",validate: RED.validators.number(true)},
+                statusCode: {value:"",validate: RED.validators.number(true)},
                 headers: {value:{}}
             },
             inputs:1,
@@ -2271,17 +2530,17 @@ module.exports = (function () {
                             overflow: 'hidden',
                             whiteSpace: 'nowrap'
                         }).appendTo(container);
-
+    
                         var propertyName = $('<input/>',{class:"node-input-header-name",type:"text"})
                             .appendTo(row)
                             .typedInput({types:headerTypes});
-
+    
                         var propertyValue = $('<input/>',{class:"node-input-header-value",type:"text",style:"margin-left: 10px"})
                             .appendTo(row)
                             .typedInput({types:
                                 header.h === 'content-type'?contentTypes:[{value:"other",label:"other",icon:"red/images/typedInput/az.png"}]
                             });
-
+    
                         var matchedType = headerTypes.filter(function(ht) {
                             return ht.value === header.h
                         });
@@ -2291,7 +2550,7 @@ module.exports = (function () {
                             propertyValue.typedInput('value',header.v);
                         } else {
                             propertyName.typedInput('type',header.h);
-
+    
                             if (header.h === "content-type") {
                                 matchedType = contentTypes.filter(function(ct) {
                                     return ct.value === header.v;
@@ -2306,7 +2565,7 @@ module.exports = (function () {
                                 propertyValue.typedInput('value',header.v);
                             }
                         }
-
+    
                         matchedType = headerTypes.filter(function(ht) {
                             return ht.value === header.h
                         });
@@ -2316,7 +2575,7 @@ module.exports = (function () {
                         } else {
                             propertyName.typedInput('type',header.h);
                         }
-
+    
                         propertyName.on('change',function(event) {
                             var type = propertyName.typedInput('type');
                             if (type === 'content-type') {
@@ -2325,15 +2584,15 @@ module.exports = (function () {
                                 propertyValue.typedInput('types',[{value:"other",label:"other",icon:"red/images/typedInput/az.png"}]);
                             }
                         });
-
-
-
+    
+    
+    
                         resizeRule(container);
                     },
                     resizeItem: resizeRule,
                     removable: true
                 });
-
+    
                 if (this.headers) {
                     for (var key in this.headers) {
                         if (this.headers.hasOwnProperty(key)) {
@@ -2373,11 +2632,13 @@ module.exports = (function () {
                 }
                 var editorRow = $("#dialog-form>div.node-input-headers-container-row");
                 height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
-
+    
                 $("#node-input-headers-container").editableList('height',height);
             }
         });
+        /* /http */
 
+        /* http request */
         RED.nodes.registerType('http request',{
             category: 'function',
             color:"rgb(231, 231, 174)",
@@ -2420,7 +2681,7 @@ module.exports = (function () {
                     $('#node-input-useAuth').prop('checked', false);
                 }
                 $("#node-input-useAuth").change();
-
+    
                 function updateTLSOptions() {
                     if ($("#node-input-usetls").is(':checked')) {
                         $("#node-row-tls").show();
@@ -2451,8 +2712,10 @@ module.exports = (function () {
                 }
             }
         });
+        /* http request */
 
-        function ws_oneditprepare() {
+         /* websocket */
+         function ws_oneditprepare() {
             $("#websocket-client-row").hide();
             $("#node-input-mode").change(function() {
                 if ( $("#node-input-mode").val() === 'client') {
@@ -2464,7 +2727,7 @@ module.exports = (function () {
                     $("#websocket-client-row").hide();
                 }
             });
-
+    
             if (this.client) {
                 $("#node-input-mode").val('client').change();
             }
@@ -2472,7 +2735,7 @@ module.exports = (function () {
                 $("#node-input-mode").val('server').change();
             }
         }
-
+    
         function ws_oneditsave() {
             if ($("#node-input-mode").val() === 'client') {
                 $("#node-input-server").append('<option value="">Dummy</option>');
@@ -2483,13 +2746,13 @@ module.exports = (function () {
                 $("#node-input-client").val('');
             }
         }
-
+    
         function ws_label() {
             var nodeid = (this.client)?this.client:this.server;
             var wsNode = RED.nodes.node(nodeid);
             return this.name||(wsNode?"[ws] "+wsNode.label():"websocket");
         }
-
+    
         function ws_validateserver() {
             if ($("#node-input-mode").val() === 'client' || (this.client && !this.server)) {
                 return true;
@@ -2498,7 +2761,7 @@ module.exports = (function () {
                 return RED.nodes.node(this.server) != null;
             }
         }
-
+    
         function ws_validateclient() {
             if ($("#node-input-mode").val() === 'client' || (this.client && !this.server)) {
                 return RED.nodes.node(this.client) != null;
@@ -2507,7 +2770,7 @@ module.exports = (function () {
                 return true;
             }
         }
-
+    
         RED.nodes.registerType('websocket in',{
             category: 'input',
             defaults: {
@@ -2526,7 +2789,7 @@ module.exports = (function () {
             oneditsave: ws_oneditsave,
             oneditprepare: ws_oneditprepare
         });
-
+    
         RED.nodes.registerType('websocket out',{
             category: 'output',
             defaults: {
@@ -2546,17 +2809,17 @@ module.exports = (function () {
             oneditsave: ws_oneditsave,
             oneditprepare: ws_oneditprepare
         });
-
+    
         RED.nodes.registerType('websocket-listener',{
             category: 'config',
             defaults: {
-                // path: {value:"",required:true,validate:RED.validators.regex(/^((?!\/debug\/ws).)*$/)},
+                path: {value:"",required:true,validate:RED.validators.regex(/^((?!\/debug\/ws).)*$/)},
                 wholemsg: {value:"false"}
             },
             inputs:0,
             outputs:0,
             label: function() {
-                var root = '/';//RED.settings.httpNodeRoot;
+                var root = RED.settings.httpNodeRoot;
                 if (root.slice(-1) != "/") {
                     root = root+"/";
                 }
@@ -2568,7 +2831,7 @@ module.exports = (function () {
                 return root;
             },
             oneditprepare: function() {
-                var root = '/';//RED.settings.httpNodeRoot;
+                var root = RED.settings.httpNodeRoot;
                 if (root.slice(-1) == "/") {
                     root = root.slice(0,-1);
                 }
@@ -2580,11 +2843,11 @@ module.exports = (function () {
                 }
             }
         });
-
+    
         RED.nodes.registerType('websocket-client',{
             category: 'config',
             defaults: {
-                // path: {value:"",required:true,validate:RED.validators.regex(/^((?!\/debug\/ws).)*$/)},
+                path: {value:"",required:true,validate:RED.validators.regex(/^((?!\/debug\/ws).)*$/)},
                 tls: {type:"tls-config",required: false},
                 wholemsg: {value:"false"}
             },
@@ -2605,7 +2868,9 @@ module.exports = (function () {
                 }
             }
         });
+        /* /websocket */
 
+        /* watch */
         RED.nodes.registerType('watch',{
             category: 'advanced-input',
             defaults: {
@@ -2624,7 +2889,9 @@ module.exports = (function () {
                 return this.name?"node_label_italic":"";
             }
         });
+        /* /watch */
 
+        /* tcp in */
         RED.nodes.registerType('tcp in',{
             category: 'input',
             color:"Silver",
@@ -2632,7 +2899,7 @@ module.exports = (function () {
                 name: {value:""},
                 server: {value:"server",required:true},
                 host: {value:"",validate:function(v) { return (this.server == "server")||v.length > 0;} },
-                // port: {value:"",required:true,validate:RED.validators.number()},
+                port: {value:"",required:true,validate:RED.validators.number()},
                 datamode:{value:"stream"},
                 datatype:{value:"buffer"},
                 newline:{value:""},
@@ -2674,13 +2941,15 @@ module.exports = (function () {
                 $("#node-input-datamode").change(updateOptions);
             }
         });
+        /* /tcp in */
 
+        /* tcp out */
         RED.nodes.registerType('tcp out',{
             category: 'output',
             color:"Silver",
             defaults: {
                 host: {value:"",validate:function(v) { return (this.beserver != "client")||v.length > 0;} },
-                // port: {value:"",validate:function(v) { return (this.beserver == "reply")||RED.validators.number()(v); } },
+                port: {value:"",validate:function(v) { return (this.beserver == "reply")||RED.validators.number()(v); } },
                 beserver: {value:"client",required:true},
                 base64: {value:false,required:true},
                 end: {value:false,required:true},
@@ -2707,7 +2976,7 @@ module.exports = (function () {
                         $("#node-input-port-row").show();
                         $("#node-input-end-row").show();
                     }
-
+    
                     if (sockettype == "client") {
                         $("#node-input-host-row").show();
                     } else {
@@ -2718,14 +2987,15 @@ module.exports = (function () {
                 $("#node-input-beserver").change(updateOptions);
             }
         });
+        /* /tcp out */
 
-
+        /* tcp request */
         RED.nodes.registerType('tcp request',{
             category: 'function',
             color:"Silver",
             defaults: {
                 server: {value:""},
-                // port: {value:"",validate:RED.validators.regex(/^(\d*|)$/)},
+                port: {value:"",validate:RED.validators.regex(/^(\d*|)$/)},
                 out: {value:"time",required:true},
                 splitc: {value:"0",required:true},
                 name: {value:""}
@@ -2766,14 +3036,16 @@ module.exports = (function () {
                 });
             }
         });
+        /* /tcp request */
 
+        /* udp in */
         RED.nodes.registerType('udp in',{
             category: 'input',
             color:"Silver",
             defaults: {
                 name: {value:""},
                 iface: {value:""},
-                // port: {value:"",required:true,validate:RED.validators.number()},
+                port: {value:"",required:true,validate:RED.validators.number()},
                 ipv: {value:"udp4"},
                 multicast: {value:"false"},
                 group: {value:"",validate:function(v) { return (this.multicast !== "true")||v.length > 0;} },
@@ -2806,7 +3078,7 @@ module.exports = (function () {
                     }
                 });
                 $("#node-input-multicast").change();
-
+    
                 var porttip = this._("udp.tip.port");
                 var alreadyused = this._("udp.errors.alreadyused");
                 var portsInUse = {};
@@ -2822,7 +3094,9 @@ module.exports = (function () {
                 });
             }
         });
+        /* /udp in */
 
+        /* udp out */
         RED.nodes.registerType('udp out',{
             category: 'output',
             color:"Silver",
@@ -2852,10 +3126,10 @@ module.exports = (function () {
                 var grouplabel = this._("udp.label.group");
                 var bindrandom = this._("udp.bind.random");
                 var bindtarget = this._("udp.bind.target");
-
+    
                 var type = this.outport===""?"random":"fixed";
                 $("#node-input-outport-type").val(type);
-
+    
                 $("#node-input-outport-type").change(function() {
                     var type = $(this).val();
                     if (type == "random") {
@@ -2865,7 +3139,7 @@ module.exports = (function () {
                     }
                 });
                 $("#node-input-outport-type").change();
-
+    
                 $("#node-input-multicast").change(function() {
                     var id = $("#node-input-multicast").val();
                     if (id === "multi") {
@@ -2893,7 +3167,9 @@ module.exports = (function () {
                 $("#node-input-multicast").change();
             }
         });
+        /* /udp out */
 
+        /* switch */
         var operators = [
             {v:"eq",t:"==",kind:'V'},
             {v:"neq",t:"!=",kind:'V'},
@@ -2917,7 +3193,7 @@ module.exports = (function () {
             {v:"jsonata_exp",t:"switch.rules.exp",kind:'O'},
             {v:"else",t:"switch.rules.else",kind:'O'}
         ];
-
+    
         function clipValueLength(v) {
             if (v.length > 15) {
                 return v.substring(0,15)+"...";
@@ -2943,7 +3219,7 @@ module.exports = (function () {
             category: 'function',
             defaults: {
                 name: {value:""},
-                // property: {value:"payload", required:true, validate: RED.validators.typedInput("propertyType")},
+                property: {value:"payload", required:true, validate: RED.validators.typedInput("propertyType")},
                 propertyType: { value:"msg" },
                 rules: {value:[{t:"eq", v:"", vt:"str"}]},
                 checkall: {value:"true", required:true},
@@ -2980,13 +3256,13 @@ module.exports = (function () {
             oneditprepare: function() {
                 var node = this;
                 var previousValueType = {value:"prev",label:this._("inject.previous"),hasValue:false};
-
+    
                 $("#node-input-property").typedInput({default:this.propertyType||'msg',types:['msg','flow','global','jsonata']});
                 var outputCount = $("#node-input-outputs").val("{}");
-
+    
                 var andLabel = this._("switch.and");
                 var caseLabel = this._("switch.ignorecase");
-
+    
                 function resizeRule(rule) {
                     var newWidth = rule.width();
                     var selectField = rule.find("select");
@@ -3023,7 +3299,7 @@ module.exports = (function () {
                         }
                     }
                 }
-
+    
                 $("#node-input-rule-container").css('min-height','250px').css('min-width','450px').editableList({
                     addItem: function(container,i,opt) {
                         if (!opt.hasOwnProperty('r')) {
@@ -3163,7 +3439,7 @@ module.exports = (function () {
                             caseSensitive.prop('checked',false);
                         }
                         selectField.change();
-
+    
                         var currentOutputs = JSON.parse(outputCount.val()||"{}");
                         currentOutputs[opt.hasOwnProperty('i')?opt.i:opt._i] = i;
                         outputCount.val(JSON.stringify(currentOutputs));
@@ -3197,7 +3473,7 @@ module.exports = (function () {
                     sortable: true,
                     removable: true
                 });
-
+    
                 for (var i=0;i<this.rules.length;i++) {
                     var rule = this.rules[i];
                     $("#node-input-rule-container").editableList('addItem',{r:rule,i:i});
@@ -3251,7 +3527,9 @@ module.exports = (function () {
                 $("#node-input-rule-container").editableList('height',height);
             }
         });
+        /* /switch */
 
+        /* change */
         RED.nodes.registerType('change', {
             color: "#E2D96E",
             category: 'function',
@@ -3314,11 +3592,11 @@ module.exports = (function () {
                 var search = this._("change.action.search");
                 var replace = this._("change.action.replace");
                 var regex = this._("change.label.regex");
-
+    
                 function resizeRule(rule) {
                     var newWidth = rule.width();
                     rule.find('.red-ui-typedInput').typedInput("width",newWidth-130);
-
+    
                 }
                 $('#node-input-rule-container').css('min-height','300px').css('min-width','450px').editableList({
                     addItem: function(container,i,opt) {
@@ -3349,24 +3627,24 @@ module.exports = (function () {
                         var row2 = $('<div/>',{style:"margin-top:8px;"}).appendTo(container);
                         var row3 = $('<div/>',{style:"margin-top:8px;"}).appendTo(container);
                         var row4 = $('<div/>',{style:"margin-top:8px;"}).appendTo(container);
-
+    
                         var selectField = $('<select/>',{class:"node-input-rule-type",style:"width:110px; margin-right:10px;"}).appendTo(row1);
                         var selectOptions = [{v:"set",l:set},{v:"change",l:change},{v:"delete",l:del},{v:"move",l:move}];
                         for (var i=0; i<4; i++) {
                             selectField.append($("<option></option>").val(selectOptions[i].v).text(selectOptions[i].l));
                         }
-
+    
                         var propertyName = $('<input/>',{class:"node-input-rule-property-name",type:"text"})
                             .appendTo(row1)
                             .typedInput({types:['msg','flow','global']});
-
+    
                         $('<div/>',{style:"display:inline-block;text-align:right; width:120px; padding-right:10px; box-sizing:border-box;"})
                             .text(to)
                             .appendTo(row2);
                         var propertyValue = $('<input/>',{class:"node-input-rule-property-value",type:"text"})
                             .appendTo(row2)
                             .typedInput({default:'str',types:['msg','flow','global','str','num','bool','json','bin','date','jsonata','env']});
-
+    
                         var row3_1 = $('<div/>').appendTo(row3);
                         $('<div/>',{style:"display:inline-block;text-align:right; width:120px; padding-right:10px; box-sizing:border-box;"})
                             .text(search)
@@ -3374,7 +3652,7 @@ module.exports = (function () {
                         var fromValue = $('<input/>',{class:"node-input-rule-property-search-value",type:"text"})
                             .appendTo(row3_1)
                             .typedInput({default:'str',types:['msg','flow','global','str','re','num','bool','env']});
-
+    
                         var row3_2 = $('<div/>',{style:"margin-top:8px;"}).appendTo(row3);
                         $('<div/>',{style:"display:inline-block;text-align:right; width:120px; padding-right:10px; box-sizing:border-box;"})
                             .text(replace)
@@ -3382,14 +3660,14 @@ module.exports = (function () {
                         var toValue = $('<input/>',{class:"node-input-rule-property-replace-value",type:"text"})
                             .appendTo(row3_2)
                             .typedInput({default:'str',types:['msg','flow','global','str','num','bool','json','bin','env']});
-
+    
                         $('<div/>',{style:"display:inline-block;text-align:right; width:120px; padding-right:10px; box-sizing:border-box;"})
                             .text(to)
                             .appendTo(row4);
                         var moveValue = $('<input/>',{class:"node-input-rule-property-move-value",type:"text"})
                             .appendTo(row4)
                             .typedInput({default:'msg',types:['msg','flow','global']});
-
+    
                         selectField.change(function() {
                             var width = $("#node-input-rule-container").width();
                             var type = $(this).val();
@@ -3412,7 +3690,7 @@ module.exports = (function () {
                             }
                             resizeRule(container);
                         });
-
+    
                         selectField.val(rule.t);
                         propertyName.typedInput('value',rule.p);
                         propertyName.typedInput('type',rule.pt);
@@ -3425,7 +3703,7 @@ module.exports = (function () {
                         toValue.typedInput('value',rule.to);
                         toValue.typedInput('type',rule.tot);
                         selectField.change();
-
+    
                         var newWidth = $("#node-input-rule-container").width();
                         resizeRule(container);
                     },
@@ -3433,14 +3711,14 @@ module.exports = (function () {
                     removable: true,
                     sortable: true
                 });
-
+    
                 if (!this.rules) {
                     var rule = {
                         t:(this.action=="replace"?"set":this.action),
                         p:this.property,
                         pt:"msg"
                     };
-
+    
                     if ((rule.t === "set")||(rule.t === "move")) {
                         rule.to = this.to;
                     } else if (rule.t === "change") {
@@ -3448,16 +3726,16 @@ module.exports = (function () {
                         rule.to = this.to;
                         rule.re = this.reg;
                     }
-
+    
                     delete this.to;
                     delete this.from;
                     delete this.reg;
                     delete this.action;
                     delete this.property;
-
+    
                     this.rules = [rule];
                 }
-
+    
                 for (var i=0; i<this.rules.length; i++) {
                     var rule = this.rules[i];
                     $("#node-input-rule-container").editableList('addItem',rule);
@@ -3499,19 +3777,21 @@ module.exports = (function () {
                 }
                 var editorRow = $("#dialog-form>div.node-input-rule-container-row");
                 height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
-
+    
                 $("#node-input-rule-container").editableList('height',height);
             }
         });
+        /* /change */
 
+        /* range */
         RED.nodes.registerType('range', {
             color: "#E2D96E",
             category: 'function',
             defaults: {
-                // minin: {value:"",required:true,validate:RED.validators.number()},
-                // maxin: {value:"",required:true,validate:RED.validators.number()},
-                // minout: {value:"",required:true,validate:RED.validators.number()},
-                // maxout: {value:"",required:true,validate:RED.validators.number()},
+                minin: {value:"",required:true,validate:RED.validators.number()},
+                maxin: {value:"",required:true,validate:RED.validators.number()},
+                minout: {value:"",required:true,validate:RED.validators.number()},
+                maxout: {value:"",required:true,validate:RED.validators.number()},
                 action: {value:"scale"},
                 round: {value:false},
                 property: {value:"payload",required:true},
@@ -3534,7 +3814,9 @@ module.exports = (function () {
                 $("#node-input-property").typedInput({default:'msg',types:['msg']});
             }
         });
+        /* /range */
 
+        /* split */
         RED.nodes.registerType('split',{
             category: 'function',
             color:"#E2D96E",
@@ -3580,7 +3862,7 @@ module.exports = (function () {
                     typeField: $("#node-input-fnameType"),
                     types:['msg']
                 });
-
+    
                 $("#node-input-addname-cb").change(function() {
                     $("#node-input-addname").prop('disabled',!this.checked);
                 })
@@ -3598,7 +3880,9 @@ module.exports = (function () {
                 }
             }
         });
+        /* /split */
 
+        /* join */
         RED.nodes.registerType('join',{
             category: 'function',
             color:"#E2D96E",
@@ -3606,7 +3890,7 @@ module.exports = (function () {
                 name: {value:""},
                 mode: {value:"auto"},
                 build: { value:"string"},
-                // property: { value:"payload", validate:RED.validators.typedInput("propertyType")},
+                property: { value:"payload", validate:RED.validators.typedInput("propertyType")},
                 propertyType: { value:"msg"},
                 key: {value:"topic"},
                 joiner: { value:"\\n"},
@@ -3631,7 +3915,7 @@ module.exports = (function () {
             },
             oneditprepare: function() {
                 var node = this;
-
+    
                 $("#node-input-mode").change(function(e) {
                     var val = $(this).val();
                     $(".node-row-custom").toggle(val==='custom');
@@ -3678,7 +3962,7 @@ module.exports = (function () {
                         $("#node-input-reduceFixup").typedInput({types:[jsonata_or_empty]});
                     }
                 });
-
+    
                 $("#node-input-build").change(function(e) {
                     var val = $(this).val();
                     $(".node-row-key").toggle(val==='object');
@@ -3692,22 +3976,22 @@ module.exports = (function () {
                         $("#node-input-property").typedInput('types',['msg', {value:"full",label:"complete message",hasValue:false}]);
                     }
                 });
-
+    
                 $("#node-input-joiner").typedInput({
                     default: 'str',
                     typeField: $("#node-input-joinerType"),
                     types:['str', 'bin']
                 });
-
+    
                 $("#node-input-property").typedInput({
                     typeField: $("#node-input-propertyType"),
                     types:['msg', {value:"full", label:"complete message", hasValue:false}]
                 });
-
+    
                 $("#node-input-key").typedInput({
                     types:['msg']
                 });
-
+    
                 $("#node-input-build").change();
                 $("#node-input-mode").change();
             },
@@ -3718,7 +4002,9 @@ module.exports = (function () {
                 }
             }
         });
+        /* /join */
 
+        /* sort */
         RED.nodes.registerType('sort',{
             category: 'function',
             color:"#E2D96E",
@@ -3776,6 +4062,9 @@ module.exports = (function () {
                 $("#node-input-target").change();
             }
         });
+        /* /sort */
+
+        /* batch */
         RED.nodes.registerType("batch",{
             category: "function",
             color:"#E2D96E",
@@ -3800,13 +4089,13 @@ module.exports = (function () {
             oneditprepare: function() {
                 var node = this;
                 var topic_str = node._("batch.concat.topic");
-
+    
                 function resizeTopics(topic) {
                     var newWidth = topic.width();
                     topic.find('.red-ui-typedInput')
-                        .typedInput("width",newWidth-15);
+                         .typedInput("width",newWidth-15);
                 }
-
+    
                 $("#node-input-topics-container")
                     .css('min-height','200px').css('min-width','430px')
                     .editableList({
@@ -3830,7 +4119,7 @@ module.exports = (function () {
                         sortable: true,
                         removable: true
                     });
-
+    
                 $("#node-input-count").spinner({
                 });
                 $("#node-input-overlap").spinner({
@@ -3879,14 +4168,15 @@ module.exports = (function () {
                 $("#node-input-topics-container").editableList('height',height);
             }
         });
+        /* /batch */
 
-
+        /* csv */
         RED.nodes.registerType('csv',{
             category: 'function',
             color:"#DEBD5C",
             defaults: {
                 name: {value:""},
-                // sep: {value:',',required:true,validate:RED.validators.regex(/^.{1,2}$/)},
+                sep: {value:',',required:true,validate:RED.validators.regex(/^.{1,2}$/)},
                 //quo: {value:'"',required:true},
                 hdrin: {value:""},
                 hdrout: {value:""},
@@ -3928,8 +4218,9 @@ module.exports = (function () {
                 });
             }
         });
+        /* /csv */
 
-
+        /* html */
         RED.nodes.registerType('html',{
             category: 'function',
             color:"#DEBD5C",
@@ -3955,7 +4246,9 @@ module.exports = (function () {
                 $("#node-input-outproperty").typedInput({default:'msg',types:['msg']});
             }
         });
+        /* /html */
 
+        /* json */
         RED.nodes.registerType('json',{
             category: 'function',
             color:"#DEBD5C",
@@ -3989,7 +4282,9 @@ module.exports = (function () {
                 $("#node-input-action").change();
             }
         });
+        /* /json */
 
+        /* xml */
         RED.nodes.registerType('xml',{
             category: 'function',
             color:"#DEBD5C",
@@ -4015,7 +4310,9 @@ module.exports = (function () {
                 $("#node-input-property").typedInput({default:'msg',types:['msg']});
             }
         });
+        /* /xml */
 
+        /* yaml */
         RED.nodes.registerType('yaml',{
             category: 'function',
             color:"#DEBD5C",
@@ -4039,7 +4336,9 @@ module.exports = (function () {
                 $("#node-input-property").typedInput({default:'msg',types:['msg']});
             }
         });
+        /* /yaml */
 
+        /* file */
         RED.nodes.registerType('file',{
             category: 'storage-output',
             defaults: {
@@ -4070,7 +4369,7 @@ module.exports = (function () {
                 });
             }
         });
-
+    
         RED.nodes.registerType('file in',{
             category: 'storage-input',
             defaults: {
@@ -4109,7 +4408,9 @@ module.exports = (function () {
                 });
             }
         });
+        /* /file */
 
+        /* test-node */
         RED.nodes.registerType('test-node',{
             category: 'new',
             color: '#a6bbcf',
@@ -4131,7 +4432,9 @@ module.exports = (function () {
                 });
             }
         });
+        /* /test-node */
 
+        /* e-mail */
         RED.nodes.registerType('e-mail',{
             category: 'social-output',
             color:"#c7e9c0",
@@ -4168,7 +4471,9 @@ module.exports = (function () {
                 }
             }
         });
+        /* /e-mail */
 
+        /* e-mail in */
         RED.nodes.registerType('e-mail in',{
             category: 'social-input',
             color:"#c7e9c0",
@@ -4211,7 +4516,9 @@ module.exports = (function () {
                 }
             }
         });
+        /* /e-mail in */
 
+        /* feedparse */
         RED.nodes.registerType('feedparse',{
             category: 'advanced-input',
             color:"#C0DEED",
@@ -4233,14 +4540,16 @@ module.exports = (function () {
                 return this.name?"node_label_italic":"";
             }
         });
+        /* /feedparse */
 
+        /* rbe */
         RED.nodes.registerType("rbe", {
             color:"#E2D96E",
             category: 'function',
             defaults: {
                 name: {value:""},
                 func: {value:"rbe"},
-                // gap: {value:"",validate:RED.validators.regex(/^(\d*[.]*\d*|)(%|)$/)},
+                gap: {value:"",validate:RED.validators.regex(/^(\d*[.]*\d*|)(%|)$/)},
                 start: {value:""},
                 inout: {value:"out"},
                 property: {value:"payload",required:true}
@@ -4278,10 +4587,12 @@ module.exports = (function () {
                 });
             }
         });
+        /* /rbe */
 
+        /* twitter-credentials */
         var twitterConfigNodeId = null;
         var twitterConfigNodeIntervalId = null;
-
+    
         RED.nodes.registerType('twitter-credentials',{
             category: 'config',
             defaults: {
@@ -4313,11 +4624,13 @@ module.exports = (function () {
                     var v = $("#node-config-input-"+field).val();
                     v = v.trim();
                     $("#node-config-input-"+field).val(v);
-
+    
                 });
             }
         });
+        /* /twitter-credentials */
 
+        /* twitter in */
         RED.nodes.registerType('twitter in',{
             category: 'social-input',
             color:"#C0DEED",
@@ -4383,7 +4696,9 @@ module.exports = (function () {
                 }
             }
         });
+        /* /twitter in */
 
+        /* twitter out */
         RED.nodes.registerType('twitter out',{
             category: 'social-output',
             color:"#C0DEED",
@@ -4399,6 +4714,7 @@ module.exports = (function () {
                 return this.name;
             }
         });
+        /* /twitter out */
     }
 
     return {

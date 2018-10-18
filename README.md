@@ -219,9 +219,8 @@ See [JavaScript API](#custom-node-descriptions) section for details.
 
 ## TODO
 
+* Validate input
 * Check why output has other fonts
-* Handle unnamed nodes
-* Handle access to RED context from custom node descriptions
 * PNG support
  
 ## License

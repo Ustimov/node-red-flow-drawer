@@ -19,12 +19,16 @@ module.exports = (function() {
     const fs = require("fs");
     const path = require("path");
 
-    const localePath = path.join(__dirname, '../../locales/messages.json');
+    const localePath = path.join(__dirname, "../../locales/messages.json");
     const data = fs.readFileSync(localePath);
     const locale = JSON.parse(data);
 
     function localeForString(str) {
         if (str) {
+            const splitByNamespace = str.split(":");
+            if (splitByNamespace.length > 1) {
+                str = splitByNamespace[1];
+            }
             const parts = str.split(".");
             let root = locale;
             for (let part of parts) {
