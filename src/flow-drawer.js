@@ -39,9 +39,11 @@ function FlowDrawer(flow, options) {
     });
 
     const onLoadPromise = new Promise((resolve, reject) => {
-        window.onload = () => {
-            resolve();
-        };
+        RED.loader.load().then((x) => {
+            window.onload = () => {
+                resolve();
+            };
+        })
     });
 
     var oldCreateElement = window.document.createElement;
@@ -71,7 +73,7 @@ function FlowDrawer(flow, options) {
             const workspaceIds = Object.keys(RED.workspaces.tabs());
 
             // Wait for resourse loading
-            onLoadPromise.then(() => drawWorkspacesWithIds(workspaceIds).catch((err) => console.log(err)))
+            onLoadPromise.then(() => drawWorkspacesWithIds(workspaceIds).catch((err) => console.error(err)))
             
             function drawWorkspacesWithIds (ids) {
                 const id = ids.pop();

@@ -6,6 +6,7 @@ module.exports = function _RED () {
 
     var red = {
         i18n: require('./i18n'),
+        loader: require('./loader'),
         state: require('./state'),
         tabs: require('./tabs'),
         types: require('./types'),
@@ -25,6 +26,13 @@ module.exports = function _RED () {
     red.utils.init(red);
     red.view = _view(red);
     red.workspaces = _workspaces(red);
+
+    red.loader.init({
+        settings: {
+            coreNodesDir: "C:\\Users\\XI333901\\Documents\\node-red-master\\nodes",
+            userDir: "C:\\Users\\XI333901\\.node-red"
+        }
+    });
 
     return red;
 }
