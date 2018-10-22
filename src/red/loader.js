@@ -39,6 +39,8 @@ function load(defaultNodesDir,disableNodePathScan) {
     //runtime.log.info(runtime.log._("server.loading"));
 
     var nodeFiles = localfilesystem.getNodeFiles(defaultNodesDir,disableNodePathScan);
+    //console.log(nodeFiles);
+    //console.log(nodeFiles['node-red-contrib-newman']['nodes']['newman']);
     return loadNodeFiles(nodeFiles);
 }
 
@@ -135,7 +137,7 @@ function loadNodeFiles(nodeFiles) {
                 nodeFiles[module].err = "version_mismatch";
                 continue;
             }
-            if (module == "node-red"/* || !registry.getModuleInfo(module)*/) {
+            //f (module == "node-red"/* || !registry.getModuleInfo(module)*/) {
                 var first = true;
                 for (var node in nodeFiles[module].nodes) {
                     /* istanbul ignore else */
@@ -175,12 +177,14 @@ function loadNodeFiles(nodeFiles) {
                         }
                     }
                 }
-            }
+            //}
         }
     }
     return when.settle(promises).then(function(results) {
+        
         // TODO
         // console.log(nodeFiles);
+        // console.log(nodeFiles['node-red']['nodes']['inject']);
         for (var module in nodeFiles) {
             if (nodeFiles.hasOwnProperty(module)) {
                 if (!nodeFiles[module].err) {
@@ -188,11 +192,11 @@ function loadNodeFiles(nodeFiles) {
                 }
             }
         }
-        return loadNodeSetList(nodes);
+        //console.log(nodeFiles['node-red']['nodes']['inject'])
+        return nodeFiles;
+        //return loadNodeSetList(nodes);
     });
 }
-
-var fin = false;
 
 function loadNodeConfig(fileInfo) {
     return new Promise(function(resolve) {
@@ -278,15 +282,11 @@ function loadNodeConfig(fileInfo) {
 
                 //regExp = /(<script[^>]* data-help-name=[\s\S]*?<\/script>)/gi;
                 var jsRegex = /<script[^>]* type=\"text\/javascript\">([\s\S]*?)<\/script>/gi;
-                match = jsRegex.exec(content);
-                node.js = match[1];
-                // console.log(match);
-
-                if (!fin) {
-                    // console.log(match[1]);
-                    console.log(node.file);
-                    fin = true;
+                node.js = '';
+                while (match = jsRegex.exec(content)) {
+                    node.js += match[1];
                 }
+
                 // TODO: parse out the javascript portion of the template
                 //node.script = "";
                 for (var i=0;i<node.types.length;i++) {
@@ -388,6 +388,7 @@ function loadNodeSetList(nodes) {
     });
 
     return when.settle(promises).then(function() {
+        return nodes;
         // if (settings.available()) {
         //     return registry.saveNodeList();
         // } else {

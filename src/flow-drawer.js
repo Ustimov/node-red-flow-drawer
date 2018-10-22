@@ -11,6 +11,17 @@ function applyTypes(path) {
     eval(types.toString('utf-8'));
 }
 
+function applyTypes2(types) {
+    try {
+        eval(types.toString('utf-8'));
+    } catch (err) {
+        console.log('***');
+        console.log(types);
+        console.log(err);
+        console.log('***');
+    }
+}
+
 function FlowDrawer(flow, options) {
     if (!flow) {
         throw new Error('Invalid flow');    
@@ -38,12 +49,38 @@ function FlowDrawer(flow, options) {
         resources: "usable"
     });
 
+    let loaded = false;
+    window.onload = () => {
+        loaded = true;
+    };
+
     const onLoadPromise = new Promise((resolve, reject) => {
         RED.loader.load().then((x) => {
-            window.onload = () => {
+            console.log(x['node-red']['nodes']['mqtt'].js);
+            try {
+                for (let package in x) {
+                    for (let node in x[package]['nodes']) {
+                        const js = 'const RED = this.RED;' + x[package]['nodes'][node].js;
+                        applyTypes2.call({RED}, js);
+                    }
+                }
+            } catch (err) {
+                console.log(err);
+            }
+
+            if (!loaded) {
+                window.onload = () => {
+                    console.log('Resolve1');
+                    resolve();
+                };
+            } else {
+                console.log('Resolve2');
                 resolve();
-            };
-        })
+            }
+
+        }).catch((err) => {
+            console.log(err);
+        });
     });
 
     var oldCreateElement = window.document.createElement;
@@ -66,14 +103,14 @@ function FlowDrawer(flow, options) {
             });
         }
         return new Promise((resolve, reject) => {
-            RED.nodes.import(flow);
-    
             const images = [];
 
-            const workspaceIds = Object.keys(RED.workspaces.tabs());
-
             // Wait for resourse loading
-            onLoadPromise.then(() => drawWorkspacesWithIds(workspaceIds).catch((err) => console.error(err)))
+            onLoadPromise.then(() => {
+                RED.nodes.import(flow);
+                const workspaceIds = Object.keys(RED.workspaces.tabs());
+                drawWorkspacesWithIds(workspaceIds).catch((err) => console.error(err));
+            });
             
             function drawWorkspacesWithIds (ids) {
                 const id = ids.pop();
