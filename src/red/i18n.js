@@ -21,7 +21,7 @@ module.exports = (function() {
 
     const localePath = path.join(__dirname, "../../locales/messages.json");
     const data = fs.readFileSync(localePath);
-    const locale = JSON.parse(data);
+    let locale = JSON.parse(data);
 
     function localeForString(str) {
         if (str) {
@@ -55,6 +55,9 @@ module.exports = (function() {
                 }
                 return locale;
             }
+        },
+        apply: function(_locale) {
+            locale = Object.assign(locale, _locale);
         }
     }
 })();

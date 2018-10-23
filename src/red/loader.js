@@ -304,6 +304,7 @@ function loadNodeConfig(fileInfo) {
                 fs.stat(path.join(path.dirname(file),"locales"),function(err,stat) {
                     if (!err) {
                         node.namespace = node.id;
+                        node.i18n = path.join(path.dirname(file),"locales", "en-US", path.basename(file,".js")+".json");
                         // runtime.i18n.registerMessageCatalog(node.id,
                         //         path.join(path.dirname(file),"locales"),
                         //         path.basename(file,".js")+".json")

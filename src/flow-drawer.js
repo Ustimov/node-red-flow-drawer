@@ -20,6 +20,15 @@ function applyTypes2(types) {
     }
 }
 
+function applyLocale(RED, path) {
+    if (fs.existsSync(path)) {
+        const locale = JSON.parse(fs.readFileSync(path));
+        RED.i18n.apply(locale);
+    } else {
+        console.error("Doesn't exist: " + path);
+    }
+}
+
 function FlowDrawer(flow, options) {
     if (!flow) {
         throw new Error('Invalid flow');    
@@ -54,12 +63,16 @@ function FlowDrawer(flow, options) {
 
     const onLoadPromise = new Promise((resolve, reject) => {
         RED.loader.load().then((nodeFiles) => {
-            // console.log(nodeFiles['node-red']['nodes']['mqtt'].js);
+            // console.log(nodeFiles['node-red-node-email']['nodes']['email']);
             try {
                 for (let nodeFile in nodeFiles) {
                     for (let node in nodeFiles[nodeFile]['nodes']) {
                         const js = 'const RED = this.RED;' + nodeFiles[nodeFile]['nodes'][node].js;
                         applyTypes2.call({RED}, js);
+                        const i18n = nodeFiles[nodeFile]['nodes'][node]['i18n'];
+                        if (i18n) {
+                            applyLocale(RED, i18n);
+                        }
                     }
                 }
             } catch (err) {
