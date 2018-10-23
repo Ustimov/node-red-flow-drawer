@@ -15,10 +15,8 @@ function applyTypes2(types) {
     try {
         eval(types.toString('utf-8'));
     } catch (err) {
-        console.log('***');
-        console.log(types);
-        console.log(err);
-        console.log('***');
+        console.error(types);
+        console.error(err);
     }
 }
 
@@ -55,31 +53,29 @@ function FlowDrawer(flow, options) {
     };
 
     const onLoadPromise = new Promise((resolve, reject) => {
-        RED.loader.load().then((x) => {
-            console.log(x['node-red']['nodes']['mqtt'].js);
+        RED.loader.load().then((nodeFiles) => {
+            // console.log(nodeFiles['node-red']['nodes']['mqtt'].js);
             try {
-                for (let package in x) {
-                    for (let node in x[package]['nodes']) {
-                        const js = 'const RED = this.RED;' + x[package]['nodes'][node].js;
+                for (let nodeFile in nodeFiles) {
+                    for (let node in nodeFiles[nodeFile]['nodes']) {
+                        const js = 'const RED = this.RED;' + nodeFiles[nodeFile]['nodes'][node].js;
                         applyTypes2.call({RED}, js);
                     }
                 }
             } catch (err) {
-                console.log(err);
+                console.error(err);
             }
 
             if (!loaded) {
                 window.onload = () => {
-                    console.log('Resolve1');
                     resolve();
                 };
             } else {
-                console.log('Resolve2');
                 resolve();
             }
 
         }).catch((err) => {
-            console.log(err);
+            console.error(err);
         });
     });
 

@@ -46,7 +46,7 @@ module.exports = function(RED) {
                 return nodeSets[id];
             },
             registerNodeType: function(nt,def) {
-                console.log('register: ' + nt);
+                // console.log('register: ' + nt);
                 nodeDefinitions[nt] = def;
                 def.type = nt;
                 def["_"] = RED._;
