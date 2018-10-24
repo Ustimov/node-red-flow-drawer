@@ -26,14 +26,12 @@ module.exports = function(RED) {
 
     var initialLoad;
 
-    var dirty = false;
-
     var registry = (function() {
         var nodeSets = {};
         var nodeDefinitions = {};
         var iconSets = {};
 
-        nodeDefinitions['tab'] = {
+        nodeDefinitions["tab"] = {
             defaults: {
                 label: {value:""},
                 disabled: {value: false},
@@ -113,7 +111,7 @@ module.exports = function(RED) {
 
     function addWorkspace(ws) {
         workspaces[ws.id] = ws;
-        ws._def = RED.nodes.getType('tab');
+        ws._def = RED.nodes.getType("tab");
         workspacesOrder.push(ws.id);
     }
 
@@ -138,16 +136,16 @@ module.exports = function(RED) {
         RED.nodes.registerType("subflow:"+sf.id, {
             defaults:{name:{value:""}},
             info: sf.info,
-            icon: function() { return sf.icon||"subflow.png" },
+            icon: function() { return sf.icon||"subflow.png"; },
             category: sf.category || "subflows",
             inputs: sf.in.length,
             outputs: sf.out.length,
             color: "#da9",
-            label: function() { return this.name||RED.nodes.subflow(sf.id).name },
+            label: function() { return this.name||RED.nodes.subflow(sf.id).name; },
             labelStyle: function() { return this.name?"node_label_italic":""; },
-            paletteLabel: function() { return RED.nodes.subflow(sf.id).name },
-            inputLabels: function(i) { return sf.inputLabels?sf.inputLabels[i]:null },
-            outputLabels: function(i) { return sf.outputLabels?sf.outputLabels[i]:null },
+            paletteLabel: function() { return RED.nodes.subflow(sf.id).name; },
+            inputLabels: function(i) { return sf.inputLabels?sf.inputLabels[i]:null; },
+            outputLabels: function(i) { return sf.outputLabels?sf.outputLabels[i]:null; },
             set:{
                 module: "node-red"
             }
@@ -177,46 +175,6 @@ module.exports = function(RED) {
             }
         }
         return false;
-    }
-    
-    function checkForMatchingSubflow(subflow,subflowNodes) {
-        var i;
-        var match = null;
-        try {
-            RED.nodes.eachSubflow(function(sf) {
-                if (sf.name != subflow.name ||
-                    sf.info != subflow.info ||
-                    sf.in.length != subflow.in.length ||
-                    sf.out.length != subflow.out.length) {
-                        return;
-                }
-                var sfNodes = RED.nodes.filterNodes({z:sf.id});
-                if (sfNodes.length != subflowNodes.length) {
-                    return;
-                }
-
-                var subflowNodeSet = [subflow].concat(subflowNodes);
-                var sfNodeSet = [sf].concat(sfNodes);
-
-                var exportableSubflowNodes = JSON.stringify(subflowNodeSet);
-                var exportableSFNodes = JSON.stringify(createExportableNodeSet(sfNodeSet));
-                var nodeMap = {};
-                for (i=0;i<sfNodes.length;i++) {
-                    exportableSubflowNodes = exportableSubflowNodes.replace(new RegExp("\""+subflowNodes[i].id+"\"","g"),'"'+sfNodes[i].id+'"');
-                }
-                exportableSubflowNodes = exportableSubflowNodes.replace(new RegExp("\""+subflow.id+"\"","g"),'"'+sf.id+'"');
-
-                if (exportableSubflowNodes !== exportableSFNodes) {
-                    return;
-                }
-
-                match = sf;
-                throw new Error();
-            });
-        } catch(err) {
-            console.log(err.stack);
-        }
-        return match;
     }
 
     function compareNodes(nodeA,nodeB,idMustMatch) {
@@ -271,9 +229,7 @@ module.exports = function(RED) {
         if (!Array.isArray(newNodes)) {
             newNodes = [newNodes];
         }
-        var isInitialLoad = false;
         if (!initialLoad) {
-            isInitialLoad = true;
             initialLoad = JSON.parse(JSON.stringify(newNodes));
         }
         var unknownTypes = [];
@@ -286,7 +242,7 @@ module.exports = function(RED) {
                 !registry.getNodeType(n.type) &&
                 n.type.substring(0,8) != "subflow:" &&
                 unknownTypes.indexOf(n.type)==-1) {
-                    unknownTypes.push(n.type);
+                unknownTypes.push(n.type);
             }
             // WTF? Z-index?
             if (n.z) {
@@ -294,13 +250,6 @@ module.exports = function(RED) {
                 nodeZmap[n.z].push(n);
             }
 
-        }
-
-        // can be deleted
-        if (!isInitialLoad && unknownTypes.length > 0) {
-            var typeList = "<ul><li>"+unknownTypes.join("</li><li>")+"</li></ul>";
-            var type = "type"+(unknownTypes.length > 1?"s":"");
-            //RED.notify("<p>"+RED._("clipboard.importUnrecognised",{count:unknownTypes.length})+"</p>"+typeList,"error",false,10000);
         }
 
         var activeWorkspace = RED.workspaces.active();
@@ -365,40 +314,35 @@ module.exports = function(RED) {
                 RED.workspaces.add(n);
                 new_workspaces.push(n);
             } else if (n.type === "subflow") {
-                var matchingSubflow = checkForMatchingSubflow(n,nodeZmap[n.id]);
-                if (matchingSubflow) {
-                    subflow_blacklist[n.id] = matchingSubflow;
-                } else {
-                    subflow_map[n.id] = n;
-                    if (createNewIds) {
-                        nid = getID();
-                        n.id = nid;
-                    }
-                    // TODO: handle createNewIds - map old to new subflow ids
-                    n.in.forEach(function(input,i) {
-                        input.type = "subflow";
-                        input.direction = "in";
-                        input.z = n.id;
-                        input.i = i;
-                        input.id = getID();
-                    });
-                    n.out.forEach(function(output,i) {
-                        output.type = "subflow";
-                        output.direction = "out";
-                        output.z = n.id;
-                        output.i = i;
-                        output.id = getID();
-                    });
-                    new_subflows.push(n);
-                    addSubflow(n,createNewIds);
-                    RED.workspaces.show(n.id);
+                subflow_map[n.id] = n;
+                if (createNewIds) {
+                    nid = getID();
+                    n.id = nid;
                 }
+                // TODO: handle createNewIds - map old to new subflow ids
+                n.in.forEach(function(input,i) {
+                    input.type = "subflow";
+                    input.direction = "in";
+                    input.z = n.id;
+                    input.i = i;
+                    input.id = getID();
+                });
+                n.out.forEach(function(output,i) {
+                    output.type = "subflow";
+                    output.direction = "out";
+                    output.z = n.id;
+                    output.i = i;
+                    output.id = getID();
+                });
+                new_subflows.push(n);
+                addSubflow(n,createNewIds);
+                RED.workspaces.show(n.id);
             }
         }
 
         // Add a tab if there isn't one there already
         if (defaultWorkspace == null) {
-            defaultWorkspace = { type:"tab", id:getID(), disabled: false, info:"",  label:RED._('workspace.defaultName',{number:1})};
+            defaultWorkspace = { type:"tab", id:getID(), disabled: false, info:"",  label:RED._("workspace.defaultName",{number:1})};
             // console.log('default workspace');
             addWorkspace(defaultWorkspace);
             RED.workspaces.add(defaultWorkspace);
@@ -460,7 +404,7 @@ module.exports = function(RED) {
                             configNode._config[d] = JSON.stringify(n[d]);
                         }
                     }
-                    if (def.hasOwnProperty('credentials') && n.hasOwnProperty('credentials')) {
+                    if (def.hasOwnProperty("credentials") && n.hasOwnProperty("credentials")) {
                         configNode.credentials = {};
                         for (d in def.credentials) {
                             if (def.credentials.hasOwnProperty(d) && n.credentials.hasOwnProperty(d)) {
@@ -557,7 +501,7 @@ module.exports = function(RED) {
                                     labelStyle: "node_label_italic",
                                     outputs: n.outputs||n.wires.length,
                                     set: registry.getNodeSet("node-red/unknown")
-                                }
+                                };
                             } else {
                                 node._def = {
                                     category:"config",
@@ -583,22 +527,22 @@ module.exports = function(RED) {
                             node.type = "unknown";
                         }
                         if (node._def.category != "config") {
-                            if (n.hasOwnProperty('inputs')) {
+                            if (n.hasOwnProperty("inputs")) {
                                 node.inputs = n.inputs;
                                 node._config.inputs = JSON.stringify(n.inputs);
                             } else {
                                 node.inputs = node._def.inputs;
                             }
-                            if (n.hasOwnProperty('outputs')) {
+                            if (n.hasOwnProperty("outputs")) {
                                 node.outputs = n.outputs;
                                 node._config.outputs = JSON.stringify(n.outputs);
                             } else {
                                 node.outputs = node._def.outputs;
                             }
-                            if (node.hasOwnProperty('wires') && node.wires.length > node.outputs) {
+                            if (node.hasOwnProperty("wires") && node.wires.length > node.outputs) {
                                 if (!node._def.defaults.hasOwnProperty("outputs") || !isNaN(parseInt(n.outputs))) {
                                     // If 'wires' is longer than outputs, clip wires
-                                    console.log("Warning: node.wires longer than node.outputs - trimming wires:",node.id," wires:",node.wires.length," outputs:",node.outputs);
+                                    console.warn("Warning: node.wires longer than node.outputs - trimming wires:",node.id," wires:",node.wires.length," outputs:",node.outputs);
                                     node.wires = node.wires.slice(0,node.outputs);
                                 } else {
                                     // The node declares outputs in its defaults, but has not got a valid value
@@ -607,14 +551,14 @@ module.exports = function(RED) {
                                 }
                             }
                             for (d in node._def.defaults) {
-                                if (node._def.defaults.hasOwnProperty(d) && d !== 'inputs' && d !== 'outputs') {
+                                if (node._def.defaults.hasOwnProperty(d) && d !== "inputs" && d !== "outputs") {
                                     node[d] = n[d];
                                     node._config[d] = JSON.stringify(n[d]);
                                 }
                             }
                             node._config.x = node.x;
                             node._config.y = node.y;
-                            if (node._def.hasOwnProperty('credentials') && n.hasOwnProperty('credentials')) {
+                            if (node._def.hasOwnProperty("credentials") && n.hasOwnProperty("credentials")) {
                                 node.credentials = {};
                                 for (d in node._def.credentials) {
                                     if (node._def.credentials.hasOwnProperty(d) && n.credentials.hasOwnProperty(d)) {
@@ -625,7 +569,6 @@ module.exports = function(RED) {
                         }
                     }
                     addNode(node);
-                    //RED.editor.validateNode(node);
                     node_map[n.id] = node;
                     // If an 'unknown' config node, it will not have been caught by the
                     // proper config node handling, so needs adding to new_nodes here
@@ -642,7 +585,7 @@ module.exports = function(RED) {
             "status":"scope",
             "link in":"links",
             "link out":"links"
-        }
+        };
 
         // Remap all wires and config node references
         for (i=0;i<new_nodes.length;i++) {
@@ -657,7 +600,7 @@ module.exports = function(RED) {
                                 addLink(link);
                                 new_links.push(link);
                             } else {
-                                console.log("Warning: dropping link that crosses tabs:",n.id,"->",node_map[wires[w2]].id);
+                                console.warn("Warning: dropping link that crosses tabs:",n.id,"->",node_map[wires[w2]].id);
                             }
                         }
                     }
@@ -687,7 +630,7 @@ module.exports = function(RED) {
             if (activeSubflow && /^link /.test(n.type) && n.links) {
                 n.links = n.links.filter(function(id) {
                     var otherNode = RED.nodes.node(id);
-                    return (otherNode && otherNode.z === activeWorkspace)
+                    return (otherNode && otherNode.z === activeWorkspace);
                 });
             }
 
