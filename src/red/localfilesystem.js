@@ -20,7 +20,7 @@ var path = require("path");
 // var i18n;
 var settings;
 var disableNodePathScan = false;
-var iconFileExtensions = [".png", ".gif", ".svg"];
+var iconFileExtensions = [".png", ".gif", ".svg", ".ico", ".jpg"];
 
 function init(_settings/*, _i18n*/) {
     settings = _settings;

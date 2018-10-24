@@ -63,7 +63,7 @@ function FlowDrawer(flow, options) {
 
     const onLoadPromise = new Promise((resolve, reject) => {
         RED.loader.load().then((nodeFiles) => {
-            // console.log(nodeFiles['node-red-node-email']['nodes']['email']);
+            // console.log(nodeFiles['node-red']['icons']);
             try {
                 for (let nodeFile in nodeFiles) {
                     for (let node in nodeFiles[nodeFile]['nodes']) {
@@ -72,6 +72,14 @@ function FlowDrawer(flow, options) {
                         const i18n = nodeFiles[nodeFile]['nodes'][node]['i18n'];
                         if (i18n) {
                             applyLocale(RED, i18n);
+                        }
+                        for (let iconGroup of nodeFiles[nodeFile]['icons']) {
+                            for (let icon of iconGroup['icons']) {
+                                const image = path.join(iconGroup.path, icon);
+                                if (fs.existsSync(image)) {
+                                    fs.copyFileSync(image, path.join(__dirname, "/../icons", icon));
+                                }
+                            }
                         }
                     }
                 }
