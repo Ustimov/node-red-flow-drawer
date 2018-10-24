@@ -29,8 +29,8 @@ module.exports = (function() {
             else if(isLatinChar(stringValue.charCodeAt(i))) {
                 return false;
             }
-         }
-         return false;
+        }
+        return false;
     }
 
     function isBidiChar(c)  {
@@ -43,7 +43,7 @@ module.exports = (function() {
     }
 
     function isLatinChar(c){
-        return (c > 64 && c < 91)||(c > 96 && c < 123)
+        return (c > 64 && c < 91)||(c > 96 && c < 123);
     }
 
     /**
@@ -63,21 +63,6 @@ module.exports = (function() {
         }
     }
 
-    function onInputChange() {
-        $(this).attr("dir", resolveBaseTextDir($(this).val()));
-    }
-
-    /**
-     * Adds event listeners to the Input to ensure its text-direction attribute
-     * is properly set based on its content.
-     * @param input - the input field
-     */
-    function prepareInput(input) {
-        input.on("keyup",onInputChange).on("paste",onInputChange).on("cut",onInputChange);
-        // Set the initial text direction
-        onInputChange.call(input);
-    }
-
     /**
      * Enforces the text direction of a given string by adding
      * UCC (Unicode Control Characters)
@@ -87,46 +72,19 @@ module.exports = (function() {
         if (value) {
             var dir = resolveBaseTextDir(value);
             if (dir == "ltr") {
-               return LRE + value + PDF;
+                return LRE + value + PDF;
             }
             else if (dir == "rtl") {
-               return RLE + value + PDF;
+                return RLE + value + PDF;
             }
         }
         return value;
     }
 
-    /**
-     * Enforces the text direction for all the spans with style bidiAware under
-     * workspace or sidebar div
-     */
-    function enforceTextDirectionOnPage() {
-        $("#workspace").find('span.bidiAware').each(function() {
-            $(this).attr("dir", resolveBaseTextDir($(this).html()));
-        });
-        $("#sidebar").find('span.bidiAware').each(function() {
-            $(this).attr("dir", resolveBaseTextDir($(this).text()));
-        });
-    }
-
-    /**
-     * Sets the text direction preference
-     * @param dir - the text direction preference
-     */
-    function setTextDirection(dir) {
-        textDir = dir;
-        RED.nodes.eachNode(function(n) { n.dirty = true;});
-        RED.view.redraw();
-        // RED.palette.refresh();
-        enforceTextDirectionOnPage();
-    }
-
     return {
         bidi: {
-            setTextDirection: setTextDirection,
             enforceTextDirectionWithUCC: enforceTextDirectionWithUCC,
             resolveBaseTextDir: resolveBaseTextDir,
-            prepareInput: prepareInput
         }
-    }
+    };
 })();
