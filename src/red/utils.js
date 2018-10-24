@@ -60,7 +60,7 @@ module.exports = (function() {
                         throw new Error("Invalid property expression: unterminated expression");
                     }
                     // Next char is first char of an identifier: a-z 0-9 $ _
-                    if (!/[a-z0-9\$\_]/i.test(str[i+1])) {
+                    if (!/[a-z0-9$_]/i.test(str[i+1])) {
                         throw new Error("Invalid property expression: unexpected "+str[i+1]+" at position "+(i+1));
                     }
                     start = i+1;
@@ -106,7 +106,7 @@ module.exports = (function() {
                     // If inBox, next char must be a ]. Otherwise it may be [ or .
                     if (inBox && !/\]/.test(str[i+1])) {
                         throw new Error("Invalid property expression: unexpected array expression at position "+start);
-                    } else if (!inBox && i+1!==length && !/[\[\.]/.test(str[i+1])) {
+                    } else if (!inBox && i+1!==length && !/[[.]/.test(str[i+1])) {
                         throw new Error("Invalid property expression: unexpected "+str[i+1]+" expression at position "+(i+1));
                     }
                     start = i+1;

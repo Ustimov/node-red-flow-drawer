@@ -17,15 +17,13 @@
 module.exports = function(RED) {
 
     var activeWorkspace = 0;
-    var workspaceIndex = 0;
     var workspace_tabs = RED.tabs.create();
-    var workspaceTabCount =  0;
 
-    function addWorkspace(ws,skipHistoryEntry) {
+    function addWorkspace(ws) {
         if (ws) {
             workspace_tabs.addTab(ws);
         } else {
-            console.error('Undefined workspace');
+            console.error("Undefined workspace");
         }
         return ws;
     }
@@ -33,7 +31,7 @@ module.exports = function(RED) {
     return {
         add: addWorkspace,
         active: function() {
-            return activeWorkspace
+            return activeWorkspace;
         },
         show: function(id) {
             if (!workspace_tabs.contains(id)) {
@@ -41,12 +39,12 @@ module.exports = function(RED) {
                 if (sf) {
                     addWorkspace({type:"subflow",id:id,icon:"red/images/subflow_tab.png",label:sf.name, closeable: true});
                 } else {
-                    console.error('Subflow not found');
+                    console.error("Subflow not found");
                     return;
                 }
             }
             activeWorkspace = id;
         },
         tabs: function () { return workspace_tabs ? workspace_tabs.tabs : {}; }
-    }
+    };
 };

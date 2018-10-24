@@ -1,22 +1,22 @@
 module.exports = function _RED () {
 
-    var _view = require('./view');
-    var _workspaces = require('./workspaces');
-    var _nodes = require('./nodes');
+    var _view = require("./view");
+    var _workspaces = require("./workspaces");
+    var _nodes = require("./nodes");
 
     var red = {
-        i18n: require('./i18n'),
-        loader: require('./loader'),
-        state: require('./state'),
-        tabs: require('./tabs'),
+        i18n: require("./i18n"),
+        loader: require("./loader"),
+        state: require("./state"),
+        tabs: require("./tabs"),
         // types: require('./types'),
-        text: require('./text'),
-        utils: require('./utils'),
-        validators: require('./validators'),
+        text: require("./text"),
+        utils: require("./utils"),
+        validators: require("./validators"),
     };
 
     red.settings = {
-        httpNodeRoot: '/'
+        httpNodeRoot: "/"
     };
 
     red.i18n.init(red);
@@ -35,4 +35,4 @@ module.exports = function _RED () {
     });
 
     return red;
-}
+};

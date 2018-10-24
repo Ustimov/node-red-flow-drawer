@@ -1,30 +1,30 @@
 #!/usr/bin/env node
-const fs = require('fs');
-const path = require('path');
-const program = require('commander');
-const ProgressBar = require('progress');
-const FlowDrawer = require('./../flow-drawer');
+const fs = require("fs");
+const path = require("path");
+const program = require("commander");
+const ProgressBar = require("progress");
+const FlowDrawer = require("./../flow-drawer");
 
 let inputFileOrDirValue;
 let outputDirValue;
 
 program
-    .version('0.0.5', '-v, --version')
-    .arguments('<inputFileOrDir> [outputDir]')
+    .version("0.0.5", "-v, --version")
+    .arguments("<inputFileOrDir> [outputDir]")
     .action((inputFileOrDir, outputDir) => {
         inputFileOrDirValue = inputFileOrDir;
         outputDirValue = outputDir;
     })
     //.option('-t, --type <type>', 'export image type (svg or png)', /^(svg|png)$/i, 'svg')
-    .option('-f, --format <format>', 'export data format (html, json or img)', /^(html|json|img)$/i, 'html')
-    .option('-n, --nodes <file>', 'path to a file with custom node descriptions')
-    .option('-s, --stdout', "print results to the stdout (only for file input and html/json output)")
+    .option("-f, --format <format>", "export data format (html, json or img)", /^(html|json|img)$/i, "html")
+    .option("-n, --nodes <file>", "path to a file with custom node descriptions")
+    .option("-s, --stdout", "print results to the stdout (only for file input and html/json output)")
     .parse(process.argv);
 
-program.type = 'svg';
+program.type = "svg";
 
-if (typeof inputFileOrDirValue === 'undefined') {
-    console.error('[flow-drawer] You need to specify an input file or a directory');
+if (typeof inputFileOrDirValue === "undefined") {
+    console.error("[flow-drawer] You need to specify an input file or a directory");
     process.exit(1);
 }
 
@@ -36,14 +36,14 @@ if (!fs.existsSync(inputFileOrDirValue)) {
 const options = {};
 if (program.nodes) {
     if (!fs.existsSync(program.nodes)) {
-        console.error('[flow-drawer] File with custom node definitions not found');
+        console.error("[flow-drawer] File with custom node definitions not found");
         process.exit(1);
     } else {
         options.nodes = program.nodes;
     }
 }
 
-if (program.format === 'img' && program.stdout) {
+if (program.format === "img" && program.stdout) {
     console.error("[flow-drawer] Option --stdout isn't supported for img export format");
     process.exit(1);
 }
@@ -55,13 +55,13 @@ if (stat.isDirectory() && program.stdout) {
     process.exit(1);
 }
 
-if (typeof outputDirValue === 'undefined') {
+if (typeof outputDirValue === "undefined") {
     if (!program.stdout) {
-        console.error('[flow-drawer] No outputDir provided. Exported files will be saved in the current working directory');
+        console.error("[flow-drawer] No outputDir provided. Exported files will be saved in the current working directory");
     }
-    outputDirValue = '';
+    outputDirValue = "";
 } else if (!fs.existsSync(outputDirValue)) {
-    console.error('[flow-drawer] Output directory not found');
+    console.error("[flow-drawer] Output directory not found");
     process.exit(1);
 }
 
@@ -75,7 +75,7 @@ if (stat.isFile()) {
             console.error(err);
             process.exit(1);
         } else {
-            progressBar = new ProgressBar('[flow-drawer] Processing [:bar] :percent :elapseds', {
+            progressBar = new ProgressBar("[flow-drawer] Processing [:bar] :percent :elapseds", {
                 width: 20,
                 total: results.length + 1
             });
@@ -83,7 +83,7 @@ if (stat.isFile()) {
         }
     });
 } else {
-    console.error('[flow-drawer] Input is neither a file nor a directory');
+    console.error("[flow-drawer] Input is neither a file nor a directory");
     process.exit(1);
 }
 
@@ -93,7 +93,7 @@ function draw (files) {
         return;
     }
     let file = files.pop();
-    if (path.extname(file) === '.json') {
+    if (path.extname(file) === ".json") {
         processFile(file).then(() => {
             draw(files);
         });
@@ -103,7 +103,7 @@ function draw (files) {
 }
 
 function processFile (inputPath) {
-    const flows = JSON.parse(fs.readFileSync(inputPath).toString('utf-8'));
+    const flows = JSON.parse(fs.readFileSync(inputPath).toString("utf-8"));
     return new FlowDrawer(flows, options)
         .draw(program.type)
         .then((images) => outputResult(images, inputPath))
@@ -113,22 +113,22 @@ function processFile (inputPath) {
 }
 
 function outputResult (images, inputPath) {
-    const outputPath = path.join(outputDirValue, path.basename(inputPath, '.json'));
+    const outputPath = path.join(outputDirValue, path.basename(inputPath, ".json"));
     switch (program.format) {
-        case 'html':
-            exportAsHtml(images, `${outputPath}.${program.format}`)
-            break;
-        case 'json':
-            exportAsJson(images, `${outputPath}.${program.format}`)
-            break;
-        case 'img':
-            exportAsImages(images, outputPath);
-            break;
+    case "html":
+        exportAsHtml(images, `${outputPath}.${program.format}`);
+        break;
+    case "json":
+        exportAsJson(images, `${outputPath}.${program.format}`);
+        break;
+    case "img":
+        exportAsImages(images, outputPath);
+        break;
     }
 }
 
 function exportAsHtml (images, outputPath) {
-    let output = '';
+    let output = "";
     for (let image of images) {
         output += `<img src="${image}"></img>`;
     }
@@ -142,7 +142,9 @@ function exportAsJson (images, outputPath) {
 
 function write (output, outputPath) {
     if (stat.isFile() && program.stdout) {
+        /* eslint-disable no-console */
         console.log(output);
+        /* eslint-enable no-console */
     } else {
         fs.writeFileSync(outputPath, output);
     }
@@ -156,7 +158,7 @@ function exportAsImages (images, outputPath) {
         const matches = images[i].match(regex);
         const data = matches[2];
         const number = (padding + i).slice(-digitCount);
-        fs.writeFileSync(`${outputPath}-${number}.${program.type}`, new Buffer(data, 'base64'));
+        fs.writeFileSync(`${outputPath}-${number}.${program.type}`, new Buffer(data, "base64"));
     }
 }
 
@@ -190,4 +192,4 @@ function walk (dir, done) {
             });
         });
     });
-};
+}

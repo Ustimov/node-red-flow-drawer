@@ -26,4 +26,4 @@ module.exports = {
     IMPORT_DRAGGING: 8,
     QUICK_JOINING: 9,
     PANNING: 10
-}
+};

@@ -15,8 +15,7 @@
  **/
 
 module.exports = (function() {
-    function createTabs(options) {
-
+    function createTabs() {
         var tabs = {};
         return {
             addTab: function(tab) {
@@ -24,9 +23,9 @@ module.exports = (function() {
             },
             contains: function(id) { return !!tabs[id]; },
             tabs: tabs
-        }
+        };
     }
     return {
         create: createTabs
-    }
+    };
 })();

@@ -44,7 +44,7 @@ module.exports = (function() {
             RED["_"] = function(str, args) {
                 let locale = str;
                 try {
-                    locale = localeForString(str)
+                    locale = localeForString(str);
                 } catch (err) {
                     console.error(err);
                 }
@@ -54,10 +54,10 @@ module.exports = (function() {
                     }
                 }
                 return locale;
-            }
+            };
         },
         apply: function(_locale) {
             locale = Object.assign(locale, _locale);
         }
-    }
+    };
 })();

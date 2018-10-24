@@ -16,29 +16,14 @@
 
 module.exports = (function() {
     const validators = {
-        number: function(blankAllowed){return function(v) { return (blankAllowed&&(v===''||v===undefined)) || (v!=='' && !isNaN(v));}},
-        regex: function(re){return function(v) { return re.test(v);}},
-        typedInput: function(ptypeName,isConfig) { return function(v) {
-            var ptype = $("#node-"+(isConfig?"config-":"")+"input-"+ptypeName).val() || this[ptypeName];
-            if (ptype === 'json') {
-                try {
-                    JSON.parse(v);
-                    return true;
-                } catch(err) {
-                    return false;
-                }
-            } else if (ptype === 'msg' || ptype === 'flow' || ptype === 'global' ) {
-                return RED.utils.validatePropertyExpression(v);
-            } else if (ptype === 'num') {
-                return /^[+-]?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/.test(v);
-            }
-            return true;
-        }}
+        number: function(blankAllowed){return function(v) { return (blankAllowed&&(v===""||v===undefined)) || (v!=="" && !isNaN(v));};},
+        regex: function(re){return function(v) { return re.test(v);};},
+        typedInput: function() { return function() {return true;};}
     };
 
     return {
         init: function(RED) {
             RED.validators = validators;
         }
-    }
+    };
 })();

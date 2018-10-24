@@ -17,14 +17,11 @@
 var fs = require("fs");
 var path = require("path");
 
-// var i18n;
 var settings;
-var disableNodePathScan = false;
 var iconFileExtensions = [".png", ".gif", ".svg", ".ico", ".jpg"];
 
-function init(_settings/*, _i18n*/) {
+function init(_settings) {
     settings = _settings;
-    // i18n = _i18n;
 }
 
 function isIncluded(name) {
@@ -41,7 +38,7 @@ function isIncluded(name) {
 }
 
 function isExcluded(name) {
-     if (settings.nodesExcludes) {
+    if (settings.nodesExcludes) {
         for (var i=0;i<settings.nodesExcludes.length;i++) {
             if (settings.nodesExcludes[i] == name) {
                 return true;
@@ -50,6 +47,7 @@ function isExcluded(name) {
     }
     return false;
 }
+
 function getLocalFile(file) {
     if (!isIncluded(path.basename(file)) || isExcluded(path.basename(file))) {
         return null;
@@ -66,7 +64,6 @@ function getLocalFile(file) {
         return null;
     }
 }
-
 
 /**
  * Synchronously walks the directory looking for node files.
@@ -107,7 +104,7 @@ function getLocalNodeFiles(dir) {
             }
         }
     });
-    return {files: result, icons: icons}
+    return {files: result, icons: icons};
 }
 
 function scanDirForNodesModules(dir,moduleName) {
@@ -137,7 +134,7 @@ function scanDirForNodesModules(dir,moduleName) {
                     var pkgfn = path.join(dir,fn,"package.json");
                     try {
                         var pkg = require(pkgfn);
-                        if (pkg['node-red']) {
+                        if (pkg["node-red"]) {
                             var moduleDir = path.join(dir,fn);
                             results.push({dir:moduleDir,package:pkg});
                         }
@@ -153,6 +150,7 @@ function scanDirForNodesModules(dir,moduleName) {
             }
         }
     } catch(err) {
+        // console.error(err);
     }
     return results;
 }
@@ -192,7 +190,7 @@ function getModuleNodeFiles(module) {
     var moduleDir = module.dir;
     var pkg = module.package;
 
-    var nodes = pkg['node-red'].nodes||{};
+    var nodes = pkg["node-red"].nodes||{};
     var results = [];
     var iconDirs = [];
     var iconList = [];
@@ -214,6 +212,7 @@ function getModuleNodeFiles(module) {
                     iconList.push({path:iconDir,icons:icons});
                     iconDirs.push(iconDir);
                 } catch(err) {
+                    // console.error(err);
                 }
             }
         }
@@ -222,28 +221,25 @@ function getModuleNodeFiles(module) {
 
     var examplesDir = path.join(moduleDir,"examples");
     try {
-        fs.statSync(examplesDir)
+        fs.statSync(examplesDir);
     } catch(err) {
+        // console.error(err);
     }
     return result;
 }
 
 function getNodeFiles(disableNodePathScan) {
-    var dir;
     // Find all of the nodes to load
     var nodeFiles = [];
     var results;
 
-    var dir = path.resolve(__dirname + '/../../../../public/icons');
+    var dir = path.resolve(__dirname + "/../../../../public/icons");
     var iconList = [{path:dir,icons:scanIconDir(dir)}];
 
     if (settings.coreNodesDir) {
         results = getLocalNodeFiles(path.resolve(settings.coreNodesDir));
         nodeFiles = nodeFiles.concat(results.files);
         iconList = iconList.concat(results.icons);
-
-        var defaultLocalesPath = path.join(settings.coreNodesDir,"core","locales");
-        // i18n.registerMessageCatalog("node-red",defaultLocalesPath,"messages.json");
     }
 
     if (settings.userDir) {
@@ -277,7 +273,7 @@ function getNodeFiles(disableNodePathScan) {
             nodes: {},
             icons: iconList
         }
-    }
+    };
     nodeFiles.forEach(function(node) {
         nodeList["node-red"].nodes[node.name] = node;
     });
@@ -291,12 +287,12 @@ function getNodeFiles(disableNodePathScan) {
 
         moduleFiles.sort(function(A,B) {
             if (A.local && !B.local) {
-                return -1
+                return -1;
             } else if (!A.local && B.local) {
-                return 1
+                return 1;
             }
             return 0;
-        })
+        });
         var knownModules = {};
         moduleFiles = moduleFiles.filter(function(mod) {
             var result;
@@ -319,8 +315,8 @@ function getNodeFiles(disableNodePathScan) {
                 nodes: {},
                 icons: nodeModuleFiles.icons
             };
-            if (moduleFile.package['node-red'].version) {
-                nodeList[moduleFile.package.name].redVersion = moduleFile.package['node-red'].version;
+            if (moduleFile.package["node-red"].version) {
+                nodeList[moduleFile.package.name].redVersion = moduleFile.package["node-red"].version;
             }
             nodeModuleFiles.files.forEach(function(node) {
                 node.local = moduleFile.local||false;
@@ -340,7 +336,7 @@ function getModuleFiles(module) {
     var moduleFiles = scanTreeForNodesModules(module);
     if (moduleFiles.length === 0) {
         var err = new Error(module);
-        err.code = 'MODULE_NOT_FOUND';
+        err.code = "MODULE_NOT_FOUND";
         throw err;
     }
 
@@ -352,8 +348,8 @@ function getModuleFiles(module) {
             nodes: {},
             icons: nodeModuleFiles.icons
         };
-        if (moduleFile.package['node-red'].version) {
-            nodeList[moduleFile.package.name].redVersion = moduleFile.package['node-red'].version;
+        if (moduleFile.package["node-red"].version) {
+            nodeList[moduleFile.package.name].redVersion = moduleFile.package["node-red"].version;
         }
         nodeModuleFiles.files.forEach(function(node) {
             nodeList[moduleFile.package.name].nodes[node.name] = node;
@@ -374,6 +370,7 @@ function scanIconDir(dir) {
             }
         });
     } catch(err) {
+        // console.error(err);
     }
     return iconList;
 }
@@ -383,4 +380,4 @@ module.exports = {
     getNodeFiles: getNodeFiles,
     getLocalFile: getLocalFile,
     getModuleFiles: getModuleFiles
-}
+};

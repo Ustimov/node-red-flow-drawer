@@ -1,19 +1,19 @@
-const { createCanvas, Image } = require('canvas');
-const { JSDOM } = require('jsdom');
-const SvgSaver = require('svg-saver-node');
-const fs = require('fs');
-const path = require('path');
-const mute = require('mute');
-const _RED = require('./red');
+const { createCanvas, Image } = require("canvas");
+const { JSDOM } = require("jsdom");
+const SvgSaver = require("svg-saver-node");
+const fs = require("fs");
+const path = require("path");
+const mute = require("mute");
+const _RED = require("./red");
 
 function applyTypes(path) {
     const types = fs.readFileSync(path);
-    eval(types.toString('utf-8'));
+    eval(types.toString("utf-8"));
 }
 
 function applyTypes2(types) {
     try {
-        eval(types.toString('utf-8'));
+        eval(types.toString("utf-8"));
     } catch (err) {
         console.error(types);
         console.error(err);
@@ -31,7 +31,7 @@ function applyLocale(RED, path) {
 
 function FlowDrawer(flow, options) {
     if (!flow) {
-        throw new Error('Invalid flow');    
+        throw new Error("Invalid flow");    
     }
     
     const defaults = {
@@ -45,7 +45,7 @@ function FlowDrawer(flow, options) {
         applyTypes.call({RED}, options.nodes);
     }
 
-    const stylePath = path.join(__dirname, '/../css/style.min.css');
+    const stylePath = path.join(__dirname, "/../css/style.min.css");
     const { window } = new JSDOM(`
         <html>
             <link rel="stylesheet" href="file://${stylePath}">
@@ -61,20 +61,20 @@ function FlowDrawer(flow, options) {
         loaded = true;
     };
 
-    const onLoadPromise = new Promise((resolve, reject) => {
+    const onLoadPromise = new Promise((resolve) => {
         RED.loader.load().then((nodeFiles) => {
             // console.log(nodeFiles['node-red']['icons']);
             try {
                 for (let nodeFile in nodeFiles) {
-                    for (let node in nodeFiles[nodeFile]['nodes']) {
-                        const js = 'const RED = this.RED;' + nodeFiles[nodeFile]['nodes'][node].js;
+                    for (let node in nodeFiles[nodeFile]["nodes"]) {
+                        const js = "const RED = this.RED;" + nodeFiles[nodeFile]["nodes"][node].js;
                         applyTypes2.call({RED}, js);
-                        const i18n = nodeFiles[nodeFile]['nodes'][node]['i18n'];
+                        const i18n = nodeFiles[nodeFile]["nodes"][node]["i18n"];
                         if (i18n) {
                             applyLocale(RED, i18n);
                         }
-                        for (let iconGroup of nodeFiles[nodeFile]['icons']) {
-                            for (let icon of iconGroup['icons']) {
+                        for (let iconGroup of nodeFiles[nodeFile]["icons"]) {
+                            for (let icon of iconGroup["icons"]) {
                                 const image = path.join(iconGroup.path, icon);
                                 if (fs.existsSync(image)) {
                                     fs.copyFileSync(image, path.join(__dirname, "/../icons", icon));
@@ -102,20 +102,22 @@ function FlowDrawer(flow, options) {
 
     var oldCreateElement = window.document.createElement;
     window.document.createElement = function (el) {
-        if (el === 'canvas') {
+        if (el === "canvas") {
             return createCanvas(500, 500);
         } else {
             return oldCreateElement.bind(window.document)(el);
         }
-    }
+    };
     window.Image = Image;
 
     const svgSaver = new SvgSaver(window);
     let cache = null;
 
+    /* eslint-disable no-unused-vars */
     function draw (type) { // TODO: use type
+    /* eslint-enable no-unused-vars */
         if (cache !== null) {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 resolve(cache);
             });
         }
