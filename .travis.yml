@@ -10,3 +10,6 @@ addons:
       - libgif-dev
       - build-essential
       - g++
+script:
+  - npm run lint
+  - npm test

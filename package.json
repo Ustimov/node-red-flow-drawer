@@ -4,7 +4,8 @@
   "description": "A library and CLI for drawning Node-RED flows from JSON files",
   "main": "src/flow-drawer.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "node_modules/.bin/eslint **/*.js"
   },
   "repository": {
     "type": "git",
