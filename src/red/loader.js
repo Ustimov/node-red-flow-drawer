@@ -20,12 +20,7 @@ var path = require("path");
 
 var localfilesystem = require("./localfilesystem");
 
-var settings;
-var runtime;
-
-function init(_runtime) {
-    runtime = _runtime;
-    settings = runtime.settings;
+function init(settings) {
     localfilesystem.init(settings);
 }
 
@@ -161,9 +156,8 @@ function loadNodeConfig(fileInfo) {
 
                 var jsRegex = /<script[^>]* type="text\/javascript">([\s\S]*?)<\/script>/gi;
                 node.js = "";
-                /* eslint-disable no-cond-assign */
+                // eslint-disable-next-line
                 while (match = jsRegex.exec(content)) {
-                    /* eslint-enable no-cond-assign */
                     node.js += match[1];
                 }
 

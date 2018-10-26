@@ -6,49 +6,61 @@ const path = require("path");
 const mute = require("mute");
 const _RED = require("./red");
 
-function applyTypes(path) {
-    const types = fs.readFileSync(path);
-    eval(types.toString("utf-8"));
-}
-
-function applyTypes2(types) {
+function applyTypes(types) {
     try {
         eval(types.toString("utf-8"));
     } catch (err) {
-        console.error(types);
         console.error(err);
     }
 }
 
 function applyLocale(RED, path) {
-    if (fs.existsSync(path)) {
+    if (!path) {
+        return;
+    }
+    try {
         const locale = JSON.parse(fs.readFileSync(path));
         RED.i18n.apply(locale);
-    } else {
-        console.error("Doesn't exist: " + path);
+    } catch (err) {
+        console.error(err);
     }
 }
 
-function FlowDrawer(flow, options) {
-    if (!flow) {
+function registerNode(RED, node) {
+    const js = "const RED = this.RED;" + node.js;
+    applyTypes.call({RED}, js);
+}
+
+function copyIcons(nodeFile) {
+    for (let iconGroup of nodeFile.icons) {
+        for (let icon of iconGroup.icons) {
+            const image = path.join(iconGroup.path, icon);
+            if (fs.existsSync(image)) {
+                fs.copyFileSync(image, path.join(__dirname, "../icons", icon));
+            }
+        }
+    }
+}
+
+function FlowDrawer(flow, settings) {
+    if (!flow || !Array.isArray(flow)) {
         throw new Error("Invalid flow");    
     }
     
     const defaults = {
-        // empty
+        httpNodeRoot: "/",
+        userDir: process.cwd()
     };
-    options = Object.assign(defaults, options);
+    settings = Object.assign(defaults, settings);
 
-    const RED = _RED();
-
-    if (options.nodes) {
-        applyTypes.call({RED}, options.nodes);
-    }
+    const RED = _RED(settings);
 
     const stylePath = path.join(__dirname, "../css/style.min.css");
     const { window } = new JSDOM(`
         <html>
-            <link rel="stylesheet" href="file://${stylePath}">
+            <head>
+                <link rel="stylesheet" href="file://${stylePath}">
+            </head>
             <body>
                 <div id="body"></div>
             </body>
@@ -56,47 +68,24 @@ function FlowDrawer(flow, options) {
         resources: "usable"
     });
 
-    let loaded = false;
-    window.onload = () => {
-        loaded = true;
-    };
-
     const onLoadPromise = new Promise((resolve) => {
-        RED.loader.load().then((nodeFiles) => {
-            // console.log(nodeFiles['node-red']['icons']);
-            try {
-                for (let nodeFile in nodeFiles) {
-                    for (let node in nodeFiles[nodeFile]["nodes"]) {
-                        const js = "const RED = this.RED;" + nodeFiles[nodeFile]["nodes"][node].js;
-                        applyTypes2.call({RED}, js);
-                        const i18n = nodeFiles[nodeFile]["nodes"][node]["i18n"];
-                        if (i18n) {
-                            applyLocale(RED, i18n);
-                        }
-                        for (let iconGroup of nodeFiles[nodeFile]["icons"]) {
-                            for (let icon of iconGroup["icons"]) {
-                                const image = path.join(iconGroup.path, icon);
-                                if (fs.existsSync(image)) {
-                                    fs.copyFileSync(image, path.join(__dirname, "../icons", icon));
-                                }
-                            }
-                        }
-                    }
+        const windowLoad = new Promise((r) => {
+            window.onload = () => {
+                r();
+            };
+        });
+        const nodeLoad = RED.loader.load().then((nodeFiles) => {
+            for (let nodeFile in nodeFiles) {
+                const nodes = nodeFiles[nodeFile]["nodes"];
+                for (let node in nodes) {
+                    registerNode(RED, nodes[node]);
+                    applyLocale(RED, nodes[node].i18n);
                 }
-            } catch (err) {
-                console.error(err);
+                copyIcons(nodeFiles[nodeFile]);
             }
-
-            if (!loaded) {
-                window.onload = () => {
-                    resolve();
-                };
-            } else {
-                resolve();
-            }
-
-        }).catch((err) => {
-            console.error(err);
+        });
+        Promise.all([windowLoad, nodeLoad]).then(() => {
+            resolve();
         });
     });
 
@@ -113,9 +102,8 @@ function FlowDrawer(flow, options) {
     const svgSaver = new SvgSaver(window);
     let cache = null;
 
-    /* eslint-disable no-unused-vars */
+    // eslint-disable-next-line
     function draw (type) { // TODO: use type
-    /* eslint-enable no-unused-vars */
         if (cache !== null) {
             return new Promise((resolve) => {
                 resolve(cache);
@@ -128,7 +116,7 @@ function FlowDrawer(flow, options) {
             onLoadPromise.then(() => {
                 RED.nodes.import(flow);
                 const workspaceIds = Object.keys(RED.workspaces.tabs());
-                drawWorkspacesWithIds(workspaceIds).catch((err) => console.error(err));
+                drawWorkspacesWithIds(workspaceIds).catch((err) => { console.error(err); });
             });
             
             function drawWorkspacesWithIds (ids) {

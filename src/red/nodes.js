@@ -44,7 +44,6 @@ module.exports = function(RED) {
                 return nodeSets[id];
             },
             registerNodeType: function(nt,def) {
-                // console.log('register: ' + nt);
                 nodeDefinitions[nt] = def;
                 def.type = nt;
                 def["_"] = RED._;
@@ -309,7 +308,6 @@ module.exports = function(RED) {
                     workspace_map[n.id] = nid;
                     n.id = nid;
                 }
-                // console.log('node add workspace');
                 addWorkspace(n);
                 RED.workspaces.add(n);
                 new_workspaces.push(n);
@@ -343,7 +341,6 @@ module.exports = function(RED) {
         // Add a tab if there isn't one there already
         if (defaultWorkspace == null) {
             defaultWorkspace = { type:"tab", id:getID(), disabled: false, info:"",  label:RED._("workspace.defaultName",{number:1})};
-            // console.log('default workspace');
             addWorkspace(defaultWorkspace);
             RED.workspaces.add(defaultWorkspace);
             new_workspaces.push(defaultWorkspace);

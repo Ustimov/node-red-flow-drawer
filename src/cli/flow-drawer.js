@@ -142,9 +142,8 @@ function exportAsJson (images, outputPath) {
 
 function write (output, outputPath) {
     if (stat.isFile() && program.stdout) {
-        /* eslint-disable no-console */
+        // eslint-disable-next-line
         console.log(output);
-        /* eslint-enable no-console */
     } else {
         fs.writeFileSync(outputPath, output);
     }

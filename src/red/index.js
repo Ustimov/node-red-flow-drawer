@@ -1,4 +1,4 @@
-module.exports = function _RED () {
+module.exports = function _RED (settings) {
 
     var _view = require("./view");
     var _workspaces = require("./workspaces");
@@ -15,9 +15,7 @@ module.exports = function _RED () {
         validators: require("./validators"),
     };
 
-    red.settings = {
-        httpNodeRoot: "/"
-    };
+    red.settings = settings;
 
     red.i18n.init(red);
     red.nodes = _nodes(red);
@@ -26,13 +24,7 @@ module.exports = function _RED () {
     red.utils.init(red);
     red.view = _view(red);
     red.workspaces = _workspaces(red);
-
-    red.loader.init({
-        settings: {
-            coreNodesDir: "",
-            userDir: ""
-        }
-    });
+    red.loader.init(red.settings);
 
     return red;
 };

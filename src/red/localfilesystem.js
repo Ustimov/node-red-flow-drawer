@@ -325,7 +325,7 @@ function getNodeFiles(disableNodePathScan) {
             nodeFiles = nodeFiles.concat(nodeModuleFiles.files);
         });
     } else {
-        // console.log("node path scan disabled");
+        // console.error("node path scan disabled");
     }
     return nodeList;
 }
