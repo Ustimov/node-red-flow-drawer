@@ -964,5 +964,145 @@
         "too-many" : "too many pending messages in batch node",
         "unexpected" : "unexpected mode",
         "no-parts" : "no parts property in message"
+    },
+    "email": {
+        "email": "email",
+        "label": {
+            "to": "To",
+            "server": "Server",
+            "port": "Port",
+            "useSecureConnection": "Use secure connection.",
+            "userid": "Userid",
+            "password": "Password",
+            "repeat": "Refresh",
+            "seconds": "seconds",
+            "folder": "Folder",
+            "protocol": "Protocol",
+            "useSSL": "Use SSL?",
+            "disposition": "Disposition",
+            "none": "None",
+            "read": "Mark Read",
+            "delete": "Delete"
+        },
+        "default-message": "__description__\n\nFile from Node-RED is attached: __filename__",
+        "tip": {
+            "cred": "<b>Note:</b> Copied credentials from global emailkeys.js file.",
+            "recent": "Tip: Only retrieves the single most recent email."
+        },
+        "status": {
+            "messagesent": "Message sent: __response__",
+            "fetching": "fetching",
+            "foldererror": "fetch folder error",
+            "messageerror": "fetch message error",
+            "message": "message #__number__",
+            "newemail": "received new email: __topic__",
+            "duplicate": "duplicate not sent: __topic__",
+            "inboxzero": "you have achieved Inbox Zero",
+            "sending": "sending",
+            "sendfail": "send failed",
+            "connecterror": "connect error"
+        },
+        "errors": {
+            "nouserid": "No e-mail userid set",
+            "nopassword": "No e-mail password set",
+            "nocredentials": "No Email credentials found. See info panel.",
+            "nosmtptransport": "No SMTP transport. See info panel.",
+            "nopayload": "No payload to send",
+            "fetchfail": "Failed to fetch folder: __folder__",
+            "messageerror": "Fetch message error: __error__",
+            "refreshtoolarge": "Refresh interval too large. Limiting to 2147483 seconds"
+        }
+    },
+    "feedparse": {
+        "feedparse": "feedparser",
+        "label": {
+            "feedurl": "Feed url",
+            "refresh": "Refresh",
+            "minutes": "minutes"
+        },
+        "errors": {
+            "badstatuscode": "error - Bad status code",
+            "invalidurl": "Invalid url",
+            "invalidinterval": "Repeat interval too large"
+        }
+    },
+    "rbe": {
+        "rbe": "rbe",
+        "label": {
+            "func": "Mode",
+            "init": "Send initial value",
+            "start": "Start value",
+            "name": "Name"
+        },
+        "placeholder":{
+            "bandgap": "e.g. 10 or 5%",
+            "start": "leave blank to use first data received"
+        },
+        "opts": {
+            "rbe": "block unless value changes",
+            "rbei": "block unless value changes (ignore initial value)",
+            "deadband": "block unless value change is greater than",
+            "deadbandEq": "block unless value change is greater or equal to",
+            "narrowband": "block if value change is greater than",
+            "narrowbandEq": "block if value change is greater or equal to",
+            "in": "compared to last input value",
+            "out": "compared to last valid output value"
+        },
+        "warn": {
+            "nonumber": "no number found in payload"
+        }
+    },
+    "twitter": {
+        "label": {
+            "twitter-id":"Twitter ID",
+            "search": "Search",
+            "for": "for",
+            "user": "User",
+            "dmslabel": "DMs",
+            "followers": "followed by",
+            "tweetslabel": "tweets",
+            "eventslabel": "events",
+            "create": "Create your own application at",
+            "copy-consumer": "From the 'Keys and Access Tokens' section, copy the Consumer Key and Secret",
+            "consumer_key": "Consumer Key",
+            "consumer_secret": "Consumer Secret",
+            "copy-accessToken": "Create a new 'Access Token' and copy the Access Token and Secret",
+            "access_key": "Access Token",
+            "access_secret": "Access Token Secret",
+            "enter-id":"Set your Twitter ID"
+
+        },
+        "placeholder": {
+            "for": "comma-separated words, @ids, #tags",
+            "user": "comma-separated @twitter handles"
+        },
+        "search": {
+            "public": "all public tweets",
+            "follow": "all tweets from people I follow",
+            "user": "the tweets of specific users",
+            "direct": "your direct messages",
+            "events": "your twitter events"
+        },
+        "tip": "Tip: Use commas without spaces between multiple search terms. Comma = OR, Space = AND.<br/>The Twitter API WILL NOT deliver 100% of all tweets.<br/>Tweets of who you follow will include their retweets and favourites.<br/><br/>Leave <b>for</b> blank to set using msg.payload.",
+        "status": {
+            "using-geo": "Using geo location: __location__",
+            "tweeting": "tweeting",
+            "failed":"failed"
+        },
+        "warn": {
+            "nousers":"User option selected but no users specified",
+            "waiting":"Waiting for search term"
+        },
+        "errors": {
+            "ratelimit":"rate limit hit",
+            "limitrate":"limiting rate",
+            "streamerror":"stream error: __error__ (__rc__)",
+            "unexpectedend":"stream ended unexpectedly",
+            "invalidtag":"invalid tag property",
+            "missingcredentials":"missing twitter credentials",
+            "truncated":"truncated tweet greater than 280 characters",
+            "sendfail":"send tweet failed: __error__",
+            "nopayload":"no payload to tweet"
+        }
     }
 }

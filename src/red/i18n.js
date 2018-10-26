@@ -19,7 +19,7 @@ module.exports = (function() {
     const fs = require("fs");
     const path = require("path");
 
-    const localePath = path.join(__dirname, "../../locales/messages.json");
+    const localePath = path.join(__dirname, "../../locales/en-US/messages.json");
     const data = fs.readFileSync(localePath);
     let locale = JSON.parse(data);
 

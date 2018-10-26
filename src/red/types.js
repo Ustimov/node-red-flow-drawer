@@ -4411,30 +4411,6 @@ module.exports = (function () {
         });
         /* /file */
 
-        /* test-node */
-        RED.nodes.registerType('test-node',{
-            category: 'new',
-            color: '#a6bbcf',
-            defaults: {
-                name: {value:""},
-                nameFieldType: {value: ""},
-            },
-            inputs:1,
-            outputs:1,
-            icon: "file.png",
-            label: function() {
-                return this.name||"test-node";
-            },
-            oneditprepare: function() {
-                $("#node-input-name").typedInput({
-                    default: 'msg',
-                    types: ['msg','flow','global'],
-                    typeField: $("#node-input-nameFieldType")
-                });
-            }
-        });
-        /* /test-node */
-
         /* e-mail */
         RED.nodes.registerType('e-mail',{
             category: 'social-output',

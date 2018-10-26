@@ -9,7 +9,7 @@ module.exports = function _RED () {
         loader: require("./loader"),
         state: require("./state"),
         tabs: require("./tabs"),
-        // types: require('./types'),
+        types: require("./types"),
         text: require("./text"),
         utils: require("./utils"),
         validators: require("./validators"),
@@ -22,15 +22,15 @@ module.exports = function _RED () {
     red.i18n.init(red);
     red.nodes = _nodes(red);
     red.validators.init(red); // should be initialized before types
-    // red.types.init(red);
+    red.types.init(red);
     red.utils.init(red);
     red.view = _view(red);
     red.workspaces = _workspaces(red);
 
     red.loader.init({
         settings: {
-            coreNodesDir: "C:\\Users\\XI333901\\Documents\\node-red-master\\nodes",
-            userDir: "C:\\Users\\XI333901\\.node-red"
+            coreNodesDir: "",
+            userDir: ""
         }
     });
 
