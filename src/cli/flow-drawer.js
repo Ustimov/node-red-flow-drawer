@@ -17,7 +17,7 @@ program
     })
     //.option('-t, --type <type>', 'export image type (svg or png)', /^(svg|png)$/i, 'svg')
     .option("-f, --format <format>", "export data format (html, json or img)", /^(html|json|img)$/i, "html")
-    .option("-n, --nodes <file>", "path to a file with custom node descriptions")
+    .option("-n, --nodes <dir>", "path to a directory with installed as npm packages external nodes (CWD by default)")
     .option("-s, --stdout", "print results to the stdout (only for file input and html/json output)")
     .parse(process.argv);
 
@@ -36,10 +36,10 @@ if (!fs.existsSync(inputFileOrDirValue)) {
 const options = {};
 if (program.nodes) {
     if (!fs.existsSync(program.nodes)) {
-        console.error("[flow-drawer] File with custom node definitions not found");
+        console.error("[flow-drawer] Directory with installed external nodes not found");
         process.exit(1);
     } else {
-        options.nodes = program.nodes;
+        options.userDir = program.nodes;
     }
 }
 

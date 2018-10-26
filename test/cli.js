@@ -60,13 +60,13 @@ describe("CLI", function () {
         });
     });
     describe("--nodes", function () {
-        describe("file with custom nodes doesn't exist", function () {
+        describe("directory with installed external nodes doesn't exist", function () {
             it("should return an error message", function (done) {
                 this.timeout(5000);
                 exec(`${CLI} ${INPUT_FILE} --nodes=does-not-exist`, function (err, stdout, stderr) {
                     assert.isNotNull(err);
                     assert.isEmpty(stdout);
-                    assert.equal(stderr.trim(), "[flow-drawer] File with custom node definitions not found");
+                    assert.equal(stderr.trim(), "[flow-drawer] Directory with installed external nodes not found");
                     done();
                 });
             });
