@@ -45,7 +45,7 @@ function FlowDrawer(flow, options) {
         applyTypes.call({RED}, options.nodes);
     }
 
-    const stylePath = path.join(__dirname, "/../css/style.min.css");
+    const stylePath = path.join(__dirname, "../css/style.min.css");
     const { window } = new JSDOM(`
         <html>
             <link rel="stylesheet" href="file://${stylePath}">
@@ -77,7 +77,7 @@ function FlowDrawer(flow, options) {
                             for (let icon of iconGroup["icons"]) {
                                 const image = path.join(iconGroup.path, icon);
                                 if (fs.existsSync(image)) {
-                                    fs.copyFileSync(image, path.join(__dirname, "/../icons", icon));
+                                    fs.copyFileSync(image, path.join(__dirname, "../icons", icon));
                                 }
                             }
                         }

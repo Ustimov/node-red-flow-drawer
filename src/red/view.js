@@ -418,8 +418,8 @@ module.exports = function (RED) {
                         .attr("x",20).attr("y",9);
                 }
                     
-                node.append("image").attr("class","node_error hidden").attr("xlink:href", path.join(__dirname, "/../../icons/node-error.png")).attr("x",0).attr("y",-6).attr("width",10).attr("height",9);
-                node.append("image").attr("class","node_changed hidden").attr("xlink:href", path.join(__dirname, "/../../icons/node-changed.png")).attr("x",12).attr("y",-6).attr("width",10).attr("height",10);
+                node.append("image").attr("class","node_error hidden").attr("xlink:href", path.join(__dirname, "../../icons/node-error.png")).attr("x",0).attr("y",-6).attr("width",10).attr("height",9);
+                node.append("image").attr("class","node_changed hidden").attr("xlink:href", path.join(__dirname, "../../icons/node-changed.png")).attr("x",12).attr("y",-6).attr("width",10).attr("height",10);
             });
 
             node.each(function(d) {

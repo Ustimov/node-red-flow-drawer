@@ -186,25 +186,25 @@ module.exports = (function() {
 
     function getNodeIcon(def, node) {
         if (def.category === "config") {
-            return path.join(__dirname, "/../../icons/cog.png");
+            return path.join(__dirname, "../../icons/cog.png");
         } else if (node && node.type === "tab") {
-            return path.join(__dirname, "/../../icons/subflow.png");
+            return path.join(__dirname, "../../icons/subflow.png");
         } else if (node && node.type === "unknown") {
-            return path.join(__dirname, "/../../icons/alert.png");
+            return path.join(__dirname, "../../icons/alert.png");
         } else if (node && node.icon) {
             var iconPath = separateIconPath(node.icon);
             if (isIconExists(iconPath)) {
-                return path.join(__dirname, "/../../icons", node.icon);
+                return path.join(__dirname, "../../icons", node.icon);
             }
         }
 
         iconPath = getDefaultNodeIcon(def, node);
         if (def.category === "subflows") {
             if (!isIconExists(iconPath)) {
-                return path.join(__dirname, "/../../icons/subflow.png");
+                return path.join(__dirname, "../../icons/subflow.png");
             }
         }
-        return path.join(__dirname, "/../../icons", iconPath.file);
+        return path.join(__dirname, "../../icons", iconPath.file);
     }
 
     function getNodeLabel(node,defaultLabel) {
