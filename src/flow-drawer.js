@@ -52,6 +52,7 @@ function FlowDrawer(flow, settings) {
         userDir: process.cwd()
     };
     settings = Object.assign(defaults, settings);
+    settings.userDir = path.resolve(settings.userDir);
 
     const RED = _RED(settings);
 
