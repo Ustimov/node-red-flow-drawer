@@ -42,7 +42,6 @@ npm install node-red-flow-drawer --save
 const fs = require("fs");
 const FlowDrawer = require("node-red-flow-drawer");
  
- 
 const flows = [{"id":"bfc121b1.6847","type":"tab","label":"Flow 2","disabled":false,"info":""},{"id":"c1f897dd.90a048","type":"http in","z":"bfc121b1.6847","name":"","url":"/in","method":"get","upload":false,"swaggerDoc":"","x":200,"y":540,"wires":[["9b1c0d8f.216f2"]]},{"id":"9b1c0d8f.216f2","type":"http response","z":"bfc121b1.6847","name":"","statusCode":"200","headers":{},"x":500,"y":540,"wires":[]}];
 
 // Optional settings (here are defaults)
@@ -114,20 +113,20 @@ CLI supports three kinds of export data format:
 * **json** - all flows save to a single JSON file (with JSON array inside)
 * **img** - each flow saves to a separate SVG file
 
-Ouputs save to the **outputDir** (if provided) or the **CWD** and name after the input file.
+Ouputs save to the **outputDir** (if provided) or to the **CWD** and name after the input file.
 
 You can use **--stdout** option (only for **html** and **json** formats) to print results to the stdout instead of saving to files.
 
-### How to install external nodes
+## How to install external nodes
 
 In order to install an external node, you need to install its **npm package** to a directory and provide the path to the directory as **userDir** setting in **JavaScript API** or as **--nodes** option for **CLI**.
 
 ## Known issues:
 
-* It's not possible to use SVG icons for nodes and save flows as PNG on Windows (https://github.com/Automattic/node-canvas/issues/1211)
+* It's not possible to use SVG icons for nodes and to save flows as PNG on Windows (https://github.com/Automattic/node-canvas/issues/1211)
 * Exported images use another font
 
-### Troubleshooting
+## Troubleshooting
 
 The library depends on [node-canvas](https://github.com/Automattic/node-canvas) library. That's why you can face some issues during installation of the library in case if there are no prebuilt binaries for your system. In this case look at **Compiling** section of node-canvas documentation [https://github.com/Automattic/node-canvas#compiling](https://github.com/Automattic/node-canvas#compiling).
 
