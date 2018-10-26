@@ -14,7 +14,6 @@
  * limitations under the License.
  **/
 
-var when = require("when");
 var fs = require("fs");
 var path = require("path");
 
@@ -74,7 +73,7 @@ function loadNodeFiles(nodeFiles) {
             }
         }
     }
-    return when.settle(promises).then(function() {
+    return Promise.all(promises).then(function() {
         return nodeFiles;
     });
 }
