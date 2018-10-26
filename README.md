@@ -2,26 +2,28 @@
 
 # Node-RED flow drawer
 
-A library and CLI for drawning Node-RED flows from JSON files. *Work in progress.*
+A library and CLI for drawning [Node-RED](https://github.com/node-red/node-red) flows from JSON files.
 
 ## Table of contents
 
+* [Prerequisites](#prerequisites)
 * [JavaScript API](#javascript-api)
   * [Installation](#installation)
-  * [Troubleshooting](#troubleshooting)
   * [Usage](#usage)
-  * [Options](#options)
-  * [Custom node descriptions](#custom-node-descriptions)
+  * [Settings](#settings)
 * [CLI](#cli)
   * [Installation](#installation-1)
-  * [Troubleshooting](#troubleshooting-1)
   * [Usage](#usage-1)
   * [Batch processing](#batch-processing)
   * [Export data formats](#export-data-formats)
-  * [Custom node descriptions](#custom-node-descriptions-1)
-* [Related issues](#related-issues)
-* [TODO](#todo)
+* [How to install external nodes](#how-to-install-external-nodes)
+* [Known issues](#known-issues)
+* [Troubleshooting](#troubleshooting)
 * [License](#license)
+
+## Prerequisites
+
+* Node.js 6+
 
 ## JavaScript API
 
@@ -30,10 +32,6 @@ A library and CLI for drawning Node-RED flows from JSON files. *Work in progress
 ```
 npm install node-red-flow-drawer --save
 ```
-
-### Troubleshooting
-
-The library depends on [node canvas v2](https://github.com/Automattic/node-canvas). That's why you can face some issues during installation of the library in case if there are no prebuilt binaries for your system. In this case look at **Compiling** section of node canvas documentation [https://github.com/Automattic/node-canvas#compiling](https://github.com/Automattic/node-canvas#compiling).
 
 ### Usage
 
@@ -46,12 +44,14 @@ const FlowDrawer = require("node-red-flow-drawer");
  
  
 const flows = [{"id":"bfc121b1.6847","type":"tab","label":"Flow 2","disabled":false,"info":""},{"id":"c1f897dd.90a048","type":"http in","z":"bfc121b1.6847","name":"","url":"/in","method":"get","upload":false,"swaggerDoc":"","x":200,"y":540,"wires":[["9b1c0d8f.216f2"]]},{"id":"9b1c0d8f.216f2","type":"http response","z":"bfc121b1.6847","name":"","statusCode":"200","headers":{},"x":500,"y":540,"wires":[]}];
- 
-const options = {
-  // nodes: "path/to/a/custom/node/file",
+
+// Optional settings (here are defaults)
+const settings = {
+    httpNodeRoot: "/",      // Root for http nodes
+    userDir: process.cwd()  // A directory with extenal node installations
 };
 
-new FlowDrawer(flows, options)
+new FlowDrawer(flows, settings)
     .draw("svg")
     .then((images) => {
         for (let image of images) {
@@ -71,94 +71,10 @@ node index.js
 
 ![Output](/docs/img/output.png)
 
-### Options
+### Settings
 
-* **nodes** - path to a file with custom node descriptions
-
-### Custom node descriptions
-
-Custom node descriptions is a file that contains a part of the Node-RED node [HTML file](https://nodered.org/docs/creating-nodes/node-html), namely the part with **RED.nodes.registerType** calls.
-
-<details>
-<summary>Example for <a href="https://github.com/CANDY-LINE/node-red-contrib-cache">node-red-contrib-cache</a>.</summary>
-
-*Note the first line of the file. It's required to get access to current context.*
-
-```javascript
-const RED = this.RED;
- 
-RED.nodes.registerType('Cache in',{
-  category: 'input',
-  defaults: {
-    name: { name: '' },
-    cache: { type: 'Cache', required: true },
-    keyType: { value : 'msg' },
-    keyProperty: { value: 'topic', required: true },
-    valueType: { value : 'msg' },
-    valueProperty: { value: 'payload', required: true },
-    useString: { value: false, required: false }
-  },
-  color: 'Turquoise',
-  inputs: 1,
-  outputs: 1,
-  icon: "db.png",
-  label: function() {
-    return this.name || 'Cache';
-  },
-  labelStyle: function() {
-    return this.name ? 'node_label_italic' : '';
-  },
-  oneditprepare: function() {
-    $("#node-input-keyProperty").typedInput({default:this.keyType||'msg',types:['msg']});
-    $("#node-input-valueProperty").typedInput({default:this.valueType||'msg',types:['msg']});
-  }
-});
-RED.nodes.registerType('Cache out',{
-  category: 'output',
-  defaults: {
-    name: { name: '' },
-    cache: { type: 'Cache', required: true },
-    keyType: { value : 'msg' },
-    keyProperty: { value: 'topic', required: true },
-    valueType: { value : 'msg' },
-    valueProperty: { value: 'payload', required: true },
-    ttlType: { value : 'msg' },
-    ttlProperty: { value: '', required: false },
-    useString: { value: false, required: false }
-  },
-  color: 'Turquoise',
-  inputs: 1,
-  outputs: 0,
-  icon: "db.png",
-  align: 'right',
-  label: function() {
-    return this.name || 'Cache';
-  },
-  labelStyle: function() {
-    return this.name ? 'node_label_italic' : '';
-  },
-  oneditprepare: function() {
-    $("#node-input-keyProperty").typedInput({default:this.keyType||'msg',types:['msg']});
-    $("#node-input-valueProperty").typedInput({default:this.valueType||'msg',types:['msg']});
-    $("#node-input-ttlProperty").typedInput({default:this.ttlType||'msg',types:['msg']});
-  }
-});
-RED.nodes.registerType('Cache',{
-  category: 'config',
-  defaults: {
-    name: { value: '', required: false },
-    defaultTtl: { value: '', required: false },
-    checkPeriod: { value: '', required: false },
-  },
-  label: function() {
-    return this.name;
-  },
-});
-```
-</details>
-<br>
-
-You can register in one file as much nodes as you want.
+* **httpNodeRoot** - root for http nodes
+* **userDir** - a directory with external node installations
 
 ## CLI
 
@@ -168,10 +84,6 @@ You can register in one file as much nodes as you want.
 npm install -g node-red-flow-drawer
 ```
 
-### Troubleshooting
-
-See notes for [JavaScript API](#troubleshooting).
-
 ### Usage
 
 ```
@@ -180,10 +92,9 @@ flow-drawer -h
 Usage: flow-drawer [options] <inputFileOrDir> [outputDir]
 
 Options:
-
   -v, --version          output the version number
-  -f, --format <format>  export data format (html, json or img) (default: html)
-  -n, --nodes <file>     path to a file with custom node descriptions
+  -f, --format <format>  export data format (html, json or img) (default: "html")
+  -n, --nodes <dir>      path to a directory with installed as npm packages external nodes (CWD by default)
   -s, --stdout           print results to the stdout (only for file input and html/json output)
   -h, --help             output usage information
 ```
@@ -194,33 +105,32 @@ There are two options for input data:
 * file
 * directory
 
-In the second case CLI searches for all files with **.json** extension in the directory tree starting from the input folder, tries to draw flows from that files and saves drawnings to the **current working directory** or the **outputDir** (if provided).
+In the second case CLI searches for all files with **.json** extension in the directory tree starting from the input folder, tries to draw flows from that files and saves drawnings to the **CWD** or to the **outputDir** (if provided).
 
 ### Export data formats
 
-CLI supports three types of export data formats:
-* **html** - flows save to a single HTML file (useful for previewing)
-* **json** - flows save to a single JSON file (JSON array inside)
+CLI supports three kinds of export data format:
+* **html** - all flows save to a single HTML file (useful for previewing)
+* **json** - all flows save to a single JSON file (with JSON array inside)
 * **img** - each flow saves to a separate SVG file
 
-Ouputs save to the **outputDir** (if provided) or the **current working directory** and name after the input file.
+Ouputs save to the **outputDir** (if provided) or the **CWD** and name after the input file.
 
-You can use **--stdout** option (only for **html** and **json**) to print results to the stdout instead of saving to files.
+You can use **--stdout** option (only for **html** and **json** formats) to print results to the stdout instead of saving to files.
 
-### Custom node descriptions
+### How to install external nodes
 
-See [JavaScript API](#custom-node-descriptions) section for details.
+In order to install an external node, you need to install its **npm package** to a directory and provide the path to the directory as **userDir** setting in **JavaScript API** or as **--nodes** option for **CLI**.
 
-## Related issues:
+## Known issues:
 
-* SVG support on Windows (a bloker for drawning to PNG) : https://github.com/Automattic/node-canvas/issues/1211
+* It's not possible to use SVG icons for nodes and save flows as PNG on Windows (https://github.com/Automattic/node-canvas/issues/1211)
+* Exported images use another font
 
-## TODO
+### Troubleshooting
 
-* Validate input
-* Check why output has other fonts
-* PNG support
- 
+The library depends on [node-canvas](https://github.com/Automattic/node-canvas) library. That's why you can face some issues during installation of the library in case if there are no prebuilt binaries for your system. In this case look at **Compiling** section of node-canvas documentation [https://github.com/Automattic/node-canvas#compiling](https://github.com/Automattic/node-canvas#compiling).
+
 ## License
 
 [MIT](/LICENSE)
