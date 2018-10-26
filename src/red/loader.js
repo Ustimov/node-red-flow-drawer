@@ -153,7 +153,7 @@ function loadNodeConfig(fileInfo) {
                 node.config = mainContent;
                 node.help = helpContent;
 
-                var jsRegex = /<script[^>]* type="text\/javascript">([\s\S]*?)<\/script>/gi;
+                var jsRegex = /<script[^>]* type=["|']text\/javascript["|']>([\s\S]*?)<\/script>/gi;
                 node.js = "";
                 // eslint-disable-next-line
                 while (match = jsRegex.exec(content)) {
