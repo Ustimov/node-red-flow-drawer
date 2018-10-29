@@ -1,6 +1,6 @@
 {
   "name": "node-red-flow-drawer",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "A library and CLI for drawning Node-RED flows from JSON files",
   "main": "src/flow-drawer.js",
   "scripts": {

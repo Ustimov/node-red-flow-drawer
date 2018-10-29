@@ -19,6 +19,7 @@ A library and CLI for drawning [Node-RED](https://github.com/node-red/node-red) 
 * [How to install external nodes](#how-to-install-external-nodes)
 * [Known issues](#known-issues)
 * [Troubleshooting](#troubleshooting)
+* [Credits](#credits)
 * [License](#license)
 
 ## Prerequisites
@@ -129,6 +130,10 @@ In order to install an external node, you need to install its **npm package** to
 ## Troubleshooting
 
 The library depends on [node-canvas](https://github.com/Automattic/node-canvas) library. That's why you can face some issues during installation of the library in case if there are no prebuilt binaries for your system. In this case look at **Compiling** section of node-canvas documentation [https://github.com/Automattic/node-canvas#compiling](https://github.com/Automattic/node-canvas#compiling).
+
+## Credits
+
+Based on [Node-RED 0.19.4](https://github.com/node-red/node-red/releases/tag/0.19.4).
 
 ## License
 
