@@ -18,7 +18,7 @@ var fs = require("fs");
 var path = require("path");
 
 var settings;
-var iconFileExtensions = [".png", ".gif", ".svg", ".ico"];
+var iconFileExtensions = [".png", ".gif", ".svg", ".ico", ".jpg"];
 
 function init(_settings) {
     settings = _settings;
