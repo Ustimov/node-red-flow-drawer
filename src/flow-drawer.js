@@ -3,7 +3,6 @@ const { JSDOM } = require("jsdom");
 const SvgSaver = require("svg-saver-node");
 const fs = require("fs");
 const path = require("path");
-const mute = require("mute");
 const _RED = require("./red");
 
 function applyTypes(types) {
@@ -127,9 +126,7 @@ function FlowDrawer(flow, settings) {
                 } else {
                     RED.workspaces.show(id);
                     const el = RED.view.redraw(true);
-                    const unmute = mute();
                     return svgSaver.svgAsDataUri(el).then(function (uri) {
-                        unmute();
                         images.push(uri);
                         const promise = drawWorkspacesWithIds(ids);
                         if (promise) {
