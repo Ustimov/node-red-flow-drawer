@@ -131,6 +131,17 @@ In order to install an external node, you need to install its **npm package** to
 
 The library depends on [node-canvas](https://github.com/Automattic/node-canvas) library. That's why you can face some issues during installation of the library in case if there are no prebuilt binaries for your system. In this case look at **Compiling** section of node-canvas documentation [https://github.com/Automattic/node-canvas#compiling](https://github.com/Automattic/node-canvas#compiling).
 
+### Nodejs 8.9.4
+
+We found this error
+
+```
+node: symbol lookup error: /xxxxx/node-red-flow-drawer/node_modules/canvas/build/Release/canvas.node: undefined symbol: _ZN2v87Isolate19CheckMemoryPressureEv
+```
+
+[Solution](https://github.com/Automattic/node-canvas/issues/1252) update to 8.12.0
+
+
 ## Credits
 
 Based on [Node-RED 0.19.4](https://github.com/node-red/node-red/releases/tag/0.19.4).
